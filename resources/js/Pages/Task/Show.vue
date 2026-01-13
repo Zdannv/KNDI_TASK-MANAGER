@@ -39,8 +39,6 @@ const role = computed(() => page.props.auth.user.role);
 
 // --- Handle Back ---
 const handleBack = () => {
-  // Mengarahkan kembali ke route task.list
-  // Jika ingin perilaku browser back (simpan filter), gunakan: window.history.back();
   router.get(route('task.list'));
 };
 
@@ -125,6 +123,54 @@ const getNameUser = (id) => {
   return id ? props.users.find(u => u.id === id)?.name : '-';
 };
 
+// --- CHART LOGIC ---
+const logtimeSegments = computed(() => {
+  const logs = props.task.logtimes || [];
+  if (!logs.length) return [];
+
+  const grouped = {};
+  let totalCalc = 0;
+
+  // Group by user_id
+  logs.forEach(log => {
+    const uid = log.user_id;
+    const time = Number(log.time_used);
+    if (!grouped[uid]) {
+      grouped[uid] = { 
+        id: uid,
+        name: getNameUser(uid) || 'Unknown', 
+        time: 0 
+      };
+    }
+    grouped[uid].time += time;
+    totalCalc += time;
+  });
+
+  // Palette warna Tailwind
+  const colors = ['#3B82F6', '#EF4444', '#10B981', '#F59E0B', '#8B5CF6', '#EC4899', '#06B6D4', '#6366F1'];
+
+  // Hitung circumference lingkaran r=40
+  const circumference = 2 * Math.PI * 40; 
+  let currentOffset = 0;
+
+  return Object.values(grouped)
+    .sort((a, b) => b.time - a.time)
+    .map((item, index) => {
+      const segmentLength = (item.time / totalCalc) * circumference;
+      
+      const data = {
+        ...item,
+        color: colors[index % colors.length],
+        strokeDasharray: `${segmentLength} ${circumference}`,
+        strokeDashoffset: -currentOffset,
+        percentage: Math.round((item.time / totalCalc) * 100)
+      };
+      
+      currentOffset += segmentLength;
+      return data;
+    });
+});
+
 const visibleButtons = computed(() => {
   const buttons = [];
   if (['other', 'pm'].includes(role.value)) {
@@ -177,7 +223,7 @@ const visibleButtons = computed(() => {
               <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
             </svg>
           </button>
-          
+           
           <h2 class="font-semibold text-xl leading-tight">
             {{ task.issue }}
           </h2>
@@ -298,8 +344,53 @@ const visibleButtons = computed(() => {
               </div>
               <div v-else class="text-gray-600 dark:text-gray-400" >-</div>
             </div>
-            <div class="mb-4"><label class="text-sm font-medium text-gray-600 dark:text-gray-400">Time Used</label><p class="text-gray-800 dark:text-gray-200">{{ totalTimeUsed ? `${totalTimeUsed} hours` : '-' }}</p></div>
-          </div>
+            
+            <div class="mb-4">
+              <label class="text-sm font-medium text-gray-600 dark:text-gray-400">Time Used</label>
+              
+              <div v-if="logtimeSegments.length > 0" class="flex flex-col sm:flex-row items-center gap-6 mt-2 bg-indigo-50 dark:bg-slate-800/50 p-4 rounded-lg border border-indigo-100 dark:border-slate-700">
+                <div class="relative w-32 h-32 shrink-0">
+                   <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                      <circle cx="50" cy="50" r="40" fill="transparent" stroke-width="15" class="stroke-gray-200 dark:stroke-gray-700" />
+                      <circle 
+                        v-for="seg in logtimeSegments" 
+                        :key="seg.id"
+                        cx="50" cy="50" r="40" 
+                        fill="transparent" 
+                        stroke-width="15" 
+                        :stroke="seg.color"
+                        :stroke-dasharray="seg.strokeDasharray"
+                        :stroke-dashoffset="seg.strokeDashoffset"
+                        class="transition-all duration-500 ease-out hover:opacity-80"
+                      />
+                   </svg>
+                   <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                      <span class="text-lg font-bold text-gray-800 dark:text-gray-200">{{ totalTimeUsed }}</span>
+                      <span class="text-[0.6rem] text-gray-500 uppercase">Hours</span>
+                   </div>
+                </div>
+
+                <div class="flex-1 w-full min-w-0">
+                  <div class="flex flex-col gap-2">
+                    <div v-for="seg in logtimeSegments" :key="seg.id" class="flex items-center justify-between text-sm">
+                      <div class="flex items-center gap-2 min-w-0">
+                        <span class="w-3 h-3 rounded-full shrink-0" :style="{ backgroundColor: seg.color }"></span>
+                        <span class="text-gray-700 dark:text-gray-300 font-medium truncate" :title="seg.name">{{ seg.name }}</span>
+                      </div>
+                      <div class="flex items-center gap-3 shrink-0">
+                        <span class="text-gray-500 dark:text-gray-400 text-xs">{{ seg.percentage }}%</span>
+                        <span class="font-bold text-gray-800 dark:text-gray-200 tabular-nums">{{ seg.time }}h</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <p v-else class="text-gray-800 dark:text-gray-200 mt-1 font-mono">
+                {{ totalTimeUsed ? `${totalTimeUsed} hours` : '0 hours' }}
+              </p>
+            </div>
+            </div>
 
           <div class="p-6">
             <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Pull Request</h3>

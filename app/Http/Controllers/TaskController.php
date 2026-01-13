@@ -242,17 +242,19 @@ class TaskController extends Controller
      */
     public function show($id) 
     {
-        $task = Task::findOrFail($id);
+        // PERBAIKAN DI SINI: Tambahkan with('logtimes')
+        $task = Task::with('logtimes')->findOrFail($id);
+
         $users = User::get();
-        $project = project::where('id', $task->project_id)->with('client')->first();
+        $project = Project::where('id', $task->project_id)->with('client')->first();
         $projects = Project::get();
 
         $communicator = User::where('role', 'co')->get();
         $programmer = User::where('role', 'pg')->orWhere('role', 'pm')->get();
         $designer = User::where('role', 'ds')->get();
 
-        $logtimes = Logtime::where('task_id', $id)->get()->toArray();
-        $totalTimeUsed = array_sum(array_column($logtimes, 'time_used'));
+        // PERBAIKAN: Hitung total langsung dari relasi (lebih efisien)
+        $totalTimeUsed = $task->logtimes->sum('time_used');
 
         $prs = PullRequest::with('replies')->where('task_id', $id)->get();
 
