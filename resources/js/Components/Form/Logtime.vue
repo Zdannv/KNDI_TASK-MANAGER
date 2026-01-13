@@ -18,6 +18,13 @@ const form = useForm({
     time_used: ''
 });
 
+// --- PERBAIKAN DI SINI: Function Validasi ---
+const validateTime = () => {
+    if (form.time_used < 0) {
+        form.time_used = 0;
+    }
+};
+
 const submitForm = () => {
     form.post(route('logtime.store'), {
         onFinish: () => {
@@ -36,7 +43,6 @@ const cancel = () => {
     <div class="space-y-6">
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Add New Logtime</h3>
         <form @submit.prevent="submitForm" class="space-y-4">
-            <!-- Start Date Field -->
             <div>
                 <InputLabel for="date" value="Date" />
                 <input
@@ -50,7 +56,6 @@ const cancel = () => {
                 <InputError class="mt-2" :message="form.errors.date" />
             </div>
 
-            <!-- Task Field -->
             <div>
                 <InputLabel for="type" value="Task" />
                 <SelectInput
@@ -66,7 +71,6 @@ const cancel = () => {
                 <InputError class="mt-2" :message="form.errors.task_id" />
             </div>
 
-            <!-- Time used Field -->
             <div>
                 <InputLabel for="time_used" value="Time used" />
                 <TextInput
@@ -77,11 +81,12 @@ const cancel = () => {
                     required
                     autofocus
                     autocomplete="time_used"
+                    min="0"
+                    @input="validateTime" 
                 />
                 <InputError class="mt-2" :message="form.errors.time_used" />
             </div>
 
-            <!-- Form Actions -->
             <div class="flex justify-end gap-4">
                 <button
                     type="button"

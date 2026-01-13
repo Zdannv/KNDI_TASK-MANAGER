@@ -19,7 +19,7 @@ const isLoaded = ref(false);
 const props = defineProps({
   tasks: {},
   projects: {},
-  users: {},
+  users: {}, // Kita akan pakai ini untuk mencari nama assign
   communicator: {},
   programmer: {},
   designer: {},
@@ -171,6 +171,9 @@ const handleSearch = () => {
                   <p class="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">Type</p>
                 </th>
                 <th class="p-4">
+                  <p class="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">Assign</p>
+                </th>
+                <th class="p-4">
                   <p class="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">Issue</p>
                 </th>
                 <th class="p-4">
@@ -198,6 +201,19 @@ const handleSearch = () => {
                 <td class="p-4 border-t border-blue-gray-50 align-middle">
                   <p class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">{{ task.type }}</p>
                 </td>
+
+                <td class="p-4 border-t border-blue-gray-50 align-middle min-w-[200px]">
+                  <template v-if="task.programmer?.length || task.designer?.length || task.communicator?.length">
+                    <p class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
+                      <span v-for="(id, i) in [...(task.programmer || []), ...(task.designer || []), ...(task.communicator || [])]" :key="id">
+                        {{ users.find(u => u.id === id)?.name ?? id }}
+                        <span v-if="i < [...(task.programmer || []), ...(task.designer || []), ...(task.communicator || [])].length - 1">, </span>
+                      </span>
+                    </p>
+                  </template>
+                  <span v-else class="text-gray-500">-</span>
+                </td>
+
                 <td class="p-4 min-w-[250px] border-t border-blue-gray-50 align-middle">
                   <a
                     :href="route('task.show', task.id)"
