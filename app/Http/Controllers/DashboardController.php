@@ -23,6 +23,7 @@ class DashboardController extends Controller
         ->get();
 
         $members = User::get()
+            ->where('role', '!=', 'other')
             ->map(function ($user) {
                 $user->total_tasks = Task::where('isActive', true)
                     ->where(fn($q) => $q
