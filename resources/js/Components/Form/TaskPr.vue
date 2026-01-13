@@ -1,5 +1,6 @@
 <script setup>
 import { useForm } from '@inertiajs/vue3';
+import { computed } from 'vue';
 import Close from '../Icon/Close.vue';
 import Plus from '../Icon/Plus.vue';
 import InputError from '@/Components/InputError.vue';
@@ -11,6 +12,14 @@ const emit = defineEmits(['close']);
 const props = defineProps({
     task: {},
     pg: {},
+});
+
+const availableReviewers = computed(() => {
+    const assignProgrammerId = props.task?.programmer || [];
+
+    if (Array.isArray(props.pg)) {
+        return props.pg.filter(user => !assignProgrammerId.includes(user.id));
+    }
 });
 
 const initialReviewers = Array.isArray(props.task?.reviewer)
@@ -60,7 +69,7 @@ const cancel = () => {
                     <SelectInput
                         :id="'reviewer_' + index"
                         v-model="form.reviewer[index]"
-                        :options="pg"
+                        :options="availableReviewers"
                         :array="form.reviewer"
                         label="name"
                         valueKey="id"
