@@ -5,14 +5,13 @@ import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
-import { Head, useForm } from '@inertiajs/vue3'; // Link dihapus karena tidak dipakai lagi
+import { Head, useForm } from '@inertiajs/vue3';
 import { ref, onMounted } from 'vue';
 
 defineProps({ canResetPassword: Boolean, status: String });
 
 const isLoaded = ref(false);
-// State untuk icon mata (Show/Hide Password)
-const showPassword = ref(false);
+const showPassword = ref(false); // State untuk icon mata
 
 onMounted(() => {
   setTimeout(() => isLoaded.value = true, 100);
@@ -46,7 +45,8 @@ const submit = () => {
         <TextInput
           id="email"
           type="email"
-          class="mt-1 block w-full"
+          class="mt-1 block w-full transition-colors duration-300"
+          :class="{ 'border-red-500 focus:border-red-500 focus:ring-red-500': form.errors.email }"
           v-model="form.email"
           required
           autofocus
@@ -65,7 +65,8 @@ const submit = () => {
           <TextInput
             id="password"
             :type="showPassword ? 'text' : 'password'"
-            class="block w-full pr-10"
+            class="block w-full pr-10 transition-colors duration-300"
+            :class="{ 'border-red-500 focus:border-red-500 focus:ring-red-500': form.errors.password || form.errors.email }"
             v-model="form.password"
             required
             autocomplete="current-password"
