@@ -153,7 +153,7 @@ const visibleButtons = computed(() => {
     (['pm', 'pg', 'ds'].includes(role.value) && [props.task?.programmer, props.task?.designer].some(arr => arr?.includes(id.value))) ||
     ['other'].includes(role.value)
   ) {
-    buttons.push({ action: 'close', icon: Close, handler: handleClose, text: 'Close' });
+    buttons.push({ action: 'close', icon: Close, handler: handleClose, text: 'Close Task' });
   }
   return buttons;
 });
