@@ -11,6 +11,7 @@ import moment from 'moment';
 import SwitchInput from '@/Components/SwitchInput.vue';
 import TextInput from '@/Components/TextInput.vue';
 import Search from '@/Components/Icon/Search.vue';
+import externalLink from '@/Components/Icon/externalLink.vue';
 
 // --- State ---
 const openCreateEditForm = ref(false);
@@ -165,6 +166,7 @@ const handleSearch = () => {
                     class="text-sm font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-200 underline decoration-indigo-500/30 underline-offset-4"
                   >
                     {{ task.issue }}
+                    <externalLink />
                   </a>
                 </td>
 
