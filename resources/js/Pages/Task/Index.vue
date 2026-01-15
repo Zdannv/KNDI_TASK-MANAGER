@@ -163,7 +163,7 @@ const handleSearch = () => {
 
                 <td class="p-4 min-w-[250px] align-middle">
                   <a :href="route('task.show', task.id)" 
-                    class="text-sm font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-200 underline decoration-indigo-500/30 underline-offset-4"
+                    class="flex text-sm font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-200 underline decoration-indigo-500/30 underline-offset-4"
                   >
                     {{ task.issue }}
                     <externalLink />
