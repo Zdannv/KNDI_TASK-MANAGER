@@ -84,36 +84,37 @@ watch(id, (newValue) => {
 <template>
   <Head title="Skills" />
   <AuthenticatedLayout>
-    <!-- Header dengan animasi -->
     <template #header>
-      <div
-        class="flex justify-between px-5 py-3 items-center text-gray-800 dark:text-gray-200 bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm border border-slate-200 dark:border-slate-800 shadow-lg dark:shadow-sm shadow-indigo-500 dark:shadow-indigo-800 rounded-lg transition-all duration-1000 ease-out"
-        :class="{ 'translate-y-0 opacity-100': isLoaded, 'translate-y-8 opacity-0': !isLoaded }"
-      >
-        <h2 class="lg:col-span-2 font-semibold text-xl leading-tight">
-          Skills
-        </h2>
-        <div class="lg:col-span-4 flex gap-4 justify-end">
-          <button
-            v-if="['other', 'co'].includes(role)"
-            @click="handleOpenOptions"
-            class="flex gap-2 p-[8px] border rounded-md border-gray-400 dark:border-gray-600 hover:bg-indigo-50 dark:hover:bg-indigo-950 transition-colors"
-          >
-            <Gear />
-            <span>Options</span>
-          </button>
-          <button
-            @click="handleOpenForm"
-            class="flex gap-2 p-[8px] border rounded-md border-gray-400 dark:border-gray-600 hover:bg-indigo-50 dark:hover:bg-indigo-950 transition-colors"
-          >
-            <Plus />
-            <span>New</span>
-          </button>
+      <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-8">
+        <div
+          class="flex justify-between px-5 py-3 items-center text-gray-800 dark:text-gray-200 bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm border border-slate-200 dark:border-slate-800 shadow-lg dark:shadow-sm shadow-indigo-500 dark:shadow-indigo-800 rounded-lg transition-all duration-1000 ease-out"
+          :class="{ 'translate-y-0 opacity-100': isLoaded, 'translate-y-8 opacity-0': !isLoaded }"
+        >
+          <h2 class="font-semibold text-xl leading-tight">
+            Skills
+          </h2>
+          <div class="flex gap-4 justify-end">
+            <button
+              v-if="['other', 'co'].includes(role)"
+              @click="handleOpenOptions"
+              class="flex gap-2 p-[8px] border rounded-md border-gray-400 dark:border-gray-600 hover:bg-indigo-50 dark:hover:bg-indigo-950 transition-colors"
+            >
+              <Gear />
+              <span class="hidden sm:inline">Options</span>
+            </button>
+            <button
+              @click="handleOpenForm"
+              class="flex gap-2 p-[8px] border rounded-md border-gray-400 dark:border-gray-600 hover:bg-indigo-50 dark:hover:bg-indigo-950 transition-colors"
+            >
+              <Plus />
+              <span class="hidden sm:inline">New</span>
+              <span class="sm:hidden">New</span>
+            </button>
+          </div>
         </div>
       </div>
     </template>
 
-    <!-- Floating Button (Mobile) -->
     <div v-if="['other', 'co'].includes(role)" class="fixed sm:hidden right-9 bottom-9 z-50">
       <div
         class="shrink-0 inline-flex items-center justify-center p-2 rounded-full dark:text-gray-300 hover:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-500 dark:focus:text-gray-400 transition duration-150 ease-in-out border bg-white dark:bg-gray-700 shadow-sm transition-all duration-800 ease-out delay-500"
@@ -142,17 +143,15 @@ watch(id, (newValue) => {
       <Plus />
     </button>
 
-    <!-- Modal -->
     <div v-if="openForm" class="fixed inset-0 z-50 px-2 flex items-center justify-center bg-black bg-opacity-50">
       <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg max-w-lg w-full p-6 relative animate-in fade-in zoom-in duration-200">
         <SkillForm @close="handleCloseForm" />
       </div>
     </div>
 
-    <!-- Options (Filter) -->
     <div
       v-if="options"
-      class="w-screen md:w-full pt-3 sm:pt-8 px-3 transition-all duration-1000 ease-out"
+      class="w-full pt-3 sm:pt-8 transition-all duration-1000 ease-out"
       :class="{ 'translate-y-0 opacity-100': isLoaded, 'translate-y-12 opacity-0': !isLoaded }"
     >
       <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-8">
@@ -189,9 +188,8 @@ watch(id, (newValue) => {
       </div>
     </div>
 
-    <!-- Main Content -->
     <div
-      class="w-screen md:w-full py-8 px-3 transition-all duration-700 ease-out delay-100"
+      class="w-full py-8 transition-all duration-700 ease-out delay-100"
       :class="{ 'opacity-100': isLoaded, 'translate-y-12 opacity-0': !isLoaded }"
     >
       <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-8">
@@ -200,36 +198,34 @@ watch(id, (newValue) => {
             <thead>
               <tr class="bg-indigo-50 dark:bg-gray-700">
                 <th class="p-4">
-                  <p class="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900">Skill</p>
+                  <p class="text-sm opacity-70">Skill</p>
                 </th>
                 <th class="p-4">
-                  <p class="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900">CreatedAt</p>
+                  <p class="text-sm opacity-70">Created At</p>
                 </th>
-                <th class="p-4">
-                  <p class="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900">Action</p>
+                <th class="p-4 text-center">
+                  <p class="text-sm opacity-70 uppercase tracking-widest">Action</p>
                 </th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="value in skills" :key="value.id" class="border-t border-blue-gray-50">
+              <tr v-for="value in skills" :key="value.id" class="border-t border-slate-200 dark:border-slate-800 hover:bg-white/40 transition-colors">
                 <td class="p-4 align-middle">
-                  <p class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-                    {{ value.skill }}
-                  </p>
+                  <p class="text-sm font-bold">{{ value.skill }}</p>
                 </td>
                 <td class="p-4 align-middle">
-                  <p class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
+                  <p class="text-sm italic">
                     {{ formatDate(value.created_at) }}
                   </p>
                 </td>
                 <td class="p-4 align-middle">
-                  <div class="flex gap-2 items-center">
-                    <a
+                  <div class="flex justify-center items-center">
+                    <button
                       @click.prevent="handleDelete(value.id)"
-                      class="cursor-pointer text-red-600 hover:text-red-800 dark:text-gray-200 dark:hover:text-gray-400 font-medium"
+                      class="text-sm text-red-600 dark:text-red-400 hover:underline font-medium"
                     >
                       Delete
-                    </a>
+                    </button>
                   </div>
                 </td>
               </tr>
