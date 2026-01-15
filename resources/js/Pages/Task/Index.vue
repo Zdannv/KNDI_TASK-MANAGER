@@ -8,6 +8,7 @@ import moment from 'moment';
 import SwitchInput from '@/Components/SwitchInput.vue';
 import TextInput from '@/Components/TextInput.vue';
 import Search from '@/Components/Icon/Search.vue';
+import externalLink from '@/Components/Icon/externalLink.vue';
 
 // State
 const openCreateEditForm = ref(false);
@@ -217,9 +218,10 @@ const handleSearch = () => {
                 <td class="p-4 min-w-[250px] border-t border-blue-gray-50 align-middle">
                   <a
                     :href="route('task.show', task.id)"
-                    class="block font-sans text-sm antialiased font-normal leading-normal text-indigo-600 dark:text-indigo-400 hover:underline"
+                    class="flex gap-0 font-sans text-sm antialiased font-normal leading-normal text-indigo-600 dark:text-indigo-400 hover:underline"
                   >
                     {{ task.issue }}
+                    <externalLink />
                   </a>
                 </td>
                 <td class="p-4 border-t border-blue-gray-50 align-middle">
