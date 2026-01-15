@@ -21,7 +21,7 @@ const form = useForm({
 // --- PERBAIKAN DI SINI: Function Validasi ---
 const validateTime = () => {
     if (form.time_used < 0) {
-        form.time_used = 0;
+        form.time_used = 1;
     }
 };
 
@@ -82,7 +82,8 @@ const cancel = () => {
                     autofocus
                     autocomplete="time_used"
                     min="0"
-                    @input="validateTime" 
+                    step="0.1"
+                    @change="validateTime" 
                 />
                 <InputError class="mt-2" :message="form.errors.time_used" />
             </div>
