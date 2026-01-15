@@ -94,45 +94,53 @@ const handleSearch = () => {
   <AuthenticatedLayout>
     
     <template #header>
-      <div
-        class="flex justify-between px-5 py-3 items-center text-gray-800 dark:text-gray-200 bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm border border-slate-200 dark:border-slate-800 shadow-lg dark:shadow-sm shadow-indigo-500 dark:shadow-indigo-800 rounded-lg transition-all duration-1000 ease-out"
-        :class="{ 'translate-y-0 opacity-100': isLoaded, 'translate-y-8 opacity-0': !isLoaded }"
-      >
-        <h2 class="font-semibold text-xl leading-tight">Tasks</h2>
-        <div class="flex gap-3 justify-end items-center text-sm">
-          <TextInput
-            id="search"
-            type="text"
-            class="dark:bg-gray-800 border-gray-400 dark:border-gray-500 w-96"
-            v-model="search"
-            placeholder="Search for issue or ticket ..."
-            @keydown.enter="handleSearch"
-          />
-          <button
-            v-if="['other', 'pm', 'co'].includes(role)" 
-            @click="handleOpenCreateEditForm"
-            class="flex gap-2 p-[8px] border rounded-md border-gray-400 dark:border-gray-600 hover:bg-indigo-50 dark:hover:bg-indigo-950 transition-colors font-medium"
-          >
-            <Plus />
-            <span>New Task</span>
-          </button>
+      <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-8">
+        <div
+          class="flex justify-between px-5 py-3 items-center text-gray-800 dark:text-gray-200 bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm border border-slate-200 dark:border-slate-800 shadow-lg dark:shadow-sm shadow-indigo-500 dark:shadow-indigo-800 rounded-lg transition-all duration-1000 ease-out"
+          :class="{ 'translate-y-0 opacity-100': isLoaded, 'translate-y-8 opacity-0': !isLoaded }"
+        >
+          <h2 class="font-semibold text-xl leading-tight">Tasks</h2>
+          <div class="flex gap-3 justify-end items-center text-sm">
+            <TextInput
+              id="search"
+              type="text"
+              class="dark:bg-gray-800 border-gray-400 dark:border-gray-500 w-96"
+              v-model="search"
+              placeholder="Search for issue or ticket ..."
+              @keydown.enter="handleSearch"
+            />
+            <button
+              v-if="['other', 'pm', 'co'].includes(role)" 
+              @click="handleOpenCreateEditForm"
+              class="flex gap-2 p-[8px] border rounded-md border-gray-400 dark:border-gray-600 hover:bg-indigo-50 dark:hover:bg-indigo-950 transition-colors font-medium"
+            >
+              <Plus />
+              <span class="hidden sm:inline">New Task</span>
+            </button>
+          </div>
         </div>
       </div>
     </template>
 
-    <div v-if="openCreateEditForm" class="fixed inset-0 z-50 px-2 flex items-center justify-center bg-black bg-opacity-50">
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg max-w-lg w-full p-6 relative animate-in fade-in zoom-in duration-200">
-        <TaskCreateEditForm :task="selectedTask" :projects="projects" :projectId="queryParams.project_id" :isEditMode="isEditMode" @close="handleCloseForm" />
+    <div v-if="openCreateEditForm" class="fixed inset-0 z-[100] px-4 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-5xl w-full p-8 relative animate-in fade-in zoom-in duration-300 overflow-y-auto max-h-[90vh]">
+        <TaskCreateEditForm 
+            :task="selectedTask" 
+            :projects="projects" 
+            :projectId="queryParams.project_id" 
+            :isEditMode="isEditMode" 
+            @close="handleCloseForm" 
+        />
       </div>
     </div>
 
-    <div v-if="openAssignForm" class="fixed inset-0 z-50 px-2 flex items-center justify-center bg-black bg-opacity-50">
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg max-w-lg w-full p-6 relative animate-in fade-in zoom-in duration-200">
+    <div v-if="openAssignForm" class="fixed inset-0 z-[100] px-4 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-lg w-full p-6 relative animate-in fade-in zoom-in duration-200">
         <TaskAssignForm :task="selectedTask" :pl="users" :co="communicator" :pg="programmer" :ds="designer" @close="handleCloseForm" />
       </div>
     </div>
 
-    <div class="w-full py-8 px-3">
+    <div class="w-full py-8">
       <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-8">
         <div
           class="custom-scrollbar bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm border border-slate-200 dark:border-slate-800 shadow-lg dark:shadow-sm shadow-indigo-500 dark:shadow-indigo-800 rounded-lg transition-all duration-700 ease-out delay-100"
@@ -185,7 +193,7 @@ const handleSearch = () => {
                 
                 <td v-if="['other', 'pm', 'co'].includes(role)" class="p-4 align-middle">
                   <div class="flex justify-center">
-                    <SwitchInput v-model="task.isActive" @update:modelValue="handleUpdateIsActive(task.id)" />
+                    <SwitchInput v-slot:default v-model="task.isActive" @update:modelValue="handleUpdateIsActive(task.id)" />
                   </div>
                 </td>
 
@@ -224,32 +232,24 @@ const handleSearch = () => {
 </template>
 
 <style scoped>
-/* Scrollbar permanen agar user tahu area bisa digeser */
 .custom-scrollbar {
   overflow-x: auto;
-  scrollbar-gutter: stable; /* Menjaga ruang agar tidak melompat */
+  scrollbar-gutter: stable;
   scrollbar-width: thin;
   scrollbar-color: #6366f1 #f1f5f9;
 }
-
 .custom-scrollbar::-webkit-scrollbar {
-  height: 10px; /* Lebih tebal agar terlihat sebagai indikator */
+  height: 10px;
   display: block;
 }
-
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: #f1f5f9; /* Slate-100 */
+  background: #f1f5f9;
   border-radius: 10px;
 }
-
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: #818cf8; /* Indigo-400 */
+  background-color: #818cf8;
   border-radius: 10px;
   border: 2px solid #f1f5f9;
   background-clip: content-box;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background-color: #6366f1; /* Indigo-500 */
 }
 </style>

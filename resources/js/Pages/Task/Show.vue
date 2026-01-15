@@ -131,7 +131,6 @@ const logtimeSegments = computed(() => {
   const grouped = {};
   let totalCalc = 0;
 
-  // Group by user_id
   logs.forEach(log => {
     const uid = log.user_id;
     const time = Number(log.time_used);
@@ -146,10 +145,7 @@ const logtimeSegments = computed(() => {
     totalCalc += time;
   });
 
-  // Palette warna Tailwind
   const colors = ['#3B82F6', '#EF4444', '#10B981', '#F59E0B', '#8B5CF6', '#EC4899', '#06B6D4', '#6366F1'];
-
-  // Hitung circumference lingkaran r=40
   const circumference = 2 * Math.PI * 40; 
   let currentOffset = 0;
 
@@ -209,36 +205,38 @@ const visibleButtons = computed(() => {
   <Head title="Task" />
   <AuthenticatedLayout>
     <template #header>
-      <div
-        class="flex justify-between px-5 py-3 items-center text-gray-800 dark:text-gray-200 bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm border border-slate-200 dark:border-slate-800 shadow-lg dark:shadow-sm shadow-indigo-500 dark:shadow-indigo-800 rounded-lg transition-all duration-700 ease-out"
-        :class="{ 'opacity-100': isLoaded, 'translate-y-8 opacity-0': !isLoaded }"
-      >
-        <div class="flex items-center gap-4 lg:col-span-2">
-          <button 
-            @click="handleBack"
-            class="p-[8px] border rounded-md border-gray-400 dark:border-gray-600 hover:bg-indigo-50 dark:hover:bg-indigo-950 transition-colors text-gray-600 dark:text-gray-300"
-            title="Back to Task List"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
-            </svg>
-          </button>
-           
-          <h2 class="font-semibold text-xl leading-tight">
-            {{ task.issue }}
-          </h2>
-        </div>
+      <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-8">
+        <div
+          class="flex justify-between px-5 py-3 items-center text-gray-800 dark:text-gray-200 bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm border border-slate-200 dark:border-slate-800 shadow-lg dark:shadow-sm shadow-indigo-500 dark:shadow-indigo-800 rounded-lg transition-all duration-700 ease-out"
+          :class="{ 'opacity-100': isLoaded, 'translate-y-8 opacity-0': !isLoaded }"
+        >
+          <div class="flex items-center gap-4 lg:col-span-2">
+            <button 
+              @click="handleBack"
+              class="p-[8px] border rounded-md border-gray-400 dark:border-gray-600 hover:bg-indigo-50 dark:hover:bg-indigo-950 transition-colors text-gray-600 dark:text-gray-300"
+              title="Back to Task List"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+              </svg>
+            </button>
+              
+            <h2 class="font-semibold text-xl leading-tight">
+              {{ task.issue }}
+            </h2>
+          </div>
 
-        <div class="lg:col-span-4 flex justify-end gap-2">
-          <button
-            v-for="button in visibleButtons"
-            :key="button.action"
-            @click="button.handler"
-            class="flex gap-2 p-[8px] border rounded-md border-gray-400 dark:border-gray-600 hover:bg-indigo-50 dark:hover:bg-indigo-950 transition-colors"
-          >
-            <component :is="button.icon" />
-            <span class="hidden sm:inline">{{ button.text }}</span>
-          </button>
+          <div class="lg:col-span-4 flex justify-end gap-2">
+            <button
+              v-for="button in visibleButtons"
+              :key="button.action"
+              @click="button.handler"
+              class="flex gap-2 p-[8px] border rounded-md border-gray-400 dark:border-gray-600 hover:bg-indigo-50 dark:hover:bg-indigo-950 transition-colors"
+            >
+              <component :is="button.icon" />
+              <span class="hidden sm:inline">{{ button.text }}</span>
+            </button>
+          </div>
         </div>
       </div>
     </template>
@@ -264,38 +262,43 @@ const visibleButtons = computed(() => {
       </TransitionGroup>
     </div>
 
-    <div v-if="openCreateEditForm" class="fixed inset-0 z-50 px-2 flex items-center justify-center bg-black bg-opacity-50">
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg max-w-lg w-full p-6 relative animate-in fade-in zoom-in duration-200">
-        <TaskCreateEditForm :task="selectedTask" :projects="projects" :isEditMode="isEditMode" @close="handleCloseForm" />
+    <div v-if="openCreateEditForm" class="fixed inset-0 z-[100] px-4 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-5xl w-full p-8 relative animate-in fade-in zoom-in duration-300 overflow-y-auto max-h-[90vh]">
+        <TaskCreateEditForm 
+          :task="selectedTask" 
+          :projects="projects" 
+          :isEditMode="isEditMode" 
+          @close="handleCloseForm" 
+        />
       </div>
     </div>
 
-    <div v-if="openAssignForm" class="fixed inset-0 z-50 px-2 flex items-center justify-center bg-black bg-opacity-50">
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg max-w-lg w-full p-6 relative animate-in fade-in zoom-in duration-200">
+    <div v-if="openAssignForm" class="fixed inset-0 z-[100] px-4 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-lg w-full p-6 relative animate-in fade-in zoom-in duration-200">
         <TaskAssignForm :task="selectedTask" :pl="users" :co="communicator" :pg="programmer" :ds="designer" @close="handleCloseForm" />
       </div>
     </div>
 
-    <div v-if="openPrForm" class="fixed inset-0 z-50 px-2 flex items-center justify-center bg-black bg-opacity-50">
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg max-w-lg w-full p-6 relative animate-in fade-in zoom-in duration-200">
+    <div v-if="openPrForm" class="fixed inset-0 z-[100] px-4 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-lg w-full p-6 relative animate-in fade-in zoom-in duration-200">
         <TaskPrForm :task="selectedTask" :pg="programmer" @close="handleCloseForm" />
       </div>
     </div>
 
-    <div v-if="openCommentForm" class="fixed inset-0 z-50 px-2 flex items-center justify-center bg-black bg-opacity-50">
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg max-w-lg w-full p-6 relative animate-in fade-in zoom-in duration-200">
+    <div v-if="openCommentForm" class="fixed inset-0 z-[100] px-4 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-lg w-full p-6 relative animate-in fade-in zoom-in duration-200">
         <TaskCommentForm :task="selectedTask" @close="handleCloseForm" />
       </div>
     </div>
 
-    <div v-if="openReplyForm" class="fixed inset-0 z-50 px-2 flex items-center justify-center bg-black bg-opacity-50">
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg max-w-lg w-full p-6 relative animate-in fade-in zoom-in duration-200">
+    <div v-if="openReplyForm" class="fixed inset-0 z-[100] px-4 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-lg w-full p-6 relative animate-in fade-in zoom-in duration-200">
         <TaskReplyForm :comment="selectedComment" @close="handleCloseForm" />
       </div>
     </div>
 
     <div
-      class="py-8 px-3 transition-all duration-1000 ease-out delay-100"
+      class="py-8 transition-all duration-1000 ease-out delay-100"
       :class="{ 'translate-y-0 opacity-100': isLoaded, 'translate-y-12 opacity-0': !isLoaded }"
     >
       <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-8">
@@ -339,7 +342,7 @@ const visibleButtons = computed(() => {
             </div>
             <div class="mb-4 flex flex-col">
               <label class="text-sm font-medium text-gray-600 dark:text-gray-400">Related Links</label>
-              <div v-if="task.related_links?.length > 0" v-for="link in task.related_links">
+              <div v-if="task.related_links?.length > 0" v-for="link in task.related_links" :key="link">
                 <a :href="'//' + link" target="_blank" class="text-indigo-600 dark:text-indigo-400 hover:underline block">{{ link }}</a>
               </div>
               <div v-else class="text-gray-600 dark:text-gray-400" >-</div>
@@ -347,7 +350,6 @@ const visibleButtons = computed(() => {
             
             <div class="mb-4">
               <label class="text-sm font-medium text-gray-600 dark:text-gray-400">Time Used</label>
-              
               <div v-if="logtimeSegments.length > 0" class="flex flex-col sm:flex-row items-center gap-6 mt-2 bg-indigo-50 dark:bg-slate-800/50 p-4 rounded-lg border border-indigo-100 dark:border-slate-700">
                 <div class="relative w-32 h-32 shrink-0">
                    <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
@@ -369,7 +371,6 @@ const visibleButtons = computed(() => {
                       <span class="text-[0.6rem] text-gray-500 uppercase">Hours</span>
                    </div>
                 </div>
-
                 <div class="flex-1 w-full min-w-0">
                   <div class="flex flex-col gap-2">
                     <div v-for="seg in logtimeSegments" :key="seg.id" class="flex items-center justify-between text-sm">
@@ -385,30 +386,29 @@ const visibleButtons = computed(() => {
                   </div>
                 </div>
               </div>
-
               <p v-else class="text-gray-800 dark:text-gray-200 mt-1 font-mono">
                 {{ totalTimeUsed ? `${totalTimeUsed} hours` : '0 hours' }}
               </p>
             </div>
-            </div>
+          </div>
 
           <div class="p-6">
             <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Pull Request</h3>
-            <div v-for="pr in prs" class="border border-indigo-400 dark:border-indigo-800 rounded-md pt-4 px-4 mb-3" :class="{ 'pb-4': !pr.replies?.length, 'pb-1': pr.replies?.length }">
+            <div v-for="pr in prs" :key="pr.id" class="border border-indigo-400 dark:border-indigo-800 rounded-md pt-4 px-4 mb-3" :class="{ 'pb-4': !pr.replies?.length, 'pb-1': pr.replies?.length }">
               <div class="flex justify-between items-end">
                 <div>
                   <label class="text-sm font-medium text-gray-600 dark:text-gray-400">From: {{ getNameUser(pr.from) }}</label>
-                  <div v-for="link in pr.pr_links">
+                  <div v-for="link in pr.pr_links" :key="link">
                     <a :href="'//' + link" target="_blank" class="text-indigo-600 dark:text-indigo-400 hover:underline block">{{ link }}</a>
                   </div>
                   <p class="text-gray-800 dark:text-gray-200 whitespace-pre-wrap">{{ pr.comment }}</p>
                 </div>
                 <a @click="handleReply(pr.id)" class="cursor-pointer pe-3 text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:underline">reply</a>
               </div>
-              <div v-for="r in pr.replies" class="mt-5 ms-10">
+              <div v-for="r in pr.replies" :key="r.id" class="mt-5 ms-10">
                 <div class="border border-indigo-400 dark:border-indigo-800 rounded-md p-4 mb-2">
                   <label class="text-sm font-medium text-gray-600 dark:text-gray-400">From: {{ getNameUser(r.from) }}</label>
-                  <div v-for="link in r.pr_links">
+                  <div v-for="link in r.pr_links" :key="link">
                     <a :href="'//' + link" target="_blank" class="text-indigo-600 dark:text-indigo-400 hover:underline block">{{ link }}</a>
                   </div>
                   <p class="text-gray-800 dark:text-gray-200 whitespace-pre-wrap">{{ r.comment }}</p>
