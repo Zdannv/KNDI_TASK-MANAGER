@@ -67,11 +67,12 @@ class LogtimeController extends Controller
             'time_used' => 'required|numeric'
         ]);
 
+        $timeUsed = $request->time_used < 0 ? 1 : $request->time_used;
         $task = Task::where('id', $request->task_id)->first();
         $logtime = $task->logtimes()->create([
             'user_id' => Auth::id(),
             'date' => Carbon::parse($request->date),
-            'time_used' => $request->time_used
+            'time_used' => $timeUsed
         ]);
 
         Auth::user()->logs()->create([
