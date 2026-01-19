@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\User;
 use App\Models\Client;
 use App\Models\Task;
+use App\Models\Attendance; // Tambahkan Import ini
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Seeder;
 use Carbon\Carbon;
@@ -231,6 +232,43 @@ Fusce convallis, mauris imperdiet gravida bibendum, nisl lorem eleifend nunc, qu
             'task_id' => $task2->id,
             'date' => Carbon::yesterday(),
             'time_used' => 3
+        ]);
+
+        // --- ATTENDANCE SEEDER ---
+        
+        // Farkhan: Absen Hari ini (pukul 08:00)
+        Attendance::create([
+            'user_id' => $farkhan->id,
+            'check_in_time' => Carbon::today()->setHour(8)->setMinute(0)->setSecond(0),
+            'snapshot_path' => null // Bisa diisi path string dummy jika mau
+        ]);
+
+        // Farkhan: Absen Kemarin (pukul 08:15)
+        Attendance::create([
+            'user_id' => $farkhan->id,
+            'check_in_time' => Carbon::yesterday()->setHour(8)->setMinute(15)->setSecond(0),
+            'snapshot_path' => null
+        ]);
+
+        // Leo: Absen Hari ini (pukul 09:00)
+        Attendance::create([
+            'user_id' => $leo->id,
+            'check_in_time' => Carbon::today()->setHour(9)->setMinute(0)->setSecond(0),
+            'snapshot_path' => null
+        ]);
+
+        // Wawan: Absen Hari ini (pukul 08:45)
+        Attendance::create([
+            'user_id' => $wawan->id,
+            'check_in_time' => Carbon::today()->setHour(8)->setMinute(45)->setSecond(0),
+            'snapshot_path' => null
+        ]);
+
+        // Trisno: Absen Kemarin saja (pukul 08:30)
+        Attendance::create([
+            'user_id' => $trisno->id,
+            'check_in_time' => Carbon::yesterday()->setHour(8)->setMinute(30)->setSecond(0),
+            'snapshot_path' => null
         ]);
     }
 }

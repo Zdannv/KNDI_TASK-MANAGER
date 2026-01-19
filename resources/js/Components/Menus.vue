@@ -10,6 +10,8 @@ import Clock from "@/Components/Icon/Clock.vue";
 import Book from "@/Components/Icon/Book.vue";
 import Warning from "./Icon/Warning.vue";
 import Cloud from "./Icon/Cloud.vue";
+// Import Icon UserPlus untuk menu Attendance
+import UserPlus from "@/Components/Icon/UserPlus.vue";
 
 defineProps({
     modelValue: Boolean,
@@ -20,7 +22,6 @@ const role = usePage().props.auth.user.role
 
 <template>
   <div class="space-y-4">
-    <!-- Dashboard -->
     <div v-if="['other', 'pm'].includes(role)" class="relative group">
       <NavLink :href="route('dashboard')" :active="route().current('dashboard')" class="flex items-center">
         <div :class="{'me-2': modelValue}" class="p-[5px] border rounded-md border-gray-400 dark:border-gray-600 hover:bg-indigo-100 dark:hover:bg-gray-900">
@@ -28,13 +29,11 @@ const role = usePage().props.auth.user.role
         </div>
         <span :class="{'hidden': !modelValue, 'inline-flex': modelValue}">Dashboard</span>
       </NavLink>
-      <!-- Tooltip -->
       <span v-if="!modelValue" class="absolute left-full ml-2 top-1/2 -translate-y-1/2 bg-indigo-100 dark:bg-gray-800 font-bold text-black dark:text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50">
         Dashboard
       </span>
     </div>
 
-    <!-- Users -->
     <div v-if="['other', 'pm'].includes(role)" class="relative group">
       <NavLink :href="route('user.list')" :active="route().current('user.list')" class="flex items-center">
         <div :class="{'me-2': modelValue}" class="p-[5px] border rounded-md border-gray-400 dark:border-gray-600 hover:bg-indigo-100 dark:hover:bg-gray-900">
@@ -47,7 +46,18 @@ const role = usePage().props.auth.user.role
       </span>
     </div>
 
-    <!-- Project Owner -->
+    <div v-if="role === 'other'" class="relative group">
+      <NavLink :href="route('attendance.list')" :active="route().current('attendance.list')" class="flex items-center">
+        <div :class="{'me-2': modelValue}" class="p-[5px] border rounded-md border-gray-400 dark:border-gray-600 hover:bg-indigo-100 dark:hover:bg-gray-900">
+          <UserPlus />
+        </div>
+        <span :class="{'hidden': !modelValue, 'inline-flex': modelValue}">Attendance</span>
+      </NavLink>
+      <span v-if="!modelValue" class="absolute left-full ml-2 top-1/2 -translate-y-1/2 bg-indigo-100 dark:bg-gray-800 font-bold text-black dark:text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50">
+        Attendance
+      </span>
+    </div>
+
     <div v-if="['other', 'pm', 'co'].includes(role)" class="relative group">
       <NavLink :href="route('client.list')" :active="route().current('client.list')" class="flex items-center">
         <div :class="{'me-2': modelValue}" class="p-[5px] border rounded-md border-gray-400 dark:border-gray-600 hover:bg-indigo-100 dark:hover:bg-gray-900">
@@ -60,7 +70,6 @@ const role = usePage().props.auth.user.role
       </span>
     </div>
 
-    <!-- Projects -->
     <div class="relative group">
       <NavLink :href="route('project.list')" :active="route().current('project.list')" class="flex items-center">
         <div :class="{'me-2': modelValue}" class="p-[5px] border rounded-md border-gray-400 dark:border-gray-600 hover:bg-indigo-100 dark:hover:bg-gray-900">
@@ -73,7 +82,6 @@ const role = usePage().props.auth.user.role
       </span>
     </div>
 
-    <!-- Tasks -->
     <div class="relative group">
       <NavLink :href="route('task.list')" :active="route().current('task.list') || route().current('task.show')" class="flex items-center">
         <div :class="{'me-2': modelValue}" class="p-[5px] border rounded-md border-gray-400 dark:border-gray-600 hover:bg-indigo-100 dark:hover:bg-gray-900">
@@ -86,7 +94,6 @@ const role = usePage().props.auth.user.role
       </span>
     </div>
 
-    <!-- Logtime -->
     <div class="relative group">
       <NavLink :href="route('logtime.list')" :active="route().current('logtime.list')" class="flex items-center">
         <div :class="{'me-2': modelValue}" class="p-[5px] border rounded-md border-gray-400 dark:border-gray-600 hover:bg-indigo-100 dark:hover:bg-gray-900">
@@ -99,7 +106,6 @@ const role = usePage().props.auth.user.role
       </span>
     </div>
 
-    <!-- Program Log -->
     <div v-if="role == 'pm'" class="relative group">
       <NavLink :href="route('log.list')" :active="route().current('log.list')" class="flex items-center">
         <div :class="{'me-2': modelValue}" class="p-[5px] border rounded-md border-gray-400 dark:border-gray-600 hover:bg-indigo-100 dark:hover:bg-gray-900">
@@ -112,7 +118,6 @@ const role = usePage().props.auth.user.role
       </span>
     </div>
 
-    <!-- Skill -->
     <div class="relative group">
       <NavLink :href="route('skill.list')" :active="route().current('skill.list')" class="flex items-center">
         <div :class="{'me-2': modelValue}" class="p-[5px] border rounded-md border-gray-400 dark:border-gray-600 hover:bg-indigo-100 dark:hover:bg-gray-900">
@@ -125,7 +130,6 @@ const role = usePage().props.auth.user.role
       </span>
     </div>
 
-    <!-- Import -->
     <div v-if="['other', 'co'].includes(role)" class="relative group">
       <NavLink :href="route('import.index')" :active="route().current('import.index')" class="flex items-center">
         <div :class="{'me-2': modelValue}" class="p-[5px] border rounded-md border-gray-400 dark:border-gray-600 hover:bg-indigo-100 dark:hover:bg-gray-900">

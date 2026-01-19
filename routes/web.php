@@ -10,6 +10,8 @@ use App\Http\Controllers\TaskController;
 use App\Http\Controllers\LogtimeController;
 use App\Http\Controllers\ImportController;
 use App\Http\Controllers\LogController;
+// Tambahkan controller Attendance di sini
+use App\Http\Controllers\AttendanceController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -67,6 +69,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/import', [ImportController::class, 'index'])->name('import.index')->middleware('role:other,co');
     Route::post('/import', [ImportController::class, 'store'])->name('import.store')->middleware('role:other,co');
     Route::get('/import/template', [ImportController::class, 'template'])->name('import.template')->middleware('role:other,co');
+
+    // --- FITUR ABSENSI (ATTENDANCE) ---
+    Route::get('/attendance-list', [AttendanceController::class, 'index'])
+        ->name('attendance.list')
+        ->middleware('role:other');
+
+    Route::get('/attendance/export', [AttendanceController::class, 'export'])
+        ->name('attendance.export')
+        ->middleware('role:other');
 });
 
 Route::middleware('auth')->group(function () {
