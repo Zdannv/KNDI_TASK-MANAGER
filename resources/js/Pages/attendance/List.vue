@@ -19,8 +19,6 @@ onMounted(() => {
 });
 
 const page = usePage();
-// Role check tidak terlalu ketat di sini karena sudah di-filter middleware, 
-// tapi tetap bagus untuk conditional rendering
 const role = computed(() => page.props.auth.user.role);
 
 const queryParams = computed(() => {
@@ -28,7 +26,7 @@ const queryParams = computed(() => {
   return Object.fromEntries(url.searchParams);
 });
 
-const options = ref(true); // Default open karena ini halaman admin
+const options = ref(true); 
 const id = ref(Number(queryParams.value.user_id) || null);
 
 const dates = ref(
@@ -49,11 +47,10 @@ const props = defineProps({
   users: Array
 });
 
-// Grouping by Date (sama seperti Logtime)
+// Grouping by Date
 const groupedAttendances = computed(() => {
   const grouped = {};
   props.attendances.forEach(item => {
-    // Format check_in_time menjadi tanggal saja untuk grouping
     const date = moment(item.check_in_time).format('DD MMMM YYYY');
     if (!grouped[date]) {
       grouped[date] = { items: [], count: 0 };
@@ -72,7 +69,7 @@ const formatDate = (date) => {
   return moment(date).format('DD MMMM YYYY');
 };
 
-// Logic Filter (Sama persis dengan Logtime)
+// Logic Filter
 watch(id, (newValue) => {
   const params = { user_id: newValue };
   if (dates.value.length === 2) {
@@ -100,14 +97,12 @@ const exportAttendance = (summary) => {
     params.to = moment(dates.value[1]).format('DD-MM-YYYY');
   }
   params.summary = summary;
-  // Arahkan ke route export attendance
   window.open(route('attendance.export', params), '_blank');
 };
 
 const resetFilter = () => {
     router.get(route('attendance.list'));
 }
-
 </script>
 
 <template>
@@ -191,7 +186,7 @@ const resetFilter = () => {
                 <th class="p-4"><p class="text-sm opacity-70">Date</p></th>
                 <th class="p-4"><p class="text-sm opacity-70">Employee Name</p></th>
                 <th class="p-4"><p class="text-sm opacity-70">Check-in Time</p></th>
-                <th class="p-4"><p class="text-sm opacity-70">Snapshot</p></th>
+                <th class="p-4"><p class="text-sm opacity-70">Check-out Time</p></th>
               </tr>
             </thead>
             <tbody>
@@ -208,6 +203,7 @@ const resetFilter = () => {
                      <span class="font-bold text-indigo-600 dark:text-indigo-400">{{ item.user.name }}</span>
                      <div class="text-xs text-gray-500">{{ item.user.email }}</div>
                   </td>
+                  
                   <td class="p-4">
                     <div class="flex items-center gap-2">
                         <span class="px-2 py-1 rounded bg-green-100 text-green-800 text-xs font-bold">
@@ -215,11 +211,14 @@ const resetFilter = () => {
                         </span>
                     </div>
                   </td>
+
                   <td class="p-4">
-                    <div v-if="item.snapshot_path" class="w-12 h-12 rounded overflow-hidden border border-gray-300">
-                        <img :src="`/storage/${item.snapshot_path}`" alt="Face" class="object-cover w-full h-full hover:scale-150 transition-transform" />
+                    <div v-if="item.check_out_time" class="flex items-center gap-2">
+                        <span class="px-2 py-1 rounded bg-red-100 text-red-800 text-xs font-bold">
+                            {{ formatTime(item.check_out_time) }}
+                        </span>
                     </div>
-                    <span v-else class="text-xs text-gray-400">No Image</span>
+                    <span v-else class="text-xs text-gray-400 italic">Not checked out</span>
                   </td>
                 </tr>
               </template>

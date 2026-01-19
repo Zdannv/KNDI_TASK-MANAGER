@@ -145,7 +145,7 @@ onBeforeMount(() => {
 .video-feed {
   width: 100%;
   display: block;
-  transform: scaleX(-1); /* Mirror view untuk user experience */
+  transform: scaleX(-1);
 }
 
 /* UI Overlay Box */
