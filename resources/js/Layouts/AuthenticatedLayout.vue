@@ -6,17 +6,22 @@ import Hamburger from '@/Components/Icon/Hamburger.vue';
 import Logout from '@/Components/Icon/Logout.vue';
 import Toast from '@/Components/Toast.vue';
 
-// Props asli dijaga
 defineProps({
     title: String,
 });
 
-// Logika localStorage tetap ada agar posisi sidebar tidak reset saat refresh
-const openMenus = ref(localStorage.getItem('sidebarOpen') === 'true');
+// --- PERBAIKAN LOGIKA SIDEBAR ---
+// Ambil state dari localStorage
+const sidebarState = localStorage.getItem('sidebarOpen');
+
+// Logika: Jika sidebarState null (user baru/belum ada cache), set TRUE (Terbuka).
+// Jika ada isinya ('true'/'false'), ikuti isinya.
+const openMenus = ref(sidebarState === null ? true : sidebarState === 'true');
 
 watch(openMenus, (newValue) => {
   localStorage.setItem('sidebarOpen', newValue);
 });
+// -------------------------------
 
 const logout = () => {
     router.post(route('logout'));
@@ -54,10 +59,19 @@ const logout = () => {
         >
             <div class="flex flex-col justify-between h-full">
                 <div class="flex flex-col items-center">
-                    <div :class="{'justify-end': openMenus, 'justify-center': !openMenus}" class="w-full py-4 px-3 flex transition-all">
+                    <div 
+                        :class="{'justify-between': openMenus, 'justify-center': !openMenus}" 
+                        class="w-full py-4 px-3 flex items-center transition-all"
+                    >
+                        <span 
+                            v-if="openMenus" 
+                            class="text-gray-700 dark:text-gray-200 font-bold ml-2 text-lg tracking-wide opacity-100 transition-opacity duration-300"
+                        >
+                            Menu
+                        </span>
+
                         <Hamburger v-model="openMenus" />
                     </div>
-                    
                     <div class="space-y-6 pt-4 w-full flex flex-col items-center">
                         <Menus v-model="openMenus" />
                     </div>
