@@ -9,17 +9,16 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    // database/migrations/xxxx_xx_xx_create_attendances_table.php
-public function up(): void
-{
-    Schema::create('attendances', function (Blueprint $table) {
-        $table->id();
-        $table->foreignId('user_id')->constrained()->onDelete('cascade');
-        $table->dateTime('check_in_time');
-        $table->string('snapshot_path')->nullable(); // Untuk menyimpan path foto wajah
-        $table->timestamps();
-    });
-}
+    public function up(): void
+    {
+        Schema::create('attendances', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->dateTime('check_in_time');
+            $table->dateTime('check_out_time')->nullable(); 
+            $table->timestamps();
+        });
+    }
 
     /**
      * Reverse the migrations.

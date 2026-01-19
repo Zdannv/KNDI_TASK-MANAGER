@@ -7,8 +7,6 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Carbon\Carbon;
-// use App\Exports\AttendanceExport; // Jika nanti ingin implementasi export real
-// use Maatwebsite\Excel\Facades\Excel;
 
 class AttendanceController extends Controller
 {
@@ -39,8 +37,6 @@ class AttendanceController extends Controller
 
     public function export(Request $request)
     {
-        // Logika export bisa disamakan dengan LogtimeExport
-        // return Excel::download(new AttendanceExport($request->query()), 'attendance.xlsx');
         return back()->with('success', 'Fitur export sedang disiapkan.');
     }
 }
