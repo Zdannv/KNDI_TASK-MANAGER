@@ -56,7 +56,7 @@ class TaskController extends Controller
 
         $tasks = $tasksQuery->orderByRaw('ISNULL(due_date), due_date ASC')->get();
 
-        $projects = Project::where('isDeleted', false)->get();
+        $projects = Project::with('client')->where('isDeleted', false)->get();
         $users = User::get();
         $communicator = User::where('role', 'co')->get();
         $programmer = User::where('role', 'pg')->orWhere('role', 'pm')->get();
@@ -157,8 +157,7 @@ class TaskController extends Controller
         ]);
         
         $task = Task::findOrFail($id);
-        
-        // Simpan data lama untuk pengecekan (opsional, tapi bagus untuk validasi)
+
         $task->update([
             'pl' => $request->pl,
             'communicator' => !empty($request->communicator) ? $request->communicator : null,
@@ -381,18 +380,16 @@ class TaskController extends Controller
      */
     public function show($id) 
     {
-        // PERBAIKAN DI SINI: Tambahkan with('logtimes','reviewers.user','pullRequests.replies')
         $task = Task::with(['logtimes','reviewers.user','pullRequests.replies'])->findOrFail($id);
 
         $users = User::get();
         $project = Project::where('id', $task->project_id)->with('client')->first();
-        $projects = Project::get();
+        $projects = Project::with('client')->get();
 
         $communicator = User::where('role', 'co')->get();
         $programmer = User::where('role', 'pg')->orWhere('role', 'pm')->get();
         $designer = User::where('role', 'ds')->get();
 
-        // PERBAIKAN: Hitung total langsung dari relasi (lebih efisien)
         $totalTimeUsed = $task->logtimes->sum('time_used');
 
         $prs = PullRequest::with('replies')->where('task_id', $id)->get();

@@ -1,5 +1,6 @@
 <script setup>
 import { useForm } from '@inertiajs/vue3';
+import { computed } from 'vue'; // Tambahkan import computed
 import Close from '../Icon/Close.vue';
 import Plus from '../Icon/Plus.vue';
 import TextInput from '@/Components/TextInput.vue';
@@ -12,7 +13,7 @@ const emit = defineEmits(['close']);
 
 const props = defineProps({
     task: {},
-    projects: {},
+    projects: {}, // Pastikan dari controller sudah 'with("client")'
     users: {}, 
     projectId: '',
     isEditMode: Boolean,
@@ -26,6 +27,15 @@ const formatDate = (date) => {
     if (!date) return '-';
     return moment(date).format('DD MMMM YYYY');
 };
+
+// Computed Property untuk mengambil Nama Client secara dinamis
+const displayedClientName = computed(() => {
+    // Cari project yang sedang dipilih di dropdown
+    const selectedProject = props.projects?.find(p => p.id === form.project_id);
+    
+    // Ambil nama clientnya, atau return '-' jika tidak ketemu
+    return selectedProject?.client?.name || '-';
+});
 
 const initialLinks = props.isEditMode && Array.isArray(props.task?.related_links)
     ? props.task.related_links
@@ -101,8 +111,11 @@ const types = [
                         <div>
                             <div class="mb-4">
                                 <InputLabel value="Client" class="text-sm font-medium text-gray-600 dark:text-gray-400" />
-                                <p class="text-gray-400 dark:text-gray-500 font-medium py-1 italic select-none">{{ task?.project?.client?.name || '-' }}</p>
+                                <p class="text-gray-400 dark:text-gray-500 font-medium py-1 italic select-none">
+                                    {{ displayedClientName }}
+                                </p>
                             </div>
+                            
                             <div class="mb-4">
                                 <InputLabel value="Project" class="text-sm font-medium text-gray-600 dark:text-gray-400" />
                                 <SelectInput v-model="form.project_id" :options="projects" label="name" valueKey="id" class="mt-1 block w-full bg-slate-50/50 dark:bg-slate-900/50 border-gray-300 dark:border-gray-700 rounded-md text-sm font-medium" />
