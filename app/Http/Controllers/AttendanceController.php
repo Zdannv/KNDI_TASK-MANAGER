@@ -7,7 +7,6 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Carbon\Carbon;
-// Tambahkan Import Ini
 use App\Exports\AttendanceMultiSheetExport;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -19,14 +18,23 @@ class AttendanceController extends Controller
         
         $attendanceQuery = Attendance::with('user')->orderBy('check_in_time', 'desc');
 
+        // Filter User
         if (isset($query['user_id'])) {
             $attendanceQuery->where('user_id', $query['user_id']);
         }
 
-        if (isset($query['from']) && isset($query['to'])) {
-            $from = Carbon::parse($query['from'])->startOfDay();
-            $to = Carbon::parse($query['to'])->endOfDay();
-            $attendanceQuery->whereBetween('check_in_time', [$from, $to]);
+        // Filter Date Range (DIPERBAIKI)
+        if (!empty($query['from']) && !empty($query['to'])) {
+            try {
+                // Kita paksa format d-m-Y sesuai yang dikirim dari Frontend (Vue)
+                // try-catch akan menangkap error jika tanggal yang dikirim "Invalid date"
+                $from = Carbon::createFromFormat('d-m-Y', $query['from'])->startOfDay();
+                $to = Carbon::createFromFormat('d-m-Y', $query['to'])->endOfDay();
+                
+                $attendanceQuery->whereBetween('check_in_time', [$from, $to]);
+            } catch (\Exception $e) {
+                // Jika format tanggal salah, filter diabaikan (tidak error 500)
+            }
         }
 
         $attendances = $attendanceQuery->get();
@@ -35,7 +43,6 @@ class AttendanceController extends Controller
         return Inertia::render('Attendance/List', compact('attendances', 'users'));
     }
 
-    // Update Method Export
     public function export(Request $request)
     {
         $query = $request->query();
