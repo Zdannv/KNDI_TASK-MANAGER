@@ -56,7 +56,9 @@ class TaskController extends Controller
 
         $tasks = $tasksQuery->orderByRaw('ISNULL(due_date), due_date ASC')->get();
 
-        $projects = Project::where('isDeleted', false)->get();
+        // PERBAIKAN UTAMA DI SINI: Tambahkan with('client')
+        $projects = Project::with('client')->where('isDeleted', false)->get();
+        
         $users = User::get();
         $communicator = User::where('role', 'co')->get();
         $programmer = User::where('role', 'pg')->orWhere('role', 'pm')->get();
@@ -67,8 +69,6 @@ class TaskController extends Controller
 
     /**
      * Handle an incoming registration request.
-     *
-     * @throws \Illuminate\Validation\ValidationException
      */
     public function store(Request $request): RedirectResponse
     {
@@ -158,7 +158,6 @@ class TaskController extends Controller
         
         $task = Task::findOrFail($id);
         
-        // Simpan data lama untuk pengecekan (opsional, tapi bagus untuk validasi)
         $task->update([
             'pl' => $request->pl,
             'communicator' => !empty($request->communicator) ? $request->communicator : null,
@@ -263,7 +262,6 @@ class TaskController extends Controller
             }
         }
 
-        // keep backward compatibility with JSON reviewer column
         $task->update([
             'reviewer' => !empty($newReviewerIds) ? $newReviewerIds : null,
             'isAssign' => true,
@@ -381,18 +379,19 @@ class TaskController extends Controller
      */
     public function show($id) 
     {
-        // PERBAIKAN DI SINI: Tambahkan with('logtimes','reviewers.user','pullRequests.replies')
         $task = Task::with(['logtimes','reviewers.user','pullRequests.replies'])->findOrFail($id);
 
         $users = User::get();
+        // $project (singular) untuk keperluan lain di view
         $project = Project::where('id', $task->project_id)->with('client')->first();
-        $projects = Project::get();
+
+        // PERBAIKAN DI SINI JUGA: Tambahkan with('client') agar konsisten
+        $projects = Project::with('client')->get();
 
         $communicator = User::where('role', 'co')->get();
         $programmer = User::where('role', 'pg')->orWhere('role', 'pm')->get();
         $designer = User::where('role', 'ds')->get();
 
-        // PERBAIKAN: Hitung total langsung dari relasi (lebih efisien)
         $totalTimeUsed = $task->logtimes->sum('time_used');
 
         $prs = PullRequest::with('replies')->where('task_id', $id)->get();
