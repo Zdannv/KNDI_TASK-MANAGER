@@ -77,6 +77,11 @@ const handleReply = (id) => {
   }
 };
 
+const markReviewDone = (taskId, reviewerId) => {
+  if (!confirm('Mark review as completed?')) return;
+  router.put(route('task.review.complete', { id: taskId, reviewerId }));
+};
+
 const handleClose = () => {
   if (confirm('Are you sure you want to close this task?')) {
     router.put(route('task.close', props.task.id));

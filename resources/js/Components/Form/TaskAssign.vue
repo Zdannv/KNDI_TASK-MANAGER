@@ -92,7 +92,6 @@ const cancel = () => {
     <div class="space-y-6">
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Assign Task</h3>
         <form @submit.prevent="submitForm" class="space-y-4">
-            <!-- Leader Field -->
             <div>
                 <InputLabel for="type" value="Project Leader" />
                 <SelectInput
@@ -107,7 +106,6 @@ const cancel = () => {
                 <InputError class="mt-2" :message="form.errors.pl" />
             </div>
 
-            <!-- Communicators Field -->
             <div>
                 <InputLabel value="Communicators" />
                 <div v-for="(link, index) in form.communicator" :key="form.communicator[index]" class="mt-1 flex items-center gap-2">
@@ -139,7 +137,6 @@ const cancel = () => {
                 </button>
             </div>
 
-            <!-- Programmers Field -->
             <div>
                 <InputLabel value="Programmers" />
                 <div v-for="(link, index) in form.programmer" :key="form.programmer[index]" class="mt-1 flex items-center gap-2">
@@ -171,7 +168,6 @@ const cancel = () => {
                 </button>
             </div>
 
-            <!-- Designer Field -->
             <div>
                 <InputLabel value="Designer" />
                 <div v-for="(link, index) in form.designer" :key="form.designer[index]" class="mt-1 flex items-center gap-2">
@@ -203,20 +199,23 @@ const cancel = () => {
                 </button>
             </div>
 
-            <!-- Form Actions -->
             <div class="flex justify-end gap-4">
                 <button
                     type="button"
                     @click="cancel"
-                    class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-200 dark:bg-gray-600 rounded-md hover:bg-gray-300 dark:hover:bg-gray-500"
+                    :disabled="form.processing"
+                    class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-200 dark:bg-gray-600 rounded-md hover:bg-gray-300 dark:hover:bg-gray-500 disabled:opacity-50"
                 >
                     Cancel
                 </button>
+                
                 <button
                     type="submit"
-                    class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700"
+                    :disabled="form.processing"
+                    :class="{ 'opacity-25 cursor-not-allowed': form.processing }"
+                    class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 transition-all duration-200"
                 >
-                    Save
+                    {{ form.processing ? 'Saving...' : 'Save' }}
                 </button>
             </div>
         </form>

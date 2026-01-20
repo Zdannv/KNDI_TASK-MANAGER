@@ -84,7 +84,12 @@ const types = [
                 <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200">
                     {{ isEditMode ? 'Edit Task' : 'Add New Task' }}
                 </h3>
-                <button type="button" @click="cancel" class="text-gray-400 hover:text-gray-600 transition-colors">
+                <button 
+                    type="button" 
+                    @click="cancel" 
+                    :disabled="form.processing"
+                    class="text-gray-400 hover:text-gray-600 transition-colors disabled:opacity-50"
+                >
                     <Close class="w-5 h-5" />
                 </button>
             </div>
@@ -174,11 +179,26 @@ const types = [
             </div>
 
             <div class="mt-10 pt-6 border-t border-gray-200 dark:border-gray-700 flex justify-end gap-4">
-                <button type="button" @click="cancel" class="px-6 py-2 text-sm font-bold text-gray-500 uppercase tracking-widest hover:text-gray-700 transition-colors">
+                <button 
+                    type="button" 
+                    @click="cancel" 
+                    :disabled="form.processing"
+                    class="px-6 py-2 text-sm font-bold text-gray-500 uppercase tracking-widest hover:text-gray-700 transition-colors disabled:opacity-50"
+                >
                     Cancel
                 </button>
-                <button type="submit" :disabled="form.processing" class="px-10 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold rounded shadow-lg transition-all uppercase tracking-widest disabled:opacity-50 active:scale-95">
-                    {{ isEditMode ? 'Update Task' : 'Create Task' }}
+                <button 
+                    type="submit" 
+                    :disabled="form.processing" 
+                    :class="{ 'opacity-50 cursor-not-allowed': form.processing }"
+                    class="px-10 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold rounded shadow-lg transition-all uppercase tracking-widest active:scale-95"
+                >
+                    <span v-if="form.processing">
+                        {{ isEditMode ? 'Updating...' : 'Creating...' }}
+                    </span>
+                    <span v-else>
+                        {{ isEditMode ? 'Update Task' : 'Create Task' }}
+                    </span>
                 </button>
             </div>
         </form>

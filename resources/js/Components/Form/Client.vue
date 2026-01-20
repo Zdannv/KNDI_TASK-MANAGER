@@ -35,7 +35,6 @@ const cancel = () => {
     <div class="space-y-6">
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ isEditMode ? 'Edit Client' : 'Add New Client' }}</h3>
         <form @submit.prevent="submitForm" class="space-y-4">
-            <!-- Name Field -->
             <div>
                 <InputLabel for="name" value="Name" />
 
@@ -52,20 +51,22 @@ const cancel = () => {
                 <InputError class="mt-2" :message="form.errors.name" />
             </div>
 
-            <!-- Form Actions -->
             <div class="flex justify-end gap-4">
                 <button
                     type="button"
                     @click="cancel"
-                    class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-200 dark:bg-gray-600 rounded-md hover:bg-gray-300 dark:hover:bg-gray-500"
+                    :disabled="form.processing"
+                    class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-200 dark:bg-gray-600 rounded-md hover:bg-gray-300 dark:hover:bg-gray-500 disabled:opacity-50"
                 >
                     Cancel
                 </button>
                 <button
                     type="submit"
-                    class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700"
+                    :disabled="form.processing"
+                    :class="{ 'opacity-25 cursor-not-allowed': form.processing }"
+                    class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 transition-all duration-200"
                 >
-                    Save
+                    {{ form.processing ? 'Saving...' : 'Save' }}
                 </button>
             </div>
         </form>

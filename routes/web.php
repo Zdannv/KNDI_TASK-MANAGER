@@ -54,6 +54,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::put('/task/{id}/pr', [TaskController::class, 'prTask'])->name('task.prTask');
     Route::post('/task/{id}/comment', [TaskController::class, 'commentTask'])->name('task.commentTask');
     Route::post('/task/{id}/reply', [TaskController::class, 'replyTask'])->name('task.replyTask');
+    Route::put('/task/{id}/review/{reviewerId}/complete', [TaskController::class, 'markReviewComplete'])->name('task.review.complete')->middleware('auth');
     Route::put('/task/{id}/close', [TaskController::class, 'close'])->name('task.close');
     Route::get('/task/{id}', [TaskController::class, 'show'])->name('task.show');
     Route::post('/task/{id}', [TaskController::class, 'changeIsActive'])->name('task.changeIsActive')->middleware('role:other,pm,co');
