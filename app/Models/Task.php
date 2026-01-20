@@ -47,6 +47,11 @@ class Task extends Model
         return $this->hasMany(Logtime::class);
     }
 
+    public function reviewers()
+    {
+        return $this->hasMany(\App\Models\TaskReviewer::class);
+    }
+
     /**
      * Get the attributes that should be cast.
      *

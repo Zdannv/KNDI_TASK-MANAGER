@@ -10,10 +10,16 @@ use App\Models\Client;
 use App\Models\Project;
 use App\Models\PullRequest;
 use App\Models\Logtime;
+use App\Models\TaskReviewer;
+use App\Mail\ReviewerReplyNotification;
+use App\Mail\TaskAssignmentRemovedNotification;
+use App\Mail\TaskReviewCompletedNotification;
+use App\Models\Reply;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use Illuminate\Support\Str;
 use Carbon\Carbon;
 
 class TaskController extends Controller
@@ -217,28 +223,56 @@ class TaskController extends Controller
         ]);
         
         $task = Task::findOrFail($id);
+
+        $newReviewerIds = !empty($request->reviewer) ? array_values(array_filter($request->reviewer)) : [];
+        $existingReviewerIds = $task->reviewers()->pluck('user_id')->toArray();
+
+        $toAdd = array_values(array_diff($newReviewerIds, $existingReviewerIds));
+        $toRemove = array_values(array_diff($existingReviewerIds, $newReviewerIds));
+
+        foreach ($toAdd as $uid) {
+            TaskReviewer::updateOrCreate(
+                ['task_id' => $task->id, 'user_id' => $uid],
+                ['status' => 'pending']
+            );
+
+            $user = User::find($uid);
+            if ($user && $user->email) {
+                try {
+                    Mail::to($user->email)->send(new TaskAssignmentNotification($task, 'Reviewer'));
+                } catch (\Exception $e) {
+                    \Illuminate\Support\Facades\Log::error("Gagal kirim email review ke {$user->email}: " . $e->getMessage());
+                }
+            }
+        }
+
+        foreach ($toRemove as $uid) {
+            $tr = TaskReviewer::where('task_id', $task->id)->where('user_id', $uid)->first();
+            if ($tr) {
+                $tr->status = 'removed';
+                $tr->save();
+            }
+
+            $user = User::find($uid);
+            if ($user && $user->email) {
+                try {
+                    Mail::to($user->email)->send(new TaskAssignmentRemovedNotification($task));
+                } catch (\Exception $e) {
+                    \Illuminate\Support\Facades\Log::error("Gagal kirim email assignment removed ke {$user->email}: " . $e->getMessage());
+                }
+            }
+        }
+
+        // keep backward compatibility with JSON reviewer column
         $task->update([
-            'reviewer' => !empty($request->reviewer) ? $request->reviewer : null,
+            'reviewer' => !empty($newReviewerIds) ? $newReviewerIds : null,
+            'isAssign' => true,
         ]);
 
         Auth::user()->logs()->create([
             'target' => 'task',
             'description' => "[ASSIGN PR] task for {$task->issue}",
         ]);
-
-        if (!empty($request->reviewer)) {
-            $reviewers = User::whereIn('id', $request->reviewer)->get();
-            
-            foreach ($reviewers as $user) {
-                if ($user->email) {
-                    try {
-                        Mail::to($user->email)->send(new TaskAssignmentNotification($task, 'Reviewer'));
-                    } catch (\Exception $e) {
-                        \Illuminate\Support\Facades\Log::error("Gagal kirim email review ke {$user->email}: " . $e->getMessage());
-                    }
-                }
-            }
-        }
 
         return back()->with('success', "Task '{$task->issue}' reviewer berhasil di-assign dan dikirim email!");
     }
@@ -278,8 +312,25 @@ class TaskController extends Controller
             'comment' => 'required|string'
         ]);
         
-        $pr = PullRequest::with('task')->where('id', $id)->first();
-        $pr->replies()->create([
+        $pr = PullRequest::with('task')->where('id', $id)->firstOrFail();
+
+        // prevent duplicate replies (same user, same comment) within short timeframe
+        $exists = $pr->replies()
+            ->where('from', Auth::id())
+            ->where('comment', $request->comment)
+            ->where('created_at', '>=', Carbon::now()->subSeconds(10))
+            ->exists();
+
+        if ($exists) {
+            Auth::user()->logs()->create([
+                'target' => 'task',
+                'description' => "[REPLY COMMENT DUPLICATE] task for {$pr->task->issue}",
+            ]);
+
+            return back()->with('success', "Task '{$pr->task->issue}' comment berhasil direply!");
+        }
+
+        $reply = $pr->replies()->create([
             'pr_links' => !empty($request->pr_links) ? $request->pr_links : null,
             'comment' => $request->comment,
             'from' => Auth::id(),
@@ -290,6 +341,39 @@ class TaskController extends Controller
             'description' => "[REPLY COMMENT] task for {$pr->task->issue}",
         ]);
 
+        $task = $pr->task;
+        $replierId = Auth::id();
+
+        $isReviewer = TaskReviewer::where('task_id', $task->id)->where('user_id', $replierId)->where('status', 'pending')->exists();
+        if (! $isReviewer) {
+            $isReviewer = is_array($task->reviewer) && in_array($replierId, $task->reviewer);
+        }
+
+        if ($isReviewer) {
+            $receiverIds = [];
+            if ($task->pl) $receiverIds[] = $task->pl;
+            if (is_array($task->communicator)) $receiverIds = array_merge($receiverIds, $task->communicator);
+            if (is_array($task->programmer)) $receiverIds = array_merge($receiverIds, $task->programmer);
+            if (is_array($task->designer)) $receiverIds = array_merge($receiverIds, $task->designer);
+            if ($task->creator) $receiverIds[] = $task->creator;
+
+            $receiverIds = array_values(array_unique(array_filter($receiverIds)));
+            $receiverIds = array_filter($receiverIds, fn($v) => $v != $replierId);
+
+            if (count($receiverIds) > 0) {
+                $users = User::whereIn('id', $receiverIds)->get();
+                foreach ($users as $user) {
+                    if ($user->email) {
+                        try {
+                            Mail::to($user->email)->send(new ReviewerReplyNotification($task, $reply, Auth::user()));
+                        } catch (\Exception $e) {
+                            \Illuminate\Support\Facades\Log::error("Gagal kirim reviewer reply ke {$user->email}: " . $e->getMessage());
+                        }
+                    }
+                }
+            }
+        }
+
         return back()->with('success', "Task '{$pr->task->issue}' comment berhasil direply!");
     }
 
@@ -298,8 +382,8 @@ class TaskController extends Controller
      */
     public function show($id) 
     {
-        // PERBAIKAN DI SINI: Tambahkan with('logtimes')
-        $task = Task::with('logtimes')->findOrFail($id);
+        // PERBAIKAN DI SINI: Tambahkan with('logtimes','reviewers.user','pullRequests.replies')
+        $task = Task::with(['logtimes','reviewers.user','pullRequests.replies'])->findOrFail($id);
 
         $users = User::get();
         $project = Project::where('id', $task->project_id)->with('client')->first();
@@ -369,5 +453,41 @@ class TaskController extends Controller
         ]);
 
         return redirect(route('task.list', absolute: false))->with('warning', "Task '{$task->issue}' berhasil diclose!");
+    }
+
+    /**
+     * Mark review as complete by reviewer
+     */
+    public function markReviewComplete(Request $request, $taskId, $reviewerId)
+    {
+        if (Auth::id() != $reviewerId) {
+            abort(403);
+        }
+
+        $tr = TaskReviewer::where('task_id', $taskId)->where('user_id', $reviewerId)->firstOrFail();
+        $tr->status = 'done';
+        $tr->completed_at = Carbon::now();
+        $tr->save();
+
+        $task = Task::findOrFail($taskId);
+        $recipientIds = [];
+        if ($task->pl) $recipientIds[] = $task->pl;
+        if ($task->creator) $recipientIds[] = $task->creator;
+        $recipientIds = array_values(array_unique(array_filter($recipientIds)));
+
+        if (count($recipientIds) > 0) {
+            $users = User::whereIn('id', $recipientIds)->get();
+            foreach ($users as $user) {
+                if ($user->email) {
+                    try {
+                        Mail::to($user->email)->send(new TaskReviewCompletedNotification($task, $tr));
+                    } catch (\Exception $e) {
+                        \Illuminate\Support\Facades\Log::error("Gagal kirim task review completed ke {$user->email}: " . $e->getMessage());
+                    }
+                }
+            }
+        }
+
+        return response()->json(['message' => 'Marked as reviewed']);
     }
 }
