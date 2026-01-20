@@ -32,7 +32,7 @@ class TaskAssignmentNotification extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'emails.task_assignment',
+            view: 'task_assignment',
         );
     }
 
