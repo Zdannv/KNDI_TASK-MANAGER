@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Mail;
+use App\Mail\TaskAssignmentNotification;
 use App\Models\Task;
 use App\Models\User;
 use App\Models\Client;
@@ -149,6 +151,8 @@ class TaskController extends Controller
         ]);
         
         $task = Task::findOrFail($id);
+        
+        // Simpan data lama untuk pengecekan (opsional, tapi bagus untuk validasi)
         $task->update([
             'pl' => $request->pl,
             'communicator' => !empty($request->communicator) ? $request->communicator : null,
@@ -162,7 +166,45 @@ class TaskController extends Controller
             'description' => "[ASSIGN] task for {$task->issue}",
         ]);
 
-        return back()->with('success', "Task '{$task->issue}' berhasil di assign!");
+        
+        $userIds = [];
+        $rolesMap = [];
+
+        if (!empty($request->programmer)) {
+            foreach ($request->programmer as $uid) {
+                $userIds[] = $uid;
+                $rolesMap[$uid] = 'Programmer';
+            }
+        }
+        if (!empty($request->designer)) {
+             foreach ($request->designer as $uid) {
+                $userIds[] = $uid;
+                $rolesMap[$uid] = 'Designer';
+            }
+        }
+        if (!empty($request->communicator)) {
+             foreach ($request->communicator as $uid) {
+                $userIds[] = $uid;
+                $rolesMap[$uid] = 'Communicator';
+            }
+        }
+
+        if (count($userIds) > 0) {
+            $users = User::whereIn('id', $userIds)->get();
+            
+            foreach ($users as $user) {
+                if ($user->email) {
+                    $role = $rolesMap[$user->id] ?? 'Member';
+                    try {
+                        Mail::to($user->email)->send(new TaskAssignmentNotification($task, $role));
+                    } catch (\Exception $e) {
+                        \Illuminate\Support\Facades\Log::error("Gagal kirim email ke {$user->email}: " . $e->getMessage());
+                    }
+                }
+            }
+        }
+
+        return back()->with('success', "Task '{$task->issue}' berhasil di-assign dan notifikasi dikirim!");
     }
 
     /**
@@ -184,7 +226,21 @@ class TaskController extends Controller
             'description' => "[ASSIGN PR] task for {$task->issue}",
         ]);
 
-        return back()->with('success', "Task '{$task->issue}' reviewer berhasil di assign!");
+        if (!empty($request->reviewer)) {
+            $reviewers = User::whereIn('id', $request->reviewer)->get();
+            
+            foreach ($reviewers as $user) {
+                if ($user->email) {
+                    try {
+                        Mail::to($user->email)->send(new TaskAssignmentNotification($task, 'Reviewer'));
+                    } catch (\Exception $e) {
+                        \Illuminate\Support\Facades\Log::error("Gagal kirim email review ke {$user->email}: " . $e->getMessage());
+                    }
+                }
+            }
+        }
+
+        return back()->with('success', "Task '{$task->issue}' reviewer berhasil di-assign dan dikirim email!");
     }
 
     /**
