@@ -4,7 +4,7 @@ import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import SelectInput from '@/Components/SelectInput.vue';
-import moment from 'moment/moment';
+import moment from 'moment';
 
 const emit = defineEmits(['close']);
 
@@ -48,7 +48,7 @@ const cancel = () => {
                 <input
                     type="date"
                     id="date"
-                    class="mt-1 block w-full rounded-md"
+                    class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 shadow-sm"
                     v-model="form.date"
                     required
                     autocomplete="date"
@@ -92,15 +92,18 @@ const cancel = () => {
                 <button
                     type="button"
                     @click="cancel"
-                    class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-200 dark:bg-gray-600 rounded-md hover:bg-gray-300 dark:hover:bg-gray-500"
+                    :disabled="form.processing"
+                    class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-200 dark:bg-gray-600 rounded-md hover:bg-gray-300 dark:hover:bg-gray-500 disabled:opacity-50"
                 >
                     Cancel
                 </button>
                 <button
                     type="submit"
-                    class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700"
+                    :disabled="form.processing"
+                    :class="{ 'opacity-25 cursor-not-allowed': form.processing }"
+                    class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 transition-all duration-200"
                 >
-                    Save
+                    {{ form.processing ? 'Saving...' : 'Save' }}
                 </button>
             </div>
         </form>
