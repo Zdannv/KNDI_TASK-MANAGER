@@ -314,7 +314,6 @@ class TaskController extends Controller
         
         $pr = PullRequest::with('task')->where('id', $id)->firstOrFail();
 
-        // prevent duplicate replies (same user, same comment) within short timeframe
         $exists = $pr->replies()
             ->where('from', Auth::id())
             ->where('comment', $request->comment)
