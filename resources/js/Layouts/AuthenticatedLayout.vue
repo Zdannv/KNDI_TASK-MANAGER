@@ -26,7 +26,7 @@ const getInitialSidebarState = () => {
         // Mobile (< 768px)  -> Default TUTUP (False)
         return window.innerWidth >= 768;
     }
-    return true; // Fallback
+    return true;
 };
 
 const openMenus = ref(getInitialSidebarState());

@@ -88,7 +88,7 @@ onBeforeUnmount(() => stopCamera());
             :class="{ 'opacity-50': !isCameraOn }"
           ></video>
 
-          <div v-if="!isCameraOn" class="absolute top-4 right-4 flex items-center bg-indigo-500 text-white px-3 py-1 rounded-full text-xs animate-pulse">
+          <div v-if="isCameraOn" class="absolute top-4 right-4 flex items-center bg-indigo-500 text-white px-3 py-1 rounded-full text-xs animate-pulse">
             <span class="w-2 h-2 bg-white rounded-full mr-2"></span>
             Memindai...
           </div>
