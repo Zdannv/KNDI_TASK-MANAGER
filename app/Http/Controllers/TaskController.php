@@ -382,10 +382,8 @@ class TaskController extends Controller
         $task = Task::with(['logtimes','reviewers.user','pullRequests.replies'])->findOrFail($id);
 
         $users = User::get();
-        // $project (singular) untuk keperluan lain di view
         $project = Project::where('id', $task->project_id)->with('client')->first();
 
-        // PERBAIKAN DI SINI JUGA: Tambahkan with('client') agar konsisten
         $projects = Project::with('client')->get();
 
         $communicator = User::where('role', 'co')->get();
