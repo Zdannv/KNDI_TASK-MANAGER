@@ -1,5 +1,6 @@
 <script setup>
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
+import Attendance from '@/Components/Icon/attendance.vue';
 import { Head, Link } from '@inertiajs/vue3';
 import { ref, onMounted } from 'vue';
 
@@ -76,6 +77,13 @@ onMounted(() => {
               <span>Masuk</span>
             </Link>
           </template>
+
+          <Link
+            href="/recognize"
+            class="group inline-flex items-center gap-3 px-4 py-4 text-lg font-semibold text-indigo-600 dark:text-indigo-400 bg-white dark:bg-slate-800 border-2 border-indigo-600 dark:border-indigo-500 rounded-full shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-300 focus:outline-none focus-visible:ring-4 focus-visible:ring-indigo-500/50"
+          >
+           <Attendance /> 
+          </Link>
         </div>
 
         <!-- Features Grid (Sesuai Aplikasi Nyata) -->

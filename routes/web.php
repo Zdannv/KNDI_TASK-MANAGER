@@ -71,15 +71,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/import', [ImportController::class, 'store'])->name('import.store')->middleware('role:other,co');
     Route::get('/import/template', [ImportController::class, 'template'])->name('import.template')->middleware('role:other,co');
 
-    // --- FITUR ABSENSI (ATTENDANCE) ---
-    Route::get('/attendance-list', [AttendanceController::class, 'index'])
-        ->name('attendance.list')
-        ->middleware('role:other');
-
-    Route::get('/attendance/export', [AttendanceController::class, 'export'])
-        ->name('attendance.export')
-        ->middleware('role:other');
+    Route::get('/attendance-list', [AttendanceController::class, 'index'])->name('attendance.list')->middleware('role:other');
+    Route::get('/attendance/export', [AttendanceController::class, 'export'])->name('attendance.export')->middleware('role:other');
 });
+
+Route::get('/recognize', function () {
+    return Inertia::render('recognize/Index');
+})->name('attendance.recognize');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
