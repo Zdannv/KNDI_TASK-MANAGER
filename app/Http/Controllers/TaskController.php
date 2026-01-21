@@ -305,8 +305,8 @@ class TaskController extends Controller
         
         $task = Task::findOrFail($id);
         
-        // Simpan Comment (sebagai PullRequest di DB kamu)
-        $comment = $task->pullRequests()->create([
+        // Simpan Comment
+        $pullRequest = $task->pullRequests()->create([
             'pr_links' => !empty($request->pr_links) ? $request->pr_links : null,
             'comment' => $request->comment,
             'from' => Auth::id(),
@@ -317,34 +317,28 @@ class TaskController extends Controller
             'description' => "[COMMENT] task for {$task->issue}",
         ]);
 
-        // --- NOTIFIKASI KOMENTAR (KIRIM KE SEMUA ANGGOTA TASK) ---
-        // Kita kumpulkan semua ID yang terlibat
+        // --- NOTIFIKASI KOMENTAR ---
         $recipientIds = collect([]);
 
-        // 1. Tambahkan Creator & PL
         if ($task->creator) $recipientIds->push($task->creator);
         if ($task->pl) $recipientIds->push($task->pl);
-
-        // 2. Tambahkan Programmer, Designer, Communicator (Array)
         if (!empty($task->programmer)) $recipientIds = $recipientIds->merge($task->programmer);
         if (!empty($task->designer)) $recipientIds = $recipientIds->merge($task->designer);
         if (!empty($task->communicator)) $recipientIds = $recipientIds->merge($task->communicator);
         if (!empty($task->reviewer)) $recipientIds = $recipientIds->merge($task->reviewer);
 
-        // 3. Hapus duplikat dan hapus diri sendiri (pengirim komentar)
-        $uniqueRecipients = $recipientIds->unique()->reject(function ($value) {
-            return $value == Auth::id();
-        });
+        // Hapus duplikat & hapus diri sendiri
+        $uniqueRecipients = $recipientIds->unique()->reject(fn($id) => $id == Auth::id());
 
-        // 4. Kirim Email
         if ($uniqueRecipients->isNotEmpty()) {
             $users = User::whereIn('id', $uniqueRecipients)->get();
             foreach ($users as $user) {
                 if ($user->email) {
                     try {
-                        Mail::to($user->email)->send(new TaskCommentNotification($task, Auth::user(), $request->comment));
+                        // UPDATE: Kita kirim object $pullRequest (bukan string comment biasa)
+                        Mail::to($user->email)->send(new TaskCommentNotification($task, Auth::user(), $pullRequest));
                     } catch (\Exception $e) {
-                        Log::error("Gagal kirim notif komentar ke {$user->email}");
+                        Log::error("Gagal kirim notif komentar ke {$user->email}: " . $e->getMessage());
                     }
                 }
             }
@@ -363,7 +357,6 @@ class TaskController extends Controller
             'comment' => 'required|string'
         ]);
         
-        // $id di sini adalah ID dari PullRequest (Komentar Induk)
         $parentComment = PullRequest::with('task')->where('id', $id)->firstOrFail();
 
         // Cek Duplikat
@@ -389,21 +382,20 @@ class TaskController extends Controller
             'description' => "[REPLY] task for {$parentComment->task->issue}",
         ]);
 
-        // --- NOTIFIKASI REPLY (HANYA KE PEMILIK KOMENTAR YANG DIBALAS) ---
-        // Ambil ID orang yang punya komentar induk ($parentComment->from)
+        // --- NOTIFIKASI REPLY ---
         $targetUserId = $parentComment->from;
 
-        // Jangan kirim notifikasi jika membalas komentar sendiri
+        // Cek: Jangan kirim kalau balas komentar sendiri
         if ($targetUserId != Auth::id()) {
             $targetUser = User::find($targetUserId);
             
             if ($targetUser && $targetUser->email) {
                 try {
-                    // Gunakan Class Mail khusus Reply
+                    // UPDATE: Kita kirim object $reply
                     Mail::to($targetUser->email)->send(new CommentReplyNotification(
-                        $parentComment->task, // Info Task
-                        Auth::user(),         // Si Penjawab
-                        $request->comment     // Isi Jawaban
+                        $parentComment->task, 
+                        Auth::user(),         
+                        $reply // Kirim object reply lengkap
                     ));
                 } catch (\Exception $e) {
                     Log::error("Gagal kirim notif reply ke {$targetUser->email}: " . $e->getMessage());
@@ -413,7 +405,6 @@ class TaskController extends Controller
 
         return back()->with('success', "Reply berhasil dikirim!");
     }
-
     /**
      * Display a detail of the resource.
      */

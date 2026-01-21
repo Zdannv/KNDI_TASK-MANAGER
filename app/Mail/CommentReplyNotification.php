@@ -15,20 +15,20 @@ class CommentReplyNotification extends Mailable
     use Queueable, SerializesModels;
 
     public $task;
-    public $replier; // Orang yang membalas
-    public $replyContent;
+    public $replier;
+    public $replyData; // Ini object Reply
 
-    public function __construct(Task $task, User $replier, $replyContent)
+    public function __construct(Task $task, User $replier, $replyData)
     {
         $this->task = $task;
         $this->replier = $replier;
-        $this->replyContent = $replyContent;
+        $this->replyData = $replyData;
     }
 
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: "[KNDI] {$this->replier->name} membalas komentar Anda",
+            subject: "[KNDI] Balasan Baru dari {$this->replier->name}",
         );
     }
 
