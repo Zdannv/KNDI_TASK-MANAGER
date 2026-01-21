@@ -2,25 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Mail;
-use App\Mail\TaskAssignmentNotification;
-use App\Models\Task;
-use App\Models\User;
-use App\Models\Client;
-use App\Models\Project;
-use App\Models\PullRequest;
-use App\Models\Logtime;
-use App\Models\TaskReviewer;
-use App\Mail\ReviewerReplyNotification;
-use App\Mail\TaskAssignmentRemovedNotification;
-use App\Mail\TaskReviewCompletedNotification;
-use App\Models\Reply;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
-use Inertia\Inertia;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Inertia\Inertia;
 use Carbon\Carbon;
+
+// Models
+use App\Models\Task;
+use App\Models\User;
+use App\Models\Project;
+use App\Models\PullRequest;
+use App\Models\TaskReviewer;
+
+// Mails
+use App\Mail\TaskAssignmentNotification;
+use App\Mail\TaskUnassignmentNotification; // Pastikan file ini ada (fitur unassign)
+use App\Mail\TaskCommentNotification;      // File baru untuk komentar
+use App\Mail\CommentReplyNotification;     // File baru untuk reply
+use App\Mail\TaskReviewCompletedNotification;
 
 class TaskController extends Controller
 {
@@ -30,7 +33,6 @@ class TaskController extends Controller
     public function index(Request $request)
     {
         $query = $request->query();
-
         $tasksQuery = Task::query()->with('project');
 
         if (isset($query['project_id'])) {
@@ -55,8 +57,8 @@ class TaskController extends Controller
         }
 
         $tasks = $tasksQuery->orderByRaw('ISNULL(due_date), due_date ASC')->get();
-
-        // PERBAIKAN UTAMA DI SINI: Tambahkan with('client')
+        
+        // Memuat client agar tidak error di frontend
         $projects = Project::with('client')->where('isDeleted', false)->get();
         
         $users = User::get();
@@ -145,7 +147,7 @@ class TaskController extends Controller
     }
 
     /**
-     * Update the task's pl, co, pg, ds.
+     * Update the task's assignments (pl, co, pg, ds) and send notifications.
      */
     public function assignTask(Request $request, $id): RedirectResponse
     {
@@ -157,7 +159,15 @@ class TaskController extends Controller
         ]);
         
         $task = Task::findOrFail($id);
+
+        // 1. SNAPSHOT DATA LAMA (Untuk cek siapa yang dihapus)
+        $oldAssignments = [
+            'Programmer'   => $task->programmer ?? [],
+            'Designer'     => $task->designer ?? [],
+            'Communicator' => $task->communicator ?? [],
+        ];
         
+        // 2. UPDATE DATABASE
         $task->update([
             'pl' => $request->pl,
             'communicator' => !empty($request->communicator) ? $request->communicator : null,
@@ -171,45 +181,49 @@ class TaskController extends Controller
             'description' => "[ASSIGN] task for {$task->issue}",
         ]);
 
-        
-        $userIds = [];
-        $rolesMap = [];
+        // 3. LOGIKA NOTIFIKASI LENGKAP (ASSIGN & UNASSIGN)
+        $newAssignments = [
+            'Programmer'   => $request->programmer ?? [],
+            'Designer'     => $request->designer ?? [],
+            'Communicator' => $request->communicator ?? [],
+        ];
 
-        if (!empty($request->programmer)) {
-            foreach ($request->programmer as $uid) {
-                $userIds[] = $uid;
-                $rolesMap[$uid] = 'Programmer';
-            }
-        }
-        if (!empty($request->designer)) {
-             foreach ($request->designer as $uid) {
-                $userIds[] = $uid;
-                $rolesMap[$uid] = 'Designer';
-            }
-        }
-        if (!empty($request->communicator)) {
-             foreach ($request->communicator as $uid) {
-                $userIds[] = $uid;
-                $rolesMap[$uid] = 'Communicator';
-            }
-        }
+        foreach ($newAssignments as $role => $newIds) {
+            $oldIds = $oldAssignments[$role];
 
-        if (count($userIds) > 0) {
-            $users = User::whereIn('id', $userIds)->get();
-            
-            foreach ($users as $user) {
-                if ($user->email) {
-                    $role = $rolesMap[$user->id] ?? 'Member';
-                    try {
-                        Mail::to($user->email)->send(new TaskAssignmentNotification($task, $role));
-                    } catch (\Exception $e) {
-                        \Illuminate\Support\Facades\Log::error("Gagal kirim email ke {$user->email}: " . $e->getMessage());
+            // A. Kirim ke yang BARU DITAMBAH (Assign)
+            $addedIds = array_diff($newIds, $oldIds);
+            if (!empty($addedIds)) {
+                $users = User::whereIn('id', $addedIds)->get();
+                foreach ($users as $user) {
+                    if ($user->email) {
+                        try {
+                            Mail::to($user->email)->send(new TaskAssignmentNotification($task, $role));
+                        } catch (\Exception $e) {
+                            Log::error("Gagal kirim email assign ke {$user->email}: " . $e->getMessage());
+                        }
+                    }
+                }
+            }
+
+            // B. Kirim ke yang DIHAPUS (Unassign)
+            $removedIds = array_diff($oldIds, $newIds);
+            if (!empty($removedIds)) {
+                $users = User::whereIn('id', $removedIds)->get();
+                foreach ($users as $user) {
+                    if ($user->email) {
+                        try {
+                            // Pastikan Class Mail 'TaskUnassignmentNotification' sudah dibuat
+                            Mail::to($user->email)->send(new TaskUnassignmentNotification($task, $role));
+                        } catch (\Exception $e) {
+                            Log::error("Gagal kirim email unassign ke {$user->email}: " . $e->getMessage());
+                        }
                     }
                 }
             }
         }
 
-        return back()->with('success', "Task '{$task->issue}' berhasil di-assign dan notifikasi dikirim!");
+        return back()->with('success', "Task berhasil di-assign dan notifikasi terkirim!");
     }
 
     /**
@@ -226,9 +240,11 @@ class TaskController extends Controller
         $newReviewerIds = !empty($request->reviewer) ? array_values(array_filter($request->reviewer)) : [];
         $existingReviewerIds = $task->reviewers()->pluck('user_id')->toArray();
 
+        // Cari Perbedaan (Siapa yang ditambah, siapa yang dibuang)
         $toAdd = array_values(array_diff($newReviewerIds, $existingReviewerIds));
         $toRemove = array_values(array_diff($existingReviewerIds, $newReviewerIds));
 
+        // 1. Handle Penambahan Reviewer (ASSIGN)
         foreach ($toAdd as $uid) {
             TaskReviewer::updateOrCreate(
                 ['task_id' => $task->id, 'user_id' => $uid],
@@ -238,13 +254,15 @@ class TaskController extends Controller
             $user = User::find($uid);
             if ($user && $user->email) {
                 try {
+                    // Gunakan Class Mail Assign yang sudah terbukti berhasil
                     Mail::to($user->email)->send(new TaskAssignmentNotification($task, 'Reviewer'));
                 } catch (\Exception $e) {
-                    \Illuminate\Support\Facades\Log::error("Gagal kirim email review ke {$user->email}: " . $e->getMessage());
+                    \Illuminate\Support\Facades\Log::error("Gagal kirim email review ke {$user->email}");
                 }
             }
         }
 
+        // 2. Handle Penghapusan Reviewer (UNASSIGN)
         foreach ($toRemove as $uid) {
             $tr = TaskReviewer::where('task_id', $task->id)->where('user_id', $uid)->first();
             if ($tr) {
@@ -255,13 +273,15 @@ class TaskController extends Controller
             $user = User::find($uid);
             if ($user && $user->email) {
                 try {
-                    Mail::to($user->email)->send(new TaskAssignmentRemovedNotification($task));
+                    // Gunakan Class Mail Unassign yang sudah kita buat tadi
+                    Mail::to($user->email)->send(new TaskUnassignmentNotification($task, 'Reviewer'));
                 } catch (\Exception $e) {
-                    \Illuminate\Support\Facades\Log::error("Gagal kirim email assignment removed ke {$user->email}: " . $e->getMessage());
+                    \Illuminate\Support\Facades\Log::error("Gagal kirim email unassign reviewer ke {$user->email}");
                 }
             }
         }
 
+        // Update Kolom JSON di Tabel Task (untuk backup/display)
         $task->update([
             'reviewer' => !empty($newReviewerIds) ? $newReviewerIds : null,
             'isAssign' => true,
@@ -272,11 +292,11 @@ class TaskController extends Controller
             'description' => "[ASSIGN PR] task for {$task->issue}",
         ]);
 
-        return back()->with('success', "Task '{$task->issue}' reviewer berhasil di-assign dan dikirim email!");
+        return back()->with('success', "Reviewer berhasil diupdate dan notifikasi dikirim!");
     }
-
+    
     /**
-     * Add comment for task's pr .
+     * Add comment for task (General Notification).
      */
     public function commentTask(Request $request, $id): RedirectResponse
     {
@@ -286,7 +306,9 @@ class TaskController extends Controller
         ]);
         
         $task = Task::findOrFail($id);
-        $task->pullRequests()->create([
+        
+        // Simpan Comment
+        $pullRequest = $task->pullRequests()->create([
             'pr_links' => !empty($request->pr_links) ? $request->pr_links : null,
             'comment' => $request->comment,
             'from' => Auth::id(),
@@ -297,11 +319,38 @@ class TaskController extends Controller
             'description' => "[COMMENT] task for {$task->issue}",
         ]);
 
-        return back()->with('success', "Task '{$task->issue}' comment berhasil dibuat!");
+        // --- NOTIFIKASI KOMENTAR ---
+        $recipientIds = collect([]);
+
+        if ($task->creator) $recipientIds->push($task->creator);
+        if ($task->pl) $recipientIds->push($task->pl);
+        if (!empty($task->programmer)) $recipientIds = $recipientIds->merge($task->programmer);
+        if (!empty($task->designer)) $recipientIds = $recipientIds->merge($task->designer);
+        if (!empty($task->communicator)) $recipientIds = $recipientIds->merge($task->communicator);
+        if (!empty($task->reviewer)) $recipientIds = $recipientIds->merge($task->reviewer);
+
+        // Hapus duplikat & hapus diri sendiri
+        $uniqueRecipients = $recipientIds->unique()->reject(fn($id) => $id == Auth::id());
+
+        if ($uniqueRecipients->isNotEmpty()) {
+            $users = User::whereIn('id', $uniqueRecipients)->get();
+            foreach ($users as $user) {
+                if ($user->email) {
+                    try {
+                        // UPDATE: Kita kirim object $pullRequest (bukan string comment biasa)
+                        Mail::to($user->email)->send(new TaskCommentNotification($task, Auth::user(), $pullRequest));
+                    } catch (\Exception $e) {
+                        Log::error("Gagal kirim notif komentar ke {$user->email}: " . $e->getMessage());
+                    }
+                }
+            }
+        }
+
+        return back()->with('success', "Komentar berhasil ditambahkan!");
     }
 
     /**
-     * Reply comment for task's pr .
+     * Reply to a comment (Specific Notification).
      */
     public function replyTask(Request $request, $id): RedirectResponse
     {
@@ -310,24 +359,21 @@ class TaskController extends Controller
             'comment' => 'required|string'
         ]);
         
-        $pr = PullRequest::with('task')->where('id', $id)->firstOrFail();
+        $parentComment = PullRequest::with('task')->where('id', $id)->firstOrFail();
 
-        $exists = $pr->replies()
+        // Cek Duplikat
+        $exists = $parentComment->replies()
             ->where('from', Auth::id())
             ->where('comment', $request->comment)
             ->where('created_at', '>=', Carbon::now()->subSeconds(10))
             ->exists();
 
         if ($exists) {
-            Auth::user()->logs()->create([
-                'target' => 'task',
-                'description' => "[REPLY COMMENT DUPLICATE] task for {$pr->task->issue}",
-            ]);
-
-            return back()->with('success', "Task '{$pr->task->issue}' comment berhasil direply!");
+            return back()->with('success', "Reply berhasil (terdeteksi duplikat, diabaikan)");
         }
 
-        $reply = $pr->replies()->create([
+        // Simpan Reply
+        $reply = $parentComment->replies()->create([
             'pr_links' => !empty($request->pr_links) ? $request->pr_links : null,
             'comment' => $request->comment,
             'from' => Auth::id(),
@@ -335,57 +381,41 @@ class TaskController extends Controller
 
         Auth::user()->logs()->create([
             'target' => 'task',
-            'description' => "[REPLY COMMENT] task for {$pr->task->issue}",
+            'description' => "[REPLY] task for {$parentComment->task->issue}",
         ]);
 
-        $task = $pr->task;
-        $replierId = Auth::id();
+        // --- NOTIFIKASI REPLY ---
+        $targetUserId = $parentComment->from;
 
-        $isReviewer = TaskReviewer::where('task_id', $task->id)->where('user_id', $replierId)->where('status', 'pending')->exists();
-        if (! $isReviewer) {
-            $isReviewer = is_array($task->reviewer) && in_array($replierId, $task->reviewer);
-        }
-
-        if ($isReviewer) {
-            $receiverIds = [];
-            if ($task->pl) $receiverIds[] = $task->pl;
-            if (is_array($task->communicator)) $receiverIds = array_merge($receiverIds, $task->communicator);
-            if (is_array($task->programmer)) $receiverIds = array_merge($receiverIds, $task->programmer);
-            if (is_array($task->designer)) $receiverIds = array_merge($receiverIds, $task->designer);
-            if ($task->creator) $receiverIds[] = $task->creator;
-
-            $receiverIds = array_values(array_unique(array_filter($receiverIds)));
-            $receiverIds = array_filter($receiverIds, fn($v) => $v != $replierId);
-
-            if (count($receiverIds) > 0) {
-                $users = User::whereIn('id', $receiverIds)->get();
-                foreach ($users as $user) {
-                    if ($user->email) {
-                        try {
-                            Mail::to($user->email)->send(new ReviewerReplyNotification($task, $reply, Auth::user()));
-                        } catch (\Exception $e) {
-                            \Illuminate\Support\Facades\Log::error("Gagal kirim reviewer reply ke {$user->email}: " . $e->getMessage());
-                        }
-                    }
+        // Cek: Jangan kirim kalau balas komentar sendiri
+        if ($targetUserId != Auth::id()) {
+            $targetUser = User::find($targetUserId);
+            
+            if ($targetUser && $targetUser->email) {
+                try {
+                    // UPDATE: Kita kirim object $reply
+                    Mail::to($targetUser->email)->send(new CommentReplyNotification(
+                        $parentComment->task, 
+                        Auth::user(),         
+                        $reply // Kirim object reply lengkap
+                    ));
+                } catch (\Exception $e) {
+                    Log::error("Gagal kirim notif reply ke {$targetUser->email}: " . $e->getMessage());
                 }
             }
         }
 
-        return back()->with('success', "Task '{$pr->task->issue}' comment berhasil direply!");
+        return back()->with('success', "Reply berhasil dikirim!");
     }
-
     /**
      * Display a detail of the resource.
      */
     public function show($id) 
     {
-        $task = Task::with(['logtimes','reviewers.user','pullRequests.replies'])->findOrFail($id);
+        $task = Task::with(['logtimes','reviewers.user','pullRequests.replies.user', 'pullRequests.user'])->findOrFail($id);
 
         $users = User::get();
-        // $project (singular) untuk keperluan lain di view
         $project = Project::where('id', $task->project_id)->with('client')->first();
-
-        // PERBAIKAN DI SINI JUGA: Tambahkan with('client') agar konsisten
         $projects = Project::with('client')->get();
 
         $communicator = User::where('role', 'co')->get();
@@ -394,7 +424,7 @@ class TaskController extends Controller
 
         $totalTimeUsed = $task->logtimes->sum('time_used');
 
-        $prs = PullRequest::with('replies')->where('task_id', $id)->get();
+        $prs = PullRequest::with(['replies.user', 'user'])->where('task_id', $id)->get();
 
         return Inertia::render('Task/Show', compact('task', 'users', 'project', 'projects', 'communicator', 'programmer', 'designer', 'totalTimeUsed', 'prs'));   
     }
@@ -405,7 +435,7 @@ class TaskController extends Controller
     public function changeIsActive($id): RedirectResponse
     {
         $task = Task::findOrFail($id);
-        $updated = $task->update([
+        $task->update([
             'isActive' => ! $task->isActive,
             'updater' => Auth::id()
         ]);
@@ -415,11 +445,11 @@ class TaskController extends Controller
             'description' => "[CHANGE ISACTIVE] task for {$task->issue}",
         ]);
 
-        return back()->with('success', "Task '{$task->issue}' is active berhasil diperbarui!");
+        return back()->with('success', "Status active berhasil diperbarui!");
     }
 
     /**
-     * Delete the task's data.
+     * Delete the task.
      */
     public function destroy($id): RedirectResponse
     {
@@ -480,7 +510,7 @@ class TaskController extends Controller
                     try {
                         Mail::to($user->email)->send(new TaskReviewCompletedNotification($task, $tr));
                     } catch (\Exception $e) {
-                        \Illuminate\Support\Facades\Log::error("Gagal kirim task review completed ke {$user->email}: " . $e->getMessage());
+                        Log::error("Gagal kirim task review completed ke {$user->email}: " . $e->getMessage());
                     }
                 }
             }

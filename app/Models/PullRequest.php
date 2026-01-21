@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Task;
 use App\Models\Reply;
+use App\Models\User; // Tambahkan ini
 
 class PullRequest extends Model
 {
@@ -22,6 +23,12 @@ class PullRequest extends Model
     public function replies()
     {
         return $this->hasMany(Reply::class);
+    }
+
+    // --- TAMBAHKAN INI ---
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'from');
     }
 
     protected function casts(): array
