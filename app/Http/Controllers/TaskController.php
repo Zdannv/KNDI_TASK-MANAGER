@@ -227,7 +227,7 @@ class TaskController extends Controller
     }
 
     /**
-     * Update the task's reviewer and send notifications.
+     * Update the task's reviewer, pr_links.
      */
     public function prTask(Request $request, $id): RedirectResponse
     {
@@ -240,11 +240,11 @@ class TaskController extends Controller
         $newReviewerIds = !empty($request->reviewer) ? array_values(array_filter($request->reviewer)) : [];
         $existingReviewerIds = $task->reviewers()->pluck('user_id')->toArray();
 
-        // Cari bedanya
+        // Cari Perbedaan (Siapa yang ditambah, siapa yang dibuang)
         $toAdd = array_values(array_diff($newReviewerIds, $existingReviewerIds));
         $toRemove = array_values(array_diff($existingReviewerIds, $newReviewerIds));
 
-        // 1. Handle Penambahan Reviewer
+        // 1. Handle Penambahan Reviewer (ASSIGN)
         foreach ($toAdd as $uid) {
             TaskReviewer::updateOrCreate(
                 ['task_id' => $task->id, 'user_id' => $uid],
@@ -254,14 +254,15 @@ class TaskController extends Controller
             $user = User::find($uid);
             if ($user && $user->email) {
                 try {
+                    // Gunakan Class Mail Assign yang sudah terbukti berhasil
                     Mail::to($user->email)->send(new TaskAssignmentNotification($task, 'Reviewer'));
                 } catch (\Exception $e) {
-                    Log::error("Gagal kirim email review ke {$user->email}: " . $e->getMessage());
+                    \Illuminate\Support\Facades\Log::error("Gagal kirim email review ke {$user->email}");
                 }
             }
         }
 
-        // 2. Handle Penghapusan Reviewer
+        // 2. Handle Penghapusan Reviewer (UNASSIGN)
         foreach ($toRemove as $uid) {
             $tr = TaskReviewer::where('task_id', $task->id)->where('user_id', $uid)->first();
             if ($tr) {
@@ -272,14 +273,15 @@ class TaskController extends Controller
             $user = User::find($uid);
             if ($user && $user->email) {
                 try {
-                    // Gunakan Mail Unassign khusus reviewer
+                    // Gunakan Class Mail Unassign yang sudah kita buat tadi
                     Mail::to($user->email)->send(new TaskUnassignmentNotification($task, 'Reviewer'));
                 } catch (\Exception $e) {
-                    Log::error("Gagal kirim email remove reviewer ke {$user->email}: " . $e->getMessage());
+                    \Illuminate\Support\Facades\Log::error("Gagal kirim email unassign reviewer ke {$user->email}");
                 }
             }
         }
 
+        // Update Kolom JSON di Tabel Task (untuk backup/display)
         $task->update([
             'reviewer' => !empty($newReviewerIds) ? $newReviewerIds : null,
             'isAssign' => true,
@@ -290,9 +292,9 @@ class TaskController extends Controller
             'description' => "[ASSIGN PR] task for {$task->issue}",
         ]);
 
-        return back()->with('success', "Reviewer berhasil diperbarui dan notifikasi dikirim!");
+        return back()->with('success', "Reviewer berhasil diupdate dan notifikasi dikirim!");
     }
-
+    
     /**
      * Add comment for task (General Notification).
      */
