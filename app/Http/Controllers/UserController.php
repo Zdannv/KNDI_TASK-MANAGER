@@ -94,8 +94,21 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
 
+        $hasActiveTasks = Task::where('isActive', true)
+            ->where(function ($query) use ($id) {
+                $query->whereJsonContains('programmer', $id)
+                  ->orWhereJsonContains('designer', $id)
+                  ->orWhereJsonContains('communicator', $id)
+                  ->orWhere('pl', $id);
+            })
+            ->exist();
+
         if ($user->id === Auth::id()) {
             return back()->with('error', "Tidak dapat menghapus akun sendiri!");
+        }
+
+        if ($hasActiveTasks) {
+            return back()->with('error', "User masih memiliki tugas yang masih aktif!");
         }
 
         $user->delete();
