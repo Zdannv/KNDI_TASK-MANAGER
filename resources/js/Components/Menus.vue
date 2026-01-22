@@ -82,10 +82,10 @@ const menuItems = computed(() => [
     },
         {
         label: "Attendance",
-        route: "attendance.list",
+        route: "attendance",
         icon: UserPlus,
         show: userRole.value === "other",
-        active: route().current("attendance.list"),
+        active: route().current("attendance"),
     },
     {
         label: "Import",
