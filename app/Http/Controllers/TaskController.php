@@ -11,7 +11,7 @@ use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Carbon\Carbon;
 
-use App\Models\ProjectOwner
+use App\Models\ProjectOwner;
 use App\Models\Task;
 use App\Models\User;
 use App\Models\Project;
