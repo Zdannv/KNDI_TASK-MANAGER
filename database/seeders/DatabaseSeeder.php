@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-use App\Models\Client;
+use App\Models\ProjectOwner;
 use App\Models\Task;
 use App\Models\Attendance;
 use Illuminate\Support\Facades\Hash;
@@ -98,8 +98,8 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('password')
         ]);
 
-        // 2. BUAT CLIENT & PROJECT
-        $kd = Client::create([
+        // 2. BUAT PROJECT OWNER & PROJECT
+        $kd = ProjectOwner::create([
             'name' => 'KD',
             'creator' => $farkhan->id,
             'updater' => $farkhan->id
@@ -121,7 +121,7 @@ class DatabaseSeeder extends Seeder
             'updater' => $farkhan->id
         ]);
 
-        $kndi = Client::create([
+        $kndi = ProjectOwner::create([
             'name' => 'KNDI',
             'creator' => $farkhan->id,
             'updater' => $farkhan->id

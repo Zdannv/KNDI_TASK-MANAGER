@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Project;
 use App\Models\Task;
 
-class Client extends Model
+class ProjectOwner extends Model
 {
     protected $fillable = [
         'name',

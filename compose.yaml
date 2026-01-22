@@ -65,7 +65,6 @@ services:
             PMA_USER: '${DB_USERNAME}'
             PMA_PASSWORD: '${DB_PASSWORD}'
 
-
 networks:
     sail:
         driver: bridge

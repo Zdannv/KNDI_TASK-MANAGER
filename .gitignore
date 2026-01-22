@@ -22,7 +22,4 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
-venv/
-__pycache__/
-*.pyc
-.DS_Store
+package-lock.json

@@ -71,7 +71,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/import', [ImportController::class, 'store'])->name('import.store')->middleware('role:other,co');
     Route::get('/import/template', [ImportController::class, 'template'])->name('import.template')->middleware('role:other,co');
 
-    Route::get('/attendance-list', [AttendanceController::class, 'index'])->name('attendance.list')->middleware('role:other');
+    Route::get('/attendance', [AttendanceController::class, 'index'])->name('attendance')->middleware('role:other');
     Route::get('/attendance/export', [AttendanceController::class, 'export'])->name('attendance.export')->middleware('role:other');
 });
 

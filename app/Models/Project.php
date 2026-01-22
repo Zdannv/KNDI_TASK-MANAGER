@@ -3,14 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Client;
+use App\Models\ProjectOwner;
 use App\Models\Task;
 
 class Project extends Model
 {
     protected $fillable = [
         'name',
-        'client_id',
+        'project_owner_id',
         'creator',
         'updater',
         'isDeleted'
