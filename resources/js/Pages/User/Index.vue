@@ -3,7 +3,7 @@ import Plus from '@/Components/Icon/Plus.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputLabel from '@/Components/InputLabel.vue';
-import InputError from '@/Components/InputError.vue';
+import InputError from '@/Components/InputError.vue'; // Pastikan ini diimport
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { Head, router, useForm } from '@inertiajs/vue3';
@@ -186,7 +186,9 @@ const formatRole = (role) => {
                   <svg v-else class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" /></svg>
                 </button>
               </div>
+              <InputError class="mt-2" :message="form.errors.password" />
             </div>
+
             <div class="relative">
               <InputLabel for="password_confirmation" value="Confirm Password" />
               <div class="relative mt-1">
@@ -196,14 +198,15 @@ const formatRole = (role) => {
                   <svg v-else class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" /></svg>
                 </button>
               </div>
+              <InputError class="mt-2" :message="form.errors.password_confirmation" />
             </div>
           </div>
           <p v-if="isPasswordMismatch" class="text-sm text-red-600 animate-pulse">Passwords do not match!</p>
 
           <div class="flex justify-end gap-3 mt-6">
-            <SecondaryButton @click="handleCloseForm">Cancel</SecondaryButton>
-            <PrimaryButton :disabled="form.processing || isPasswordMismatch">
-              {{ isEditMode ? 'Update User' : 'Create User' }}
+            <SecondaryButton @click="handleCloseForm" :disabled="form.processing">Cancel</SecondaryButton>
+            <PrimaryButton :disabled="form.processing || isPasswordMismatch" :class="{ 'opacity-25': form.processing }">
+               {{ form.processing ? 'Saving...' : (isEditMode ? 'Update User' : 'Create User') }}
             </PrimaryButton>
           </div>
         </form>

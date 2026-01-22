@@ -74,9 +74,14 @@ const handleBlur = () => {
 
 onMounted(() => {
     if (model.value) {
-        search.value = props.options.find(o => o.id === model.value).name;
+        const selectedOption = props.options.find(o => o[props.valueKey] === model.value);
+        
+        if (selectedOption) {
+            search.value = selectedOption[props.label];
+        }
     }
-    if (input.value.hasAttribute('autofocus')) {
+    
+    if (input.value && input.value.hasAttribute('autofocus')) {
         input.value.focus();
     }
 });

@@ -77,6 +77,11 @@ const handleReply = (id) => {
   }
 };
 
+const markReviewDone = (taskId, reviewerId) => {
+  if (!confirm('Mark review as completed?')) return;
+  router.put(route('task.review.complete', { id: taskId, reviewerId }));
+};
+
 const handleClose = () => {
   if (confirm('Are you sure you want to close this task?')) {
     router.put(route('task.close', props.task.id));
@@ -106,9 +111,15 @@ const props = defineProps({
   prs: {},
 });
 
-const formatDate = (date) => {
+// --- UPDATED FORMAT DATE (Bisa pakai Jam) ---
+const formatDate = (date, withTime = false) => {
   if (!date) return '-';
-  return moment(date).format('DD MMMM YYYY');
+  // Format default: 21 January 2026
+  let formatString = 'DD MMMM YYYY';
+  // Kalau butuh jam (untuk komentar): 21 Jan 2026, 14:30
+  if (withTime) formatString = 'DD MMM YYYY, HH:mm';
+  
+  return moment(date).format(formatString);
 };
 
 const formatJsonList = (jsonData) => {
@@ -264,12 +275,7 @@ const visibleButtons = computed(() => {
 
     <div v-if="openCreateEditForm" class="fixed inset-0 z-[100] px-4 flex items-center justify-center bg-black/60 backdrop-blur-sm">
       <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-5xl w-full p-8 relative animate-in fade-in zoom-in duration-300 overflow-y-auto max-h-[90vh]">
-        <TaskCreateEditForm 
-          :task="selectedTask" 
-          :projects="projects" 
-          :isEditMode="isEditMode" 
-          @close="handleCloseForm" 
-        />
+        <TaskCreateEditForm :task="selectedTask" :projects="projects" :isEditMode="isEditMode" @close="handleCloseForm" />
       </div>
     </div>
 
@@ -393,27 +399,56 @@ const visibleButtons = computed(() => {
           </div>
 
           <div class="p-6">
-            <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Pull Request</h3>
-            <div v-for="pr in prs" :key="pr.id" class="border border-indigo-400 dark:border-indigo-800 rounded-md pt-4 px-4 mb-3" :class="{ 'pb-4': !pr.replies?.length, 'pb-1': pr.replies?.length }">
-              <div class="flex justify-between items-end">
-                <div>
-                  <label class="text-sm font-medium text-gray-600 dark:text-gray-400">From: {{ getNameUser(pr.from) }}</label>
-                  <div v-for="link in pr.pr_links" :key="link">
-                    <a :href="'//' + link" target="_blank" class="text-indigo-600 dark:text-indigo-400 hover:underline block">{{ link }}</a>
-                  </div>
-                  <p class="text-gray-800 dark:text-gray-200 whitespace-pre-wrap">{{ pr.comment }}</p>
-                </div>
-                <a @click="handleReply(pr.id)" class="cursor-pointer pe-3 text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:underline">reply</a>
+            <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Pull Request & Comments</h3>
+            
+            <div v-for="pr in prs" :key="pr.id" class="border border-indigo-400 dark:border-indigo-800 rounded-md pt-4 px-4 mb-4 bg-white dark:bg-gray-800" :class="{ 'pb-4': !pr.replies?.length, 'pb-2': pr.replies?.length }">
+              
+              <div class="flex justify-between items-start mb-2 border-b border-gray-100 dark:border-gray-700 pb-2">
+                <span class="font-bold text-gray-800 dark:text-gray-200 text-sm">
+                  {{ getNameUser(pr.from) }}
+                </span>
+                <span class="text-xs text-gray-500 dark:text-gray-400">
+                  {{ formatDate(pr.created_at, true) }}
+                </span>
               </div>
-              <div v-for="r in pr.replies" :key="r.id" class="mt-5 ms-10">
-                <div class="border border-indigo-400 dark:border-indigo-800 rounded-md p-4 mb-2">
-                  <label class="text-sm font-medium text-gray-600 dark:text-gray-400">From: {{ getNameUser(r.from) }}</label>
-                  <div v-for="link in r.pr_links" :key="link">
-                    <a :href="'//' + link" target="_blank" class="text-indigo-600 dark:text-indigo-400 hover:underline block">{{ link }}</a>
+
+              <div class="flex flex-col">
+                <div v-if="pr.pr_links && pr.pr_links.length > 0" class="mb-2">
+                   <div v-for="link in pr.pr_links" :key="link">
+                    <a :href="'//' + link" target="_blank" class="text-indigo-600 dark:text-indigo-400 hover:underline text-sm break-all">🔗 {{ link }}</a>
                   </div>
-                  <p class="text-gray-800 dark:text-gray-200 whitespace-pre-wrap">{{ r.comment }}</p>
+                </div>
+                
+                <p class="text-gray-700 dark:text-gray-300 whitespace-pre-wrap text-sm mb-3">{{ pr.comment }}</p>
+                
+                <div class="flex justify-end">
+                   <button @click="handleReply(pr.id)" class="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 hover:underline">
+                     Reply
+                   </button>
                 </div>
               </div>
+
+              <div v-if="pr.replies && pr.replies.length > 0" class="mt-3 pl-4 border-l-2 border-indigo-200 dark:border-gray-600 space-y-3">
+                <div v-for="r in pr.replies" :key="r.id" class="bg-gray-50 dark:bg-gray-700/50 p-3 rounded-md">
+                  <div class="flex justify-between items-center mb-1">
+                    <span class="font-semibold text-xs text-gray-700 dark:text-gray-300">
+                      {{ r.user ? r.user.name : getNameUser(r.from) }}
+                    </span>
+                    <span class="text-[10px] text-gray-400">
+                      {{ formatDate(r.created_at, true) }}
+                    </span>
+                  </div>
+                  
+                  <div v-if="r.pr_links && r.pr_links.length > 0" class="mb-1">
+                     <div v-for="link in r.pr_links" :key="link">
+                      <a :href="'//' + link" target="_blank" class="text-indigo-500 dark:text-indigo-300 hover:underline text-xs break-all">🔗 {{ link }}</a>
+                    </div>
+                  </div>
+
+                  <p class="text-gray-600 dark:text-gray-400 whitespace-pre-wrap text-xs">{{ r.comment }}</p>
+                </div>
+              </div>
+
             </div>
           </div>
 
