@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Task;
 use App\Models\User;
-use App\Models\Client;
+use App\Models\ProjectOwner;
 use App\Models\Project;
 use App\Models\PullRequest;
 use App\Models\Logtime;
