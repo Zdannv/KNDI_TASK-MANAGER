@@ -2,7 +2,7 @@
 
 namespace App\Imports;
 
-use App\Models\Client;
+use App\Models\ProjectOwner;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithValidation;
