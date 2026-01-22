@@ -40,7 +40,7 @@ class AttendanceController extends Controller
         $attendances = $attendanceQuery->get();
         $users = User::orderBy('name')->get();
 
-        return Inertia::render('Attendance/List', compact('attendances', 'users'));
+        return Inertia::render('Attendance/Index', compact('attendances', 'users'));
     }
 
     public function export(Request $request)
