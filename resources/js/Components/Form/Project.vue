@@ -22,7 +22,7 @@ const props = defineProps({
 
 const form = useForm({
     name: props.project?.name || '',
-    projectOwners_id: props.project?.projectOwners_id || Number(props.projectOwnerId) || '',
+    project_owner_id: props.project?.project_owner_id || Number(props.projectOwnerId) || '',
     _method: props.isEditMode ? 'PUT' : undefined,
 });
 
@@ -30,7 +30,7 @@ const submitForm = () => {
     const routeName = props.isEditMode ? 'project.update' : 'project.store';
     const routeParams = props.isEditMode ? props.project.id : undefined;
 
-    form.post(route(routeName, {'id': routeParams, 'projectOwners_id': queryParams.value.projectOwners_id}), {
+    form.post(route(routeName, {'id': routeParams, 'project_owner_id': queryParams.value.projectOwners_id}), {
         onFinish: () => emit('close'),
     });
 };
@@ -62,17 +62,17 @@ const cancel = () => {
             </div>
 
             <div>
-                <InputLabel for="projectOwners_id" value="Project owner" />
+                <InputLabel for="project_owner_id" value="Project owner" />
                 <SelectInput
-                    id="projectOwners_id"
-                    v-model="form.projectOwners_id"
+                    id="project_owner_id"
+                    v-model="form.project_owner_id"
                     :options="projectOwners"
                     label="name"
                     valueKey="id"
                     class="mt-1 block w-full"
                     placeholder="Search or select a client..."
                 />
-                <InputError class="mt-2" :message="form.errors.projectOwners_id" />
+                <InputError class="mt-2" :message="form.errors.project_owner_id" />
             </div>
 
             <div class="flex justify-end gap-4">

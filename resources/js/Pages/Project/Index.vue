@@ -38,7 +38,7 @@ const handleCloseForm = () => {
 
 const handleDelete = (id) => {
   if (confirm('Are you sure you want to delete this project?')) {
-    router.delete(route('project.destroy', { id, client_id: queryParams.value.client_id }));
+    router.delete(route('project.destroy', { id, project_id: queryParams.value.project_owner_id }));
   }
 };
 
@@ -53,7 +53,7 @@ const handleEdit = (id) => {
 
 const props = defineProps({
   projects: {},
-  clients: {},
+  projectOwners: {},
   users: {}
 });
 
@@ -103,8 +103,8 @@ const getNameUser = (id) => {
       >
         <ProjectForm
           :project="selectedProject"
-          :clients="clients"
-          :clientId="queryParams.client_id"
+          :projectOwners="projectOwners"
+          :projectOwnerId="queryParams.project_owner_id"
           :isEditMode="isEditMode"
           @close="handleCloseForm"
         />
@@ -155,7 +155,7 @@ const getNameUser = (id) => {
                 </td>
                 <td class="p-4 border-t border-slate-200 dark:border-slate-800 align-middle">
                   <p class="block font-sans text-sm antialiased font-normal leading-normal">
-                    {{ project.client?.name || '-' }}
+                    {{ project.project_owner?.name || '-' }}
                   </p>
                 </td>
                 <td class="p-4 border-t border-slate-200 dark:border-slate-800 align-middle">
