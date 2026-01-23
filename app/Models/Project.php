@@ -16,9 +16,9 @@ class Project extends Model
         'isDeleted'
     ];
 
-    public function client()
+    public function projectOwner()
     {
-        return $this->belongsTo(Client::class);
+        return $this->belongsTo(ProjectOwner::class, 'project_owner_id');
     }
 
     public function tasks()
