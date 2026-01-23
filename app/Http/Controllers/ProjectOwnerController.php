@@ -47,7 +47,7 @@ class ProjectOwnerController extends Controller
     }
 
     /**
-     * Update the client's data.
+     * Update the ProjectOwner's data.
      */
     public function update(Request $request, $id): RedirectResponse
     {
