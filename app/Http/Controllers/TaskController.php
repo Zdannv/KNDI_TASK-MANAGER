@@ -58,7 +58,7 @@ class TaskController extends Controller
         $tasks = $tasksQuery->orderByRaw('ISNULL(due_date), due_date ASC')->get();
         
         // Memuat client agar tidak error di frontend
-        $projects = Project::with('client')->where('isDeleted', false)->get();
+        $projects = Project::with('projectOwner')->where('isDeleted', false)->get();
         
         $users = User::get();
         $communicator = User::where('role', 'co')->get();
@@ -414,8 +414,8 @@ class TaskController extends Controller
         $task = Task::with(['logtimes','reviewers.user','pullRequests.replies.user', 'pullRequests.user'])->findOrFail($id);
 
         $users = User::get();
-        $project = Project::where('id', $task->project_id)->with('client')->first();
-        $projects = Project::with('client')->get();
+        $project = Project::where('id', $task->project_id)->with('projectOwner')->first();
+        $projects = Project::with('projectOwner')->get();
 
         $communicator = User::where('role', 'co')->get();
         $programmer = User::where('role', 'pg')->orWhere('role', 'pm')->get();

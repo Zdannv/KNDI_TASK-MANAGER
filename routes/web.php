@@ -4,7 +4,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SkillController;
-use App\Http\Controllers\ClientController;
+use App\Http\Controllers\ProjectOwnerController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\LogtimeController;
@@ -37,10 +37,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/skill/{id}', [SkillController::class, 'destroy'])->name('skill.destroy');
     Route::get('/skill/export', [SkillController::class, 'export'])->name('skill.export')->middleware('role:other,co');
 
-    Route::get('/client', [ClientController::class, 'index'])->name('client.list')->middleware('role:other,pm,co');
-    Route::post('/client', [ClientController::class, 'store'])->name('client.store')->middleware('role:other,pm,co');
-    Route::put('/client/{id}', [ClientController::class, 'update'])->name('client.update')->middleware('role:other,pm,co');
-    Route::delete('/client/{id}', [ClientController::class, 'destroy'])->name('client.destroy')->middleware('role:other,pm,co');
+    Route::get('/project-owner', [ProjectOwnerController::class, 'index'])->name('client.list')->middleware('role:other,pm,co');
+    Route::post('/project-owner', [ProjectOwnerController::class, 'store'])->name('client.store')->middleware('role:other,pm,co');
+    Route::put('/project-owner/{id}', [ProjectOwnerController::class, 'update'])->name('client.update')->middleware('role:other,pm,co');
+    Route::delete('/project-owner/{id}', [ProjectOwnerController::class, 'destroy'])->name('client.destroy')->middleware('role:other,pm,co');
 
     Route::get('/project', [ProjectController::class, 'index'])->name('project.list');
     Route::post('/project', [ProjectController::class, 'store'])->name('project.store')->middleware('role:other,pm,co');

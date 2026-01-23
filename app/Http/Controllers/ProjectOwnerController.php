@@ -9,16 +9,16 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
-class ClientController extends Controller
+class ProjectOwnerController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $clients = Client::where('isDeleted', false)->get();
+        $projectOwners = ProjectOwner::where('isDeleted', false)->get();
         $users = User::get();
-        return Inertia::render('Client/Index', compact('clients', 'users'));   
+        return Inertia::render('ProjectOwner/Index', compact('projectOwners', 'users'));   
     }
 
     /**
@@ -32,7 +32,7 @@ class ClientController extends Controller
             'name' => 'required|string|max:255',
         ]);
 
-        $client = Client::create([
+        $projectOwner = ProjectOwner::create([
             'name' => $request->name,
             'creator' => Auth::id(),
             'updater' => Auth::id()
@@ -40,10 +40,10 @@ class ClientController extends Controller
 
         Auth::user()->logs()->create([
             'target' => 'project owner',
-            'description' => "[CREATE] project owner {$client->name}",
+            'description' => "[CREATE] project owner {$projectOwner->name}",
         ]);
 
-        return redirect(route('client.list', absolute: false))->with('success', "Project owner '{$client->name}' berhasil dibuat!");
+        return redirect(route('client.list', absolute: false))->with('success', "Project owner '{$projectOwner->name}' berhasil dibuat!");
     }
 
     /**
@@ -55,18 +55,18 @@ class ClientController extends Controller
             'name' => 'required|string|max:255',
         ]);
 
-        $client = Client::findOrFail($id);
-        $client->update([
+        $ProjectOwner = ProjectOwner::findOrFail($id);
+        $ProjectOwner->update([
             'name' => $request->name,
             'updater' => Auth::id()
         ]);
 
         Auth::user()->logs()->create([
             'target' => 'project owner',
-            'description' => "[UPDATE] project owner {$client->name}",
+            'description' => "[UPDATE] project owner {$ProjectOwner->name}",
         ]);
 
-        return redirect(route('client.list', absolute: false))->with('success', "Project owner '{$client->name}' berhasil diperbarui!");
+        return redirect(route('client.list', absolute: false))->with('success', "Project owner '{$ProjectOwner->name}' berhasil diperbarui!");
     }
 
     /**
@@ -74,17 +74,17 @@ class ClientController extends Controller
      */
     public function destroy($id): RedirectResponse
     {
-        $client = Client::findOrFail($id);
-        $client->update([
+        $ProjectOwner = ProjectOwner::findOrFail($id);
+        $ProjectOwner->update([
             'isDeleted' => true,
             'updater' => Auth::id()
         ]);
 
         Auth::user()->logs()->create([
             'target' => 'project owner',
-            'description' => "[SOFT DELETE] project owner {$client->name}",
+            'description' => "[SOFT DELETE] project owner {$ProjectOwner->name}",
         ]);
 
-        return redirect(route('client.list', absolute: false))->with('warning', "Project owner '{$client->name}' berhasil dihapus!");
+        return redirect(route('client.list', absolute: false))->with('warning', "Project owner '{$ProjectOwner->name}' berhasil dihapus!");
     }
 }
