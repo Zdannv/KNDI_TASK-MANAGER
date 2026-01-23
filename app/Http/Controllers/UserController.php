@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Task;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
@@ -101,7 +102,7 @@ class UserController extends Controller
                   ->orWhereJsonContains('communicator', $id)
                   ->orWhere('pl', $id);
             })
-            ->exist();
+            ->exists();
 
         if ($user->id === Auth::id()) {
             return back()->with('error', "Tidak dapat menghapus akun sendiri!");

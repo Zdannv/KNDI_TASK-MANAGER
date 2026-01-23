@@ -6,7 +6,7 @@ import Hamburger from '@/Components/Icon/Hamburger.vue';
 import Logout from '@/Components/Icon/Logout.vue';
 import Pen from '@/Components/Icon/Pen.vue';
 import Toast from '@/Components/Toast.vue';
-import Modal from '@/Components/Modal.vue'; // Pastikan komponen Modal ada
+import Modal from '@/Components/Modal.vue'; 
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
@@ -33,7 +33,7 @@ const nameForm = useForm({
 
 const startEditingName = () => {
     nameForm.name = user.value.name;
-    nameForm.email = user.value.email; // Email harus dikirim untuk validasi unique
+    nameForm.email = user.value.email; 
     nameForm.avatar = user.value.avatar;
     isEditingName.value = true;
 };
@@ -61,7 +61,7 @@ const avatarForm = useForm({
     avatar: ''
 });
 
-// Daftar Asset Profile (Pastikan file ini ada di public/avatars/)
+// Daftar Asset Profile
 const avatarAssets = [
     '/avatars/avatar-1.jpeg',
     '/avatars/avatar-2.jpg',
@@ -183,7 +183,7 @@ const getRoleLabel = (role) => {
         >
             <div 
                 :class="{'justify-between pl-6 pr-4': openMenus, 'justify-center px-0': !openMenus}" 
-                class="w-full h-20 flex items-center transition-all shrink-0"
+                class="w-full h-16 flex items-center transition-all shrink-0" 
             >
                 <div v-if="openMenus" class="flex items-center gap-3 overflow-hidden whitespace-nowrap">
                     <img src="/icon_kndi.svg" alt="Logo" class="w-8 h-8 shrink-0" />
@@ -201,27 +201,28 @@ const getRoleLabel = (role) => {
             class="flex-1 flex flex-col min-h-screen transition-all duration-300 ease-in-out pt-16 md:pt-0" 
             :class="{'md:pl-64': openMenus, 'md:pl-20': !openMenus}"
         >
-            <header class="hidden md:flex h-24 items-center justify-between px-8 sticky top-0 z-30 bg-[#F2F5FA] dark:bg-slate-900">
+            <header class="hidden md:flex h-16 items-center justify-between px-6 sticky top-0 z-30 bg-[#F2F5FA] dark:bg-slate-900 border-b border-gray-200/50 dark:border-gray-800/50 backdrop-blur-sm">
                 
                 <div>
-                    <h1 class="text-2xl font-bold text-slate-800 dark:text-white">Hello, {{ user.name.split(' ')[0] }}!</h1>
-                    <p class="text-sm text-slate-400 font-medium">Have a productive day.</p>
+                    <h1 class="text-lg font-bold text-slate-800 dark:text-white">Hello, {{ user.name.split(' ')[0] }}!</h1>
+                    <p class="text-xs text-slate-400 font-medium">Have a productive day.</p>
                 </div>
+
 
                 <div class="flex items-center gap-4">
                     <button 
                         @click="showProfilePanel = true"
-                        class="flex items-center gap-3 p-1.5 pr-4 rounded-full bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition group border border-transparent hover:border-indigo-100"
+                        class="flex items-center gap-3 p-1 pr-3 rounded-full bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition group border border-transparent hover:border-indigo-100"
                     >
-                        <div v-if="user.avatar" class="w-10 h-10 rounded-full overflow-hidden border border-indigo-200">
+                        <div v-if="user.avatar" class="w-8 h-8 rounded-full overflow-hidden border border-indigo-200">
                              <img :src="user.avatar" alt="User Avatar" class="w-full h-full object-cover">
                         </div>
-                        <div v-else class="w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center text-indigo-600 dark:text-indigo-300 font-bold border-2 border-white dark:border-gray-700">
+                        <div v-else class="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center text-indigo-600 dark:text-indigo-300 font-bold text-xs border-2 border-white dark:border-gray-700">
                             {{ getInitials(user.name) }}
                         </div>
 
                         <div class="text-left hidden lg:block">
-                            <p class="text-sm font-bold text-slate-700 dark:text-gray-200 group-hover:text-indigo-600 transition">{{ user.name }}</p>
+                            <p class="text-xs font-bold text-slate-700 dark:text-gray-200 group-hover:text-indigo-600 transition">{{ user.name }}</p>
                         </div>
                     </button>
                 </div>
@@ -253,7 +254,7 @@ const getRoleLabel = (role) => {
                 <div class="flex flex-col items-center mb-8 w-full">
                     
                     <div class="relative group cursor-pointer mb-4" @click="openAvatarModal">
-                        <div class="w-24 h-24 rounded-full bg-indigo-50 border-4 border-white dark:border-gray-700 shadow-lg flex items-center justify-center text-2xl font-bold text-indigo-600 relative overflow-hidden">
+                        <div class="w-20 h-20 rounded-full bg-indigo-50 border-4 border-white dark:border-gray-700 shadow-lg flex items-center justify-center text-xl font-bold text-indigo-600 relative overflow-hidden">
                             <img v-if="user.avatar" :src="user.avatar" class="w-full h-full object-cover" alt="Profile">
                             <span v-else>{{ getInitials(user.name) }}</span>
                             
@@ -263,13 +264,13 @@ const getRoleLabel = (role) => {
                         </div>
                         
                         <div class="absolute bottom-0 right-0 p-1.5 bg-white dark:bg-gray-700 rounded-full shadow-md border border-gray-100 dark:border-gray-600 text-indigo-500 hover:text-indigo-700 transition">
-                            <Pen class="w-4 h-4" />
+                            <Pen class="w-3 h-3" />
                         </div>
                     </div>
 
                     <div class="mt-2 w-full text-center min-h-[40px]">
                         <div v-if="!isEditingName" class="flex items-center justify-center gap-2 group">
-                            <h2 class="text-xl font-bold text-slate-800 dark:text-white truncate max-w-[200px]">{{ user.name }}</h2>
+                            <h2 class="text-lg font-bold text-slate-800 dark:text-white truncate max-w-[200px]">{{ user.name }}</h2>
                             <button @click="startEditingName" class="p-1 text-slate-300 group-hover:text-indigo-500 transition" title="Edit Name">
                                 <Pen class="w-4 h-4" />
                             </button>
