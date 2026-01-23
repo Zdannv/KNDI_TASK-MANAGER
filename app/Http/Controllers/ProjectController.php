@@ -42,7 +42,7 @@ class ProjectController extends Controller
             'project_owner_id' => 'required'
         ]);
 
-        $projectOwner = ProjectOwner::where('id', $request->projectOwner_id)->first();
+        $projectOwner = ProjectOwner::where('id', $request->project_owner_id)->first();
 
         $project = $projectOwner->projects()->create([
             'name' => $request->name,
@@ -69,7 +69,7 @@ class ProjectController extends Controller
             'project_owner_id' => 'required'
         ]);
 
-        $projectOwner = ProjectOwner::where('id', $request->projectOwner_id)->first();
+        $projectOwner = ProjectOwner::findOrFail($request->project_owner_id);
 
         $project = Project::findOrFail($id);
         $project->update([
