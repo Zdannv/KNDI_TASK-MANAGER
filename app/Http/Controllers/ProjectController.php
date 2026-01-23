@@ -17,17 +17,17 @@ class ProjectController extends Controller
      */
     public function index(Request $request)
     {
-        $clientId = $request->query('client_id');
-        $projectsQuery = Project::where('isDeleted', false)->with('client');
-        if ($clientId) {
-            $projectsQuery->where('client_id', $clientId);
+        $projectOwnerId = $request->query('project_owner_id');
+        $projectsQuery = Project::where('isDeleted', false)->with('projectOwner');
+        if ($projectOwnerId) {
+            $projectsQuery->where('project_owner_id', $projectOwnerId);
         }
         $projects = $projectsQuery->get();
 
-        $clients = Client::where('isDeleted', false)->get();
+        $projectOwners = ProjectOwner::where('isDeleted', false)->get();
         $users = User::get();
 
-        return Inertia::render('Project/Index', compact('projects', 'clients', 'users'));   
+        return Inertia::render('Project/Index', compact('projects', 'projectOwners', 'users'));   
     }
 
     /**
@@ -39,12 +39,12 @@ class ProjectController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'client_id' => 'required'
+            'project_owner_id' => 'required'
         ]);
 
-        $client = Client::where('id', $request->client_id)->first();
+        $projectOwner = ProjectOwner::where('id', $request->projectOwner_id)->first();
 
-        $project = $client->projects()->create([
+        $project = $projectOwner->projects()->create([
             'name' => $request->name,
             'creator' => Auth::id(),
             'updater' => Auth::id()
@@ -55,7 +55,7 @@ class ProjectController extends Controller
             'description' => "[CREATE] project {$project->name}",
         ]);
 
-        return redirect(route('project.list', ['client_id' => $request->query('client_id')]))
+        return redirect(route('project.list', ['project_owner_id' => $request->query('project_owner_id')]))
             ->with('success', "Project '{$project->name}' berhasil dibuat!");
     }
 
@@ -66,15 +66,15 @@ class ProjectController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'client_id' => 'required'
+            'project_owner_id' => 'required'
         ]);
 
-        $client = Client::where('id', $request->client_id)->first();
+        $projectOwner = ProjectOwner::where('id', $request->projectOwner_id)->first();
 
         $project = Project::findOrFail($id);
         $project->update([
             'name' => $request->name,
-            'client_id' => $client->id,
+            'project_owner_id' => $projectOwner->id,
             'updater' => Auth::id()
         ]);
 
@@ -83,7 +83,7 @@ class ProjectController extends Controller
             'description' => "[UPDATE] project {$project->name}",
         ]);
 
-        return redirect(route('project.list', ['client_id' => $request->query('client_id')]))
+        return redirect(route('project.list', ['project_owner_id' => $request->query('project_owner_id')]))
             ->with('success', "Project '{$project->name}' berhasil diperbarui!");
     }
 
@@ -106,7 +106,7 @@ class ProjectController extends Controller
             ]);
         }
 
-        return redirect(route('project.list', ['client_id' => $request->query('client_id')]))
+        return redirect(route('project.list', ['project_owner_id' => $request->query('project_owner_id')]))
             ->with('warning', "Project '{$project->name}' berhasil dihapus!");
     }
 }
