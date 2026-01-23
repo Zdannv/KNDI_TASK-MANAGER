@@ -15,14 +15,14 @@ const queryParams = computed(() => {
 
 const props = defineProps({
     project: {},
-    clients: {},
-    clientId: '',
+    projectOwners: {},
+    projectOwnerId: '',
     isEditMode: Boolean,
 });
 
 const form = useForm({
     name: props.project?.name || '',
-    client_id: props.project?.client_id || Number(props.clientId) || '',
+    projectOwners_id: props.project?.projectOwners_id || Number(props.projectOwnerId) || '',
     _method: props.isEditMode ? 'PUT' : undefined,
 });
 
@@ -30,7 +30,7 @@ const submitForm = () => {
     const routeName = props.isEditMode ? 'project.update' : 'project.store';
     const routeParams = props.isEditMode ? props.project.id : undefined;
 
-    form.post(route(routeName, {'id': routeParams, 'client_id': queryParams.value.client_id}), {
+    form.post(route(routeName, {'id': routeParams, 'projectOwners_id': queryParams.value.projectOwners_id}), {
         onFinish: () => emit('close'),
     });
 };
@@ -62,17 +62,17 @@ const cancel = () => {
             </div>
 
             <div>
-                <InputLabel for="client_id" value="Project owner" />
+                <InputLabel for="projectOwners_id" value="Project owner" />
                 <SelectInput
-                    id="client_id"
-                    v-model="form.client_id"
-                    :options="clients"
+                    id="projectOwners_id"
+                    v-model="form.projectOwners_id"
+                    :options="projectOwners"
                     label="name"
                     valueKey="id"
                     class="mt-1 block w-full"
                     placeholder="Search or select a client..."
                 />
-                <InputError class="mt-2" :message="form.errors.client_id" />
+                <InputError class="mt-2" :message="form.errors.projectOwners_id" />
             </div>
 
             <div class="flex justify-end gap-4">
