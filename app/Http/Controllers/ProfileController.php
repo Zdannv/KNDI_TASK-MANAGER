@@ -37,7 +37,9 @@ class ProfileController extends Controller
 
         $request->user()->save();
 
-        return Redirect::route('profile.edit');
+        // GANTI DARI: return Redirect::route('profile.edit');
+        // MENJADI:
+        return Redirect::back(); 
     }
 
     /**
