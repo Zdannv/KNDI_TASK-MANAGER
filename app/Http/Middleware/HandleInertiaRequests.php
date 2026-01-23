@@ -32,7 +32,8 @@ class HandleInertiaRequests extends Middleware
         return [
             ...parent::share($request),
             'auth' => [
-                'user' => $request->user(),
+                // Load relasi skills agar tersedia di Vue
+                'user' => $request->user()?->load('skills'),
             ],
 
             'flash' => fn () => [
