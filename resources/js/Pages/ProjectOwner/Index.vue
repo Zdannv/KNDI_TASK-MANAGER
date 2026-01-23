@@ -38,16 +38,16 @@ const handleDelete = (id) => {
 };
 
 const handleEdit = (id) => {
-  const client = props.clients.find(c => c.id === id);
-  if (client) {
+  const projectOwner = props.projectOwners.find(c => c.id === id);
+  if (projectOwner) {
     isEditMode.value = true;
-    selectedClient.value = client;
+    selectedClient.value = projectOwner;
     openForm.value = true;
   }
 };
 
 const props = defineProps({
-  clients: {},
+  projectOwners: {},
   users: {}
 });
 
@@ -58,7 +58,7 @@ const getNameUser = (id) => {
 </script>
 
 <template>
-  <Head title="Clients" />
+  <Head title="projectOwners" />
   <AuthenticatedLayout>
     <template #header>
       <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-8">
@@ -95,7 +95,7 @@ const getNameUser = (id) => {
       <div
         class="bg-white dark:bg-gray-800 rounded-lg shadow-lg max-w-lg w-full p-6 relative animate-in fade-in zoom-in duration-200"
       >
-        <ClientForm :client="selectedClient" :isEditMode="isEditMode" @close="handleCloseForm" />
+        <ClientForm :projectOwners="selectedClient" :isEditMode="isEditMode" @close="handleCloseForm" />
       </div>
     </div>
 
@@ -126,38 +126,38 @@ const getNameUser = (id) => {
               </tr>
             </thead>
             <tbody>
-              <tr v-for="client in clients" :key="client.id" class="hover:bg-white/40 dark:hover:bg-slate-800/40 transition-colors">
+              <tr v-for="projectOwners in projectOwners" :key="projectOwners.id" class="hover:bg-white/40 dark:hover:bg-slate-800/40 transition-colors">
                 <td class="p-4 border-t border-slate-200 dark:border-slate-800 align-middle">
-                  <p class="block font-sans text-sm antialiased font-normal leading-normal">{{ client.id }}</p>
+                  <p class="block font-sans text-sm antialiased font-normal leading-normal">{{ projectOwners.id }}</p>
                 </td>
                 <td class="p-4 border-t border-slate-200 dark:border-slate-800 align-middle">
                   <a
-                    :href="route('project.list', { client_id: client.id })"
+                    :href="route('project.list', { projectOwners_id: projectOwners.id })"
                     class="block font-sans text-sm antialiased font-bold leading-normal text-indigo-600 dark:text-indigo-400 hover:underline"
                   >
-                    {{ client.name }}
+                    {{ projectOwners.name }}
                   </a>
                 </td>
                 <td class="p-4 border-t border-slate-200 dark:border-slate-800 align-middle">
                   <p class="block font-sans text-sm antialiased font-normal leading-normal">
-                    {{ getNameUser(client.creator) }}
+                    {{ getNameUser(projectOwners.creator) }}
                   </p>
                 </td>
                 <td class="p-4 border-t border-slate-200 dark:border-slate-800 align-middle">
                   <p class="block font-sans text-sm antialiased font-normal leading-normal">
-                    {{ getNameUser(client.updater) }}
+                    {{ getNameUser(projectOwners.updater) }}
                   </p>
                 </td>
                 <td v-if="['other', 'pm', 'co'].includes(role)" class="p-4 border-t border-slate-200 dark:border-slate-800 align-middle">
                   <div class="flex gap-4 justify-center items-center text-sm">
                     <a
-                      @click.prevent="handleEdit(client.id)"
+                      @click.prevent="handleEdit(projectOwners.id)"
                       class="cursor-pointer text-indigo-600 hover:text-indigo-800 dark:text-gray-200 dark:hover:text-indigo-400 font-medium transition-colors"
                     >
                       Edit
                     </a>
                     <a
-                      @click.prevent="handleDelete(client.id)"
+                      @click.prevent="handleDelete(projectOwners.id)"
                       class="cursor-pointer text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 font-medium transition-colors"
                     >
                       Delete
