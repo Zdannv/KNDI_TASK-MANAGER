@@ -1,9 +1,8 @@
 <script setup>
 import { computed } from "vue";
-import { usePage } from "@inertiajs/vue3";
-import NavLink from "@/Components/NavLink.vue";
+import { Link, usePage } from "@inertiajs/vue3";
 
-// Import Semua Icon
+// Import Icon
 import User from "@/Components/Icon/User.vue";
 import Build from "@/Components/Icon/Build.vue";
 import Folder from "@/Components/Icon/Folder.vue";
@@ -16,121 +15,118 @@ import Cloud from "@/Components/Icon/Cloud.vue";
 import UserPlus from "@/Components/Icon/UserPlus.vue";
 
 const props = defineProps({
-    modelValue: Boolean,
+    sidebarOpen: Boolean,
 });
 
 const page = usePage();
 const userRole = computed(() => page.props.auth.user.role);
 
-// Daftar Konfigurasi Menu (Array)
-const menuItems = computed(() => [
-    {
-        label: "Dashboard",
-        route: "dashboard",
-        icon: News,
-        show: ["other", "pm"].includes(userRole.value),
-        active: route().current("dashboard"),
-    },
-    {
-        label: "Users",
-        route: "user.list",
-        icon: User,
-        show: ["other", "pm"].includes(userRole.value),
-        active: route().current("user.list"),
-    },
-    {
-        label: "Project Owner",
-        route: "client.list",
-        icon: Build,
-        show: ["other", "pm", "co"].includes(userRole.value),
-        active: route().current("client.list"),
-    },
-    {
-        label: "Projects",
-        route: "project.list",
-        icon: Folder,
-        show: true, 
-        active: route().current("project.list"),
-    },
-    {
-        label: "Tasks",
-        route: "task.list",
-        icon: Document,
-        show: true,
-        active: route().current("task.list") || route().current("task.show"),
-    },
-    {
-        label: "Logtime",
-        route: "logtime.list",
-        icon: Clock,
-        show: true,
-        active: route().current("logtime.list"),
-    },
-    {
-        label: "Program Log",
-        route: "log.list",
-        icon: Warning,
-        show: userRole.value === "pm",
-        active: route().current("log.list"),
-    },
-    {
-        label: "Skill",
-        route: "skill.list",
-        icon: Book,
-        show: true,
-        active: route().current("skill.list"),
-    },
-        {
-        label: "Attendance",
-        route: "attendance",
-        icon: UserPlus,
-        show: userRole.value === "other",
-        active: route().current("attendance"),
-    },
-    {
-        label: "Import",
-        route: "import.index",
-        icon: Cloud,
-        show: ["other", "co"].includes(userRole.value),
-        active: route().current("import.index"),
-    },
+// Helper cek active route
+const isActive = (routePattern) => route().current(routePattern);
+
+// 1. Definisi Menu
+const rawMenuItems = computed(() => [
+    { label: "Dashboard", route: "dashboard", icon: News, show: ["other", "pm"].includes(userRole.value), pattern: "dashboard" },
+    { label: "Users", route: "user.list", icon: User, show: ["other", "pm"].includes(userRole.value), pattern: "user.list" },
+    { label: "Project Owner", route: "client.list", icon: Build, show: ["other", "pm", "co"].includes(userRole.value), pattern: "client.list" },
+    { label: "Projects", route: "project.list", icon: Folder, show: true, pattern: "project.list" },
+    { label: "Tasks", route: "task.list", icon: Document, show: true, pattern: ["task.list", "task.show"] },
+    { label: "Logtime", route: "logtime.list", icon: Clock, show: true, pattern: "logtime.list" },
+    { label: "Program Log", route: "log.list", icon: Warning, show: userRole.value === "pm", pattern: "log.list" },
+    { label: "Skill", route: "skill.list", icon: Book, show: true, pattern: "skill.list" },
+    { label: "Attendance", route: "attendance", icon: UserPlus, show: userRole.value === "other", pattern: "attendance" },
+    { label: "Import", route: "import.index", icon: Cloud, show: ["other", "co"].includes(userRole.value), pattern: "import.index" },
 ]);
+
+// 2. Filter menu yang ditampilkan saja
+const visibleMenuItems = computed(() => {
+    return rawMenuItems.value.filter(item => item.show);
+});
+
+// 3. Cari Index Menu Aktif (0, 1, 2...) untuk posisi slider
+const activeIndex = computed(() => {
+    return visibleMenuItems.value.findIndex(item => {
+        if (Array.isArray(item.pattern)) {
+            return item.pattern.some(p => isActive(p));
+        }
+        return isActive(item.pattern);
+    });
+});
+
+// Konfigurasi Ukuran (Harus sama dengan class CSS)
+const ITEM_HEIGHT = 50; // Tinggi per item (px)
+const GAP = 8; // Gap antar item (px) -> gap-2 = 8px
 </script>
 
 <template>
-    <div class="space-y-4">
-        <template v-for="(menu, index) in menuItems" :key="index">
-            <div v-if="menu.show" class="relative group">
-                <NavLink
-                    :href="route(menu.route)"
-                    :active="menu.active"
-                    class="flex items-center"
-                >
-                    <div
-                        :class="{ 'me-2': modelValue }"
-                        class="p-[5px] border rounded-md border-gray-400 dark:border-gray-600 hover:bg-indigo-100 dark:hover:bg-gray-900 transition-colors"
-                    >
-                        <component :is="menu.icon" />
-                    </div>
-                    
-                    <span
-                        :class="{
-                            hidden: !modelValue,
-                            'inline-flex': modelValue,
-                        }"
-                        class="whitespace-nowrap transition-all duration-300"
-                    >
-                        {{ menu.label }}
-                    </span>
-                </NavLink>
+    <div class="relative flex flex-col gap-2">
+        
+        <div
+            class="absolute left-0 z-0 bg-[#F2F5FA] transition-all duration-500 cubic-bezier(0.34, 1.56, 0.64, 1)"
+            :class="[
+                // Ukuran Tinggi Highlighter
+                'h-[50px]', 
+                
+                // Opacity: Sembunyi jika tidak ada menu aktif (-1)
+                activeIndex === -1 ? 'opacity-0 scale-90' : 'opacity-100 scale-100',
 
-                <span
-                    v-if="!modelValue"
-                    class="absolute left-full ml-2 top-1/2 -translate-y-1/2 bg-indigo-100 dark:bg-gray-800 font-bold text-black dark:text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50 shadow-md"
+                // Style saat Sidebar TERBUKA:
+                // Melengkung di kiri (rounded-l-full), Rata di kanan (rounded-r-none)
+                // Menempel ke kanan (mr-0) agar nyatu dengan konten
+                sidebarOpen 
+                    ? 'w-full ml-4 rounded-l-[30px] rounded-r-none mr-0 shadow-sm' 
+                    
+                // Style saat Sidebar TERTUTUP:
+                // Kotak kecil di tengah
+                    : 'w-[calc(100%-24px)] mx-3 rounded-xl shadow-md'
+            ]"
+            :style="{
+                // MAGIC: Geser posisi Y sesuai urutan menu aktif
+                transform: `translateY(${activeIndex * (ITEM_HEIGHT + GAP)}px)`
+            }"
+        >
+           </div>
+
+        <template v-for="(item, index) in visibleMenuItems" :key="index">
+            <Link
+                :href="route(item.route)"
+                class="group relative z-10 flex items-center h-[50px] font-medium no-underline transition-colors duration-300"
+                :class="[
+                    // Warna Teks
+                    (Array.isArray(item.pattern) ? item.pattern.some(p => isActive(p)) : isActive(item.pattern))
+                        ? 'text-[#0d1b3e]' // Aktif: Gelap (karena background putih ada di belakangnya)
+                        : 'text-slate-400 hover:text-white' // Tidak Aktif: Abu -> Putih
+                ]"
+            >
+                <div 
+                    class="flex items-center justify-center shrink-0 transition-transform duration-300"
+                    :class="[
+                        // Zoom dikit kalau aktif
+                        (Array.isArray(item.pattern) ? item.pattern.some(p => isActive(p)) : isActive(item.pattern)) ? 'scale-110' : 'group-hover:scale-110',
+                        
+                        // Margin menyesuaikan sidebar
+                        sidebarOpen ? 'ml-9 mr-3' : 'w-full'
+                    ]"
                 >
-                    {{ menu.label }}
+                    <component :is="item.icon" class="w-6 h-6" />
+                </div>
+
+                <span 
+                    v-show="sidebarOpen" 
+                    class="whitespace-nowrap transition-opacity duration-300 delay-75"
+                    :class="sidebarOpen ? 'opacity-100' : 'opacity-0 w-0 overflow-hidden'"
+                >
+                    {{ item.label }}
                 </span>
-            </div>
+
+                <div
+                    v-if="!sidebarOpen"
+                    class="absolute left-[calc(100%+10px)] top-1/2 -translate-y-1/2 bg-[#0d1b3e] text-white text-xs font-bold px-3 py-1.5 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap shadow-xl z-50 border border-white/10"
+                >
+                    {{ item.label }}
+                    <div class="absolute top-1/2 -left-1 -translate-y-1/2 border-4 border-transparent border-r-[#0d1b3e]"></div>
+                </div>
+            </Link>
         </template>
     </div>
 </template>

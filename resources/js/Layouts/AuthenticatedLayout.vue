@@ -23,13 +23,9 @@ const user = computed(() => page.props.auth.user);
 // --- Logic Sidebar Kanan (Profile) ---
 const showProfilePanel = ref(false);
 
-// Logic Edit Nama
+// Logic Edit Nama & Avatar (Standard)
 const isEditingName = ref(false);
-const nameForm = useForm({
-    name: '',
-    email: '',
-    avatar: ''
-});
+const nameForm = useForm({ name: '', email: '', avatar: '' });
 
 const startEditingName = () => {
     nameForm.name = user.value.name;
@@ -40,11 +36,8 @@ const startEditingName = () => {
 
 const saveName = () => {
     nameForm.patch(route('profile.update'), {
-        preserveScroll: true,
-        preserveState: true, 
-        onSuccess: () => {
-            isEditingName.value = false;
-        }
+        preserveScroll: true, preserveState: true, 
+        onSuccess: () => { isEditingName.value = false; }
     });
 };
 
@@ -53,45 +46,26 @@ const cancelEditingName = () => {
     nameForm.reset();
 };
 
-// Logic Edit Avatar
 const showAvatarModal = ref(false);
-const avatarForm = useForm({
-    name: '',
-    email: '',
-    avatar: ''
-});
-
+const avatarForm = useForm({ name: '', email: '', avatar: '' });
 const avatarAssets = [
-    '/avatars/avatar-1.jpeg',
-    '/avatars/avatar-2.jpg',
-    '/avatars/avatar-3.jpeg',
-    '/avatars/avatar-4.jpg',
-    '/avatars/avatar-5.jpeg',
-    '/avatars/avatar-6.jpeg',
+    '/avatars/avatar-1.jpeg', '/avatars/avatar-2.jpg', '/avatars/avatar-3.jpeg',
+    '/avatars/avatar-4.jpg', '/avatars/avatar-5.jpeg', '/avatars/avatar-6.jpeg',
 ];
-
 const selectedAvatarTemp = ref('');
 
 const openAvatarModal = () => {
     selectedAvatarTemp.value = user.value.avatar || avatarAssets[0];
     showAvatarModal.value = true;
 };
-
-const selectAvatar = (assetPath) => {
-    selectedAvatarTemp.value = assetPath;
-};
-
+const selectAvatar = (assetPath) => { selectedAvatarTemp.value = assetPath; };
 const saveAvatar = () => {
     avatarForm.name = user.value.name;
     avatarForm.email = user.value.email;
     avatarForm.avatar = selectedAvatarTemp.value;
-
     avatarForm.patch(route('profile.update'), {
-        preserveScroll: true,
-        preserveState: true,
-        onSuccess: () => {
-            showAvatarModal.value = false;
-        }
+        preserveScroll: true, preserveState: true,
+        onSuccess: () => { showAvatarModal.value = false; }
     });
 };
 
@@ -99,51 +73,28 @@ const saveAvatar = () => {
 const getInitialSidebarState = () => {
     if (typeof window !== 'undefined') {
         const savedState = localStorage.getItem('sidebarOpen');
-        if (savedState !== null) {
-            return savedState === 'true';
-        }
+        if (savedState !== null) return savedState === 'true';
         return window.innerWidth >= 768;
     }
     return true;
 };
 
 const openMenus = ref(getInitialSidebarState());
+watch(openMenus, (newValue) => { localStorage.setItem('sidebarOpen', newValue); });
 
-watch(openMenus, (newValue) => {
-  localStorage.setItem('sidebarOpen', newValue);
-});
-
-// --- MUTUAL EXCLUSIVITY LOGIC ---
-// 1. Sidebar Kiri Buka -> Tutup Kanan
-watch(openMenus, (isOpen) => {
-    if (isOpen) {
-         showProfilePanel.value = false;
-    }
-});
-
-// 2. Sidebar Kanan Buka -> Tutup Kiri
+// Mutual Exclusivity
+watch(openMenus, (isOpen) => { if (isOpen) showProfilePanel.value = false; });
 watch(showProfilePanel, (isOpen) => {
-    if (isOpen) {
-        openMenus.value = false;
-    } else {
-        if (window.innerWidth >= 1024) {
-             openMenus.value = true;
-        }
-    }
+    if (isOpen) openMenus.value = false;
+    else { if (window.innerWidth >= 1024) openMenus.value = true; }
 });
 
-// --- Actions & Utils ---
-const logout = () => {
-    router.post(route('logout'));
-};
-
+const logout = () => { router.post(route('logout')); };
 const getInitials = (name) => {
     if (!name) return 'U';
     const names = name.split(' ');
     let initials = names[0].substring(0, 1).toUpperCase();
-    if (names.length > 1) {
-        initials += names[names.length - 1].substring(0, 1).toUpperCase();
-    }
+    if (names.length > 1) initials += names[names.length - 1].substring(0, 1).toUpperCase();
     return initials;
 };
 </script>
@@ -173,7 +124,7 @@ const getInitials = (name) => {
 
             <div v-if="openMenus" class="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 shadow-xl overflow-y-auto max-h-[80vh]">
                 <div class="flex flex-col p-4 space-y-4">
-                    <Menus v-model="openMenus" />
+                    <Menus :sidebarOpen="true" />
                 </div>
             </div>
         </nav>
@@ -204,25 +155,17 @@ const getInitials = (name) => {
                 </button>
             </div>
 
-            <div class="flex-1 overflow-y-auto py-6 custom-sidebar-menu no-scrollbar relative z-10">
-                <Menus v-model="openMenus" />
+            <div class="flex-1 overflow-y-auto py-6 no-scrollbar relative z-10">
+                <Menus :sidebarOpen="openMenus" />
             </div>
-
-            </nav>
+        </nav>
 
 
         <div 
             class="flex-1 flex flex-col min-h-screen transition-all duration-500 ease-out pt-16 md:pt-0" 
             :class="{
-                // Sidebar Kiri Buka
                 'md:pl-[20rem] md:pr-0': openMenus && !showProfilePanel, 
-                
-                // Sidebar Kiri Tutup (Kecil)
                 'md:pl-[8rem] md:pr-0': !openMenus && !showProfilePanel,
-                
-                // Profile Sidebar Kanan Buka
-                // pl-6: Jarak kiri sedikit
-                // pr-[22rem]: Lebar sidebar (20rem) + margin (2rem)
                 'md:pl-6 md:pr-[22rem]': showProfilePanel
             }"
         >
@@ -357,121 +300,5 @@ const getInitials = (name) => {
 .no-scrollbar {
     -ms-overflow-style: none;
     scrollbar-width: none;
-}
-
-/* =================================================================
-   SIDEBAR STYLING - THE "CURVE" EFFECT
-   ================================================================= */
-
-/* Container Menu */
-:deep(.custom-sidebar-menu ul) {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-/* Base Link Style */
-:deep(.custom-sidebar-menu a) {
-    position: relative;
-    display: flex;
-    align-items: center;
-    height: 50px;
-    padding-left: 2rem;
-    color: #94a3b8; /* text-slate-400 */
-    text-decoration: none;
-    font-weight: 500;
-    transition: all 0.2s ease;
-    
-    /* Default: Rounded di KIRI saja */
-    margin-left: 1.5rem;
-    border-top-left-radius: 30px;
-    border-bottom-left-radius: 30px;
-    
-    /* Penting: Kanan harus 0 agar menempel dinding */
-    margin-right: 0;
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-}
-
-:deep(.custom-sidebar-menu a:hover:not(.active)) {
-    color: white;
-}
-
-/* ----------------------------------------------------------------
-   STATE ACTIVE: OPEN SIDEBAR
-   ---------------------------------------------------------------- */
-nav.w-72 :deep(.custom-sidebar-menu a.active) {
-    background-color: #F2F5FA; 
-    color: #0d1b3e; /* Biru Gelap */
-    font-weight: 700;
-    z-index: 10;
-}
-
-/* Ikon Active */
-nav.w-72 :deep(.custom-sidebar-menu a.active svg),
-nav.w-72 :deep(.custom-sidebar-menu a.active img) {
-    color: #0d1b3e;
-    transform: scale(1.1);
-}
-
-/* Curve Atas */
-nav.w-72 :deep(.custom-sidebar-menu a.active::before) {
-    content: "";
-    position: absolute;
-    right: 0;
-    top: -30px; 
-    width: 30px;
-    height: 30px;
-    background-color: transparent; 
-    border-radius: 50%;
-    box-shadow: 15px 15px 0 0 #F2F5FA; 
-    pointer-events: none;
-    z-index: 1;
-}
-
-/* Curve Bawah */
-nav.w-72 :deep(.custom-sidebar-menu a.active::after) {
-    content: "";
-    position: absolute;
-    right: 0;
-    bottom: -30px; 
-    width: 30px;
-    height: 30px;
-    background-color: transparent;
-    border-radius: 50%;
-    box-shadow: 15px -15px 0 0 #F2F5FA; 
-    pointer-events: none;
-    z-index: 1;
-}
-
-/* ----------------------------------------------------------------
-   STATE ACTIVE: CLOSED SIDEBAR
-   ---------------------------------------------------------------- */
-
-/* Reset style curve saat sidebar kecil */
-nav.w-24 :deep(.custom-sidebar-menu a) {
-    justify-content: center;
-    padding: 0 !important;
-    margin-left: 12px !important;
-    margin-right: 12px !important;
-    border-radius: 16px !important;
-}
-
-/* Matikan Curve */
-nav.w-24 :deep(.custom-sidebar-menu a::before),
-nav.w-24 :deep(.custom-sidebar-menu a::after) {
-    display: none !important;
-}
-
-/* Style Active Simple */
-nav.w-24 :deep(.custom-sidebar-menu a.active) {
-    background-color: white;
-    color: #0d1b3e;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-}
-
-/* Sembunyikan teks */
-nav.w-24 :deep(.custom-sidebar-menu span) {
-    display: none;
 }
 </style>
