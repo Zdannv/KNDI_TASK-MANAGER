@@ -10,6 +10,7 @@ import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
+import UpdatePasswordForm from '@/Pages/Profile/Partials/UpdatePasswordForm.vue'; // Import Form Update Password
 
 // Props
 defineProps({
@@ -67,6 +68,17 @@ const saveAvatar = () => {
         preserveScroll: true, preserveState: true,
         onSuccess: () => { showAvatarModal.value = false; }
     });
+};
+
+// --- Logic Ganti Password (NEW) ---
+const showPasswordModal = ref(false);
+
+const openPasswordModal = () => {
+    showPasswordModal.value = true;
+};
+
+const closePasswordModal = () => {
+    showPasswordModal.value = false;
 };
 
 // --- Logic Sidebar Kiri (Navigation) ---
@@ -261,7 +273,17 @@ const getInitials = (name) => {
                         </div>
                     </div>
 
-                    <div class="mt-auto pt-6 border-t border-gray-100 dark:border-gray-700">
+                    <div class="mt-auto pt-6 border-t border-gray-100 dark:border-gray-700 space-y-2">
+                        <button 
+                            @click="openPasswordModal"
+                            class="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-800 hover:bg-indigo-50 dark:hover:bg-gray-700 hover:text-indigo-600 rounded-lg transition-colors border border-gray-200 dark:border-gray-600"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                            </svg>
+                            <span>Change Password</span>
+                        </button>
+
                         <button 
                             @click="logout" 
                             class="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-red-500 bg-red-50 hover:bg-red-100 hover:text-red-600 rounded-lg transition-colors"
@@ -285,6 +307,25 @@ const getInitials = (name) => {
                 <div class="flex justify-end gap-3">
                     <SecondaryButton @click="showAvatarModal = false">Cancel</SecondaryButton>
                     <PrimaryButton @click="saveAvatar" :disabled="avatarForm.processing">Save</PrimaryButton>
+                </div>
+            </div>
+        </Modal>
+
+        <Modal :show="showPasswordModal" @close="closePasswordModal">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-lg font-bold text-gray-900 dark:text-gray-100">
+                        Change Password
+                    </h2>
+                    <button @click="closePasswordModal" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+                
+                <div class="mt-4">
+                    <UpdatePasswordForm @close="closePasswordModal" />
                 </div>
             </div>
         </Modal>
