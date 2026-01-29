@@ -69,14 +69,8 @@ const saveAttendance = async (identifyResult) => {
   formData.append('name', identifyResult.name);
   formData.append('score', identifyResult.score);
 
-  const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-
   try {
-    const response = await axios.post('/attendance/store', formData, {
-      headers: {
-        'X-CSRF-TOKEN': csrfToken
-      }
-    });
+    const response = await axios.post('/attendance/store', formData);
     
     attendanceResult.value = {
       message: response.data.message,
