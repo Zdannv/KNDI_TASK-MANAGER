@@ -3,6 +3,7 @@ import Close from '@/Components/Icon/Close.vue';
 import Gear from '@/Components/Icon/Gear.vue';
 import Download from '@/Components/Icon/Download.vue';
 import Download2 from '@/Components/Icon/Download2.vue';
+import UserPlus from '@/Components/Icon/UserPlus.vue'; // Import Icon Attendance
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import SelectInput from '@/Components/SelectInput.vue';
 import { Head, router, usePage } from '@inertiajs/vue3';
@@ -177,57 +178,69 @@ const resetFilter = () => {
       :class="{ 'opacity-100': isLoaded, 'translate-y-12 opacity-0': !isLoaded }"
     >
       <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-8">
-        <div
-          class="overflow-x-auto bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 shadow-lg dark:shadow-sm shadow-indigo-500 dark:shadow-indigo-800 rounded-lg max-h-[49rem]"
-        >
-          <table class="w-full min-w-[40rem] text-left dark:text-white table-auto">
-            <thead class="bg-gray-200 dark:bg-gray-700 border-b-2 border-gray-300">
-              <tr class="bg-indigo-100 dark:bg-gray-700">
-                <th class="p-4"><p class="text-sm opacity-70">Date</p></th>
-                <th class="p-4"><p class="text-sm opacity-70">Employee Name</p></th>
-                <th class="p-4"><p class="text-sm opacity-70">Check-in Time</p></th>
-                <th class="p-4"><p class="text-sm opacity-70">Check-out Time</p></th>
-              </tr>
-            </thead>
-            <tbody>
-              <template v-for="(group, date) in groupedAttendances" :key="date">
-                <tr class="bg-indigo-50 dark:bg-slate-800 border-t border-gray-300">
-                  <td class="py-2 px-4 italic font-bold text-indigo-700 dark:text-indigo-400" colspan="3">{{ date }}</td>
-                  <td class="py-2 px-4 text-right">
-                    <p class="font-bold text-blue-gray-900 text-sm">Total: {{ group.count }}</p>
-                  </td>
-                </tr>
-                <tr v-for="item in group.items" :key="item.id" class="border-t border-gray-200 hover:bg-white/50 transition-colors">
-                  <td class="p-4 text-sm text-gray-500">{{ formatDate(item.check_in_time) }}</td>
-                  <td class="p-4">
-                     <span class="font-bold text-indigo-600 dark:text-indigo-400">{{ item.user.name }}</span>
-                     <div class="text-xs text-gray-500">{{ item.user.email }}</div>
-                  </td>
-                  
-                  <td class="p-4">
-                    <div class="flex items-center gap-2">
-                        <span class="px-2 py-1 rounded bg-green-100 text-green-800 text-xs font-bold">
-                            {{ formatTime(item.check_in_time) }}
-                        </span>
-                    </div>
-                  </td>
+        
+        <div class="flex flex-col items-start">
+            
+            <div class="relative z-10 -mb-[1px]">
+                <div class="w-40 h-10 bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm border-t border-l border-r border-slate-200 dark:border-slate-800 rounded-t-xl shadow-[0_-2px_5px_rgba(0,0,0,0.02)] relative flex items-center px-4">
+                    <UserPlus class="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+                    <div class="absolute -bottom-[1px] left-0 right-0 h-[2px] bg-white/70 dark:bg-slate-900/70 z-20"></div>
+                </div>
+            </div>
 
-                  <td class="p-4">
-                    <div v-if="item.check_out_time" class="flex items-center gap-2">
-                        <span class="px-2 py-1 rounded bg-red-100 text-red-800 text-xs font-bold">
-                            {{ formatTime(item.check_out_time) }}
-                        </span>
-                    </div>
-                    <span v-else class="text-xs text-gray-400 italic">Not checked out</span>
-                  </td>
+            <div
+            class="w-full overflow-x-auto bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 shadow-lg dark:shadow-sm shadow-indigo-500 dark:shadow-indigo-800 rounded-b-lg rounded-tr-lg rounded-tl-none relative z-0 max-h-[49rem]"
+            >
+            <table class="w-full min-w-[40rem] text-left dark:text-white table-auto">
+                <thead class="bg-gray-200 dark:bg-gray-700 border-b-2 border-gray-300">
+                <tr class="bg-indigo-100 dark:bg-gray-700">
+                    <th class="p-4 rounded-tl-none"><p class="text-sm opacity-70">Date</p></th>
+                    <th class="p-4"><p class="text-sm opacity-70">Employee Name</p></th>
+                    <th class="p-4"><p class="text-sm opacity-70">Check-in Time</p></th>
+                    <th class="p-4 rounded-tr-lg"><p class="text-sm opacity-70">Check-out Time</p></th>
                 </tr>
-              </template>
-              <tr v-if="props.attendances.length === 0">
-                  <td colspan="4" class="p-8 text-center text-gray-500">No attendance data found.</td>
-              </tr>
-            </tbody>
-          </table>
+                </thead>
+                <tbody>
+                <template v-for="(group, date) in groupedAttendances" :key="date">
+                    <tr class="bg-indigo-50 dark:bg-slate-800 border-t border-gray-300">
+                    <td class="py-2 px-4 italic font-bold text-indigo-700 dark:text-indigo-400" colspan="3">{{ date }}</td>
+                    <td class="py-2 px-4 text-right">
+                        <p class="font-bold text-blue-gray-900 text-sm">Total: {{ group.count }}</p>
+                    </td>
+                    </tr>
+                    <tr v-for="item in group.items" :key="item.id" class="border-t border-gray-200 hover:bg-white/50 transition-colors">
+                    <td class="p-4 text-sm text-gray-500">{{ formatDate(item.check_in_time) }}</td>
+                    <td class="p-4">
+                        <span class="font-bold text-indigo-600 dark:text-indigo-400">{{ item.user.name }}</span>
+                        <div class="text-xs text-gray-500">{{ item.user.email }}</div>
+                    </td>
+                    
+                    <td class="p-4">
+                        <div class="flex items-center gap-2">
+                            <span class="px-2 py-1 rounded bg-green-100 text-green-800 text-xs font-bold">
+                                {{ formatTime(item.check_in_time) }}
+                            </span>
+                        </div>
+                    </td>
+
+                    <td class="p-4">
+                        <div v-if="item.check_out_time" class="flex items-center gap-2">
+                            <span class="px-2 py-1 rounded bg-red-100 text-red-800 text-xs font-bold">
+                                {{ formatTime(item.check_out_time) }}
+                            </span>
+                        </div>
+                        <span v-else class="text-xs text-gray-400 italic">Not checked out</span>
+                    </td>
+                    </tr>
+                </template>
+                <tr v-if="props.attendances.length === 0">
+                    <td colspan="4" class="p-8 text-center text-gray-500">No attendance data found.</td>
+                </tr>
+                </tbody>
+            </table>
+            </div>
         </div>
+
       </div>
     </div>
   </AuthenticatedLayout>
