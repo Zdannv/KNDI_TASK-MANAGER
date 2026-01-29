@@ -18,16 +18,12 @@ class AttendanceController extends Controller
         
         $attendanceQuery = Attendance::with('user')->orderBy('check_in_time', 'desc');
 
-        // Filter User
         if (isset($query['user_id'])) {
             $attendanceQuery->where('user_id', $query['user_id']);
         }
 
-        // Filter Date Range (DIPERBAIKI)
         if (!empty($query['from']) && !empty($query['to'])) {
             try {
-                // Kita paksa format d-m-Y sesuai yang dikirim dari Frontend (Vue)
-                // try-catch akan menangkap error jika tanggal yang dikirim "Invalid date"
                 $from = Carbon::createFromFormat('d-m-Y', $query['from'])->startOfDay();
                 $to = Carbon::createFromFormat('d-m-Y', $query['to'])->endOfDay();
                 
@@ -43,17 +39,96 @@ class AttendanceController extends Controller
         return Inertia::render('Attendance/Index', compact('attendances', 'users'));
     }
 
+    public function store(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string',
+        ]);
+
+        $user = User::where('name', $request->name)->first();
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => "User Tidak Ditemukan!",
+            ], 404);
+        }
+
+        $now = Carbon::now();
+        $currentTime = $now->format('H:i');
+
+        if ($currentTime >= '07:00' && $currentTime <= '12:00') {
+            return $this->performCheckIn($user, $now);
+        }
+
+        if ($currentTime >= '16:00' && $currentTime <= '18:00') {
+            return $this->performCheckOut($user, $now);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => "Bukan Waktu Absensi"
+        ], 403);
+    }
+
+    private function performCheckIn($user, $now)
+    {
+        $today = Carbon::today();
+        $exists = Attendance::where('user_id', $user->id)
+            ->whereDate('check_in_time', $today)
+            ->exists();
+
+        if ($exists) {
+            return response()->json([
+                'success' => false,
+                'message' => "Anda sudah melakukan absensi!"
+            ]);
+        }
+
+        Attendance::create([
+            'user_id' => $user->id,
+            'check_in_time' => $now,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => "Selamat Pagi {$user->name}, Check-In Berhasil"
+        ]);
+    }
+
+    private function performCheckOut($user, $now)
+    {
+        $today = Carbon::today();
+        $attendance = Attendance::where('user_id', $user->id)
+            ->whereDate('check_in_time', $today)
+            ->whereNull('check_out_time')
+            ->first();
+
+        if (!$attendance) {
+            return response()->json([
+                'success' => false,
+                'message' => "Data Check-In Tidak Ada atau Anda Sudah Melakukan Absensi!"
+            ]);
+        }
+
+        $attendance->update([
+            'check_out_time' => $now,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => "Selamat Sore {$user->name}, Anda Berhasil Check-Out!",
+        ]);
+    }
+
     public function export(Request $request)
     {
         $query = $request->query();
 
-        // Cek apakah user meminta summary atau detail
         $isSummary = isset($query['summary']) && filter_var($query['summary'], FILTER_VALIDATE_BOOLEAN);
 
-        // Tentukan nama file
         $filename = $isSummary ? 'summary_attendance.xlsx' : 'attendance_report.xlsx';
         
-        // Jika filter per user, tambahkan nama user di nama file
         if (isset($query['user_id'])) {
             $user = User::where('id', $query['user_id'])->first();
             if ($user) {
