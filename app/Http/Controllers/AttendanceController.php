@@ -33,7 +33,7 @@ class AttendanceController extends Controller
             }
         }
 
-        $attendances = $attendanceQuery->get();
+        $attendances = $attendanceQuery->paginate(10)->withQueryString();
         $users = User::orderBy('name')->get();
 
         return Inertia::render('Attendance/Index', compact('attendances', 'users'));

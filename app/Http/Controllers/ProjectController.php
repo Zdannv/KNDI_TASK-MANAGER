@@ -22,8 +22,7 @@ class ProjectController extends Controller
         if ($projectOwnerId) {
             $projectsQuery->where('project_owner_id', $projectOwnerId);
         }
-        $projects = $projectsQuery->get();
-
+        $projects = $projectsQuery->paginate(10)->withQueryString();
         $projectOwners = ProjectOwner::where('isDeleted', false)->get();
         $users = User::get();
 

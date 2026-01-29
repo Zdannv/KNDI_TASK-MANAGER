@@ -16,7 +16,9 @@ class ProjectOwnerController extends Controller
      */
     public function index()
     {
-        $projectOwners = ProjectOwner::where('isDeleted', false)->get();
+        $projectOwners = ProjectOwner::where('isDeleted', false)
+            ->paginate(10)
+            ->withQueryString();
         $users = User::get();
         return Inertia::render('ProjectOwner/Index', compact('projectOwners', 'users'));   
     }

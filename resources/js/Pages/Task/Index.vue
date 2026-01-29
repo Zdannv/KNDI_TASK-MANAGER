@@ -1,5 +1,6 @@
 <script setup>
 import Plus from '@/Components/Icon/Plus.vue';
+import Pagination from '@/Components/Pagination.vue';
 import Pen from '@/Components/Icon/Pen.vue';
 import UserPlus from '@/Components/Icon/UserPlus.vue';
 import Document from '@/Components/Icon/Document.vue';
