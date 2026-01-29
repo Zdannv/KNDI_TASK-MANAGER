@@ -40,7 +40,7 @@ const startCamera = async () => {
     video.value.srcObject = stream;
     isCameraOn.value = true;
     attendanceResult.value = null;
-    scanInterval = setInterval(autoRecognize, 500);  // 2 second
+    scanInterval = setInterval(autoRecognize, 1000);  // 1 second
   } catch(err) {
     alert("Gagal mengakses kamera");
   }
@@ -64,14 +64,19 @@ const stopCamera = async () => {
   }
 };
 
-const saveAttendance = async (identifyResult, blob) => {
+const saveAttendance = async (identifyResult) => {
   const formData = new FormData();
   formData.append('name', identifyResult.name);
-  formData.append('image', blob, 'snapshot.jpg');
   formData.append('score', identifyResult.score);
 
+  const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+
   try {
-    const response = await axios.post('/attendance/store', formData);
+    const response = await axios.post('/attendance/store', formData, {
+      headers: {
+        'X-CSRF-TOKEN': csrfToken
+      }
+    });
     
     attendanceResult.value = {
       message: response.data.message,
@@ -107,7 +112,8 @@ const autoRecognize = async () => {
       };
 
       if (response.name !== 'unknown' && response.score > 0.45) {
-        await saveAttendance(response, blob);
+        console.log("MENYIMPAN ABSENSI");
+        await saveAttendance(response);
       }
     } catch (err) {
       console.error("AI Service Error", err);
