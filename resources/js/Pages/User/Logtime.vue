@@ -4,6 +4,7 @@ import Close from '@/Components/Icon/Close.vue';
 import Gear from '@/Components/Icon/Gear.vue';
 import Download from '@/Components/Icon/Download.vue';
 import Hamburger from '@/Components/Icon/Hamburger.vue';
+import Clock from '@/Components/Icon/Clock.vue'; // Import Icon Logtime
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import LogtimeForm from '@/Components/Form/Logtime.vue';
 import SelectInput from '@/Components/SelectInput.vue';
@@ -239,54 +240,66 @@ const visibleButtons = computed(() => {
       :class="{ 'opacity-100': isLoaded, 'translate-y-12 opacity-0': !isLoaded }"
     >
       <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-8">
-        <div
-          :class="{ 'sm:max-h-[39rem]': options, 'max-h-[49rem]': !options }"
-          class="overflow-x-auto bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 shadow-lg dark:shadow-sm shadow-indigo-500 dark:shadow-indigo-800 rounded-lg"
-        >
-          <table class="w-full min-w-[40rem] text-left dark:text-white table-auto">
-            <thead class="bg-gray-200 dark:bg-gray-700 border-b-2 border-gray-300">
-              <tr class="bg-indigo-100 dark:bg-gray-700">
-                <th class="p-4"><p class="text-sm opacity-70">Date</p></th>
-                <th class="p-4"><p class="text-sm opacity-70">Issue</p></th>
-                <th class="p-4"><p class="text-sm opacity-70">Ticket</p></th>
-                <th class="p-4"><p class="text-sm opacity-70">Time used</p></th>
-                <th v-if="['other', 'co'].includes(role)" class="p-4 text-center"><p class="text-sm opacity-70 uppercase tracking-widest">Action</p></th>
-              </tr>
-            </thead>
-            <tbody>
-              <template v-for="(group, date) in groupedLogtimes" :key="date">
-                <tr class="bg-indigo-50 dark:bg-slate-800 border-t border-gray-300">
-                  <td class="py-2 px-4 italic font-bold text-indigo-700 dark:text-indigo-400" colspan="3">{{ date }}</td>
-                  <td class="py-2 px-4">
-                    <p class="font-bold text-blue-gray-900">{{ group.totalTime }} h</p>
-                  </td>
-                  <td v-if="['other', 'co'].includes(role)" class="py-2 px-4"></td>
+        
+        <div class="flex flex-col items-start">
+            
+            <div class="relative z-10 -mb-[1px]">
+                <div class="w-40 h-10 bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm border-t border-l border-r border-slate-200 dark:border-slate-800 rounded-t-xl shadow-[0_-2px_5px_rgba(0,0,0,0.02)] relative flex items-center px-4">
+                    <Clock class="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+                    <div class="absolute -bottom-[1px] left-0 right-0 h-[2px] bg-white/70 dark:bg-slate-900/70 z-20"></div>
+                </div>
+            </div>
+
+            <div
+            :class="{ 'sm:max-h-[39rem]': options, 'max-h-[49rem]': !options }"
+            class="w-full overflow-x-auto bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 shadow-lg dark:shadow-sm shadow-indigo-500 dark:shadow-indigo-800 rounded-b-lg rounded-tr-lg rounded-tl-none relative z-0"
+            >
+            <table class="w-full min-w-[40rem] text-left dark:text-white table-auto">
+                <thead class="bg-gray-200 dark:bg-gray-700 border-b-2 border-gray-300">
+                <tr class="bg-indigo-100 dark:bg-gray-700">
+                    <th class="p-4 rounded-tl-none"><p class="text-sm opacity-70">Date</p></th>
+                    <th class="p-4"><p class="text-sm opacity-70">Issue</p></th>
+                    <th class="p-4"><p class="text-sm opacity-70">Ticket</p></th>
+                    <th class="p-4"><p class="text-sm opacity-70">Time used</p></th>
+                    <th v-if="['other', 'co'].includes(role)" class="p-4 text-center rounded-tr-lg"><p class="text-sm opacity-70 uppercase tracking-widest">Action</p></th>
                 </tr>
-                <tr v-for="value in group.items" :key="value.id" class="border-t border-gray-200 hover:bg-white/50 transition-colors">
-                  <td class="p-4 text-sm">{{ formatDate(value.date) }}</td>
-                  <td class="p-4">
-                    <a :href="route('task.show', value.task.id)" class="text-sm font-bold text-indigo-600 dark:text-indigo-400 hover:underline">
-                      {{ value.task.issue }}
-                    </a>
-                  </td>
-                  <td class="p-4">
-                    <a :href="'//' + value.task.ticket_link" target="_blank" class="text-sm text-indigo-600 dark:text-indigo-400 hover:underline">
-                      {{ value.task.ticket_link }}
-                    </a>
-                  </td>
-                  <td class="p-4 text-sm">{{ value.time_used }} h</td>
-                  <td v-if="['other', 'co'].includes(role)" class="p-4">
-                    <div class="flex justify-center">
-                      <button @click.prevent="handleDelete(value.id)" class="text-red-600 dark:text-red-400 font-medium hover:underline text-sm">
-                        Delete
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              </template>
-            </tbody>
-          </table>
+                </thead>
+                <tbody>
+                <template v-for="(group, date) in groupedLogtimes" :key="date">
+                    <tr class="bg-indigo-50 dark:bg-slate-800 border-t border-gray-300">
+                    <td class="py-2 px-4 italic font-bold text-indigo-700 dark:text-indigo-400" colspan="3">{{ date }}</td>
+                    <td class="py-2 px-4">
+                        <p class="font-bold text-blue-gray-900">{{ group.totalTime }} h</p>
+                    </td>
+                    <td v-if="['other', 'co'].includes(role)" class="py-2 px-4"></td>
+                    </tr>
+                    <tr v-for="value in group.items" :key="value.id" class="border-t border-gray-200 hover:bg-white/50 transition-colors">
+                    <td class="p-4 text-sm">{{ formatDate(value.date) }}</td>
+                    <td class="p-4">
+                        <a :href="route('task.show', value.task.id)" class="text-sm font-bold text-indigo-600 dark:text-indigo-400 hover:underline">
+                        {{ value.task.issue }}
+                        </a>
+                    </td>
+                    <td class="p-4">
+                        <a :href="'//' + value.task.ticket_link" target="_blank" class="text-sm text-indigo-600 dark:text-indigo-400 hover:underline">
+                        {{ value.task.ticket_link }}
+                        </a>
+                    </td>
+                    <td class="p-4 text-sm">{{ value.time_used }} h</td>
+                    <td v-if="['other', 'co'].includes(role)" class="p-4">
+                        <div class="flex justify-center">
+                        <button @click.prevent="handleDelete(value.id)" class="text-red-600 dark:text-red-400 font-medium hover:underline text-sm">
+                            Delete
+                        </button>
+                        </div>
+                    </td>
+                    </tr>
+                </template>
+                </tbody>
+            </table>
+            </div>
         </div>
+
       </div>
     </div>
   </AuthenticatedLayout>

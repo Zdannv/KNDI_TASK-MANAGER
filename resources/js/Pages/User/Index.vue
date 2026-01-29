@@ -1,9 +1,10 @@
 <script setup>
 import Plus from '@/Components/Icon/Plus.vue';
+import User from '@/Components/Icon/User.vue'; // Import Icon User
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputLabel from '@/Components/InputLabel.vue';
-import InputError from '@/Components/InputError.vue'; // Pastikan ini diimport
+import InputError from '@/Components/InputError.vue'; 
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { Head, router, useForm } from '@inertiajs/vue3';
@@ -215,36 +216,50 @@ const formatRole = (role) => {
 
     <div class="w-full py-8">
       <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-8">
-        <div
-          class="overflow-x-auto bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm border border-slate-200 dark:border-slate-800 shadow-lg dark:shadow-sm shadow-indigo-500 dark:shadow-indigo-800 rounded-lg transition-all duration-700 ease-out delay-100"
+        
+        <div 
+          class="flex flex-col items-start transition-all duration-700 ease-out delay-100"
           :class="{ 'opacity-100': isLoaded, 'translate-y-12 opacity-0': !isLoaded }"
         >
-          <table class="w-full text-left dark:text-white table-auto">
-            <thead>
-              <tr class="bg-indigo-50 dark:bg-gray-700">
-                <th class="p-4"><p class="text-sm opacity-70">No</p></th>
-                <th class="p-4"><p class="text-sm opacity-70">Name</p></th>
-                <th class="p-4"><p class="text-sm opacity-70">Email</p></th>
-                <th class="p-4"><p class="text-sm opacity-70">Role</p></th>
-                <th class="p-4 text-center"><p class="text-sm opacity-70 uppercase tracking-widest">Action</p></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(user, idx) in users" :key="user.id" class="border-t border-slate-200 dark:border-slate-800 hover:bg-white/40 transition-colors">
-                <td class="p-4 align-middle text-sm">{{ idx + 1 }}</td>
-                <td class="p-4 align-middle text-sm font-bold">{{ user.name }}</td>
-                <td class="p-4 align-middle text-sm italic">{{ user.email }}</td>
-                <td class="p-4 align-middle text-sm">{{ formatRole(user.role) }}</td>
-                <td class="p-4 align-middle">
-                  <div class="flex gap-4 justify-center items-center text-sm">
-                    <button @click="handleEdit(user.id)" class="text-indigo-600 dark:text-indigo-400 font-medium hover:underline">Edit</button>
-                    <button @click="handleDelete(user.id)" class="text-red-600 dark:text-red-400 font-medium hover:underline">Delete</button>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+
+          <div class="relative z-10 -mb-[1px]">
+             <div class="w-40 h-10 bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm border-t border-l border-r border-slate-200 dark:border-slate-800 rounded-t-xl shadow-[0_-2px_5px_rgba(0,0,0,0.02)] relative flex items-center px-4">
+                
+                <User class="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+
+                <div class="absolute -bottom-[1px] left-0 right-0 h-[2px] bg-white/70 dark:bg-slate-900/70 z-20"></div>
+             </div>
+          </div>
+          <div
+            class="w-full overflow-x-auto bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm border border-slate-200 dark:border-slate-800 shadow-lg dark:shadow-sm shadow-indigo-500 dark:shadow-indigo-800 rounded-b-lg rounded-tr-lg rounded-tl-none relative z-0"
+          >
+            <table class="w-full text-left dark:text-white table-auto">
+              <thead>
+                <tr class="bg-indigo-50 dark:bg-gray-700">
+                  <th class="p-4 rounded-tl-none"><p class="text-sm opacity-70">No</p></th> <th class="p-4"><p class="text-sm opacity-70">Name</p></th>
+                  <th class="p-4"><p class="text-sm opacity-70">Email</p></th>
+                  <th class="p-4"><p class="text-sm opacity-70">Role</p></th>
+                  <th class="p-4 text-center rounded-tr-lg"><p class="text-sm opacity-70 uppercase tracking-widest">Action</p></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(user, idx) in users" :key="user.id" class="border-t border-slate-200 dark:border-slate-800 hover:bg-white/40 transition-colors">
+                  <td class="p-4 align-middle text-sm">{{ idx + 1 }}</td>
+                  <td class="p-4 align-middle text-sm font-bold">{{ user.name }}</td>
+                  <td class="p-4 align-middle text-sm italic">{{ user.email }}</td>
+                  <td class="p-4 align-middle text-sm">{{ formatRole(user.role) }}</td>
+                  <td class="p-4 align-middle">
+                    <div class="flex gap-4 justify-center items-center text-sm">
+                      <button @click="handleEdit(user.id)" class="text-indigo-600 dark:text-indigo-400 font-medium hover:underline">Edit</button>
+                      <button @click="handleDelete(user.id)" class="text-red-600 dark:text-red-400 font-medium hover:underline">Delete</button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
+
       </div>
     </div>
   </AuthenticatedLayout>
