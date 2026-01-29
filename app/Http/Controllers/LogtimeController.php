@@ -36,7 +36,11 @@ class LogtimeController extends Controller
             $to = Carbon::parse($query['to']);
             $logtimesQuery->whereBetween('date', [$from, $to]);
         }
-        $logtimes = $logtimesQuery->get();
+        
+        // --- PERUBAHAN DISINI ---
+        // Ganti ->get() menjadi ->paginate(10)->withQueryString()
+        // Agar format data cocok dengan komponen Pagination di frontend
+        $logtimes = $logtimesQuery->paginate(10)->withQueryString(); 
 
         $tasksQuery = Task::query()->with('project');
         if (Auth::user()->role == 'pg') {
