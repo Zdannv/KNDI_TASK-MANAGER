@@ -3,7 +3,8 @@ import Close from '@/Components/Icon/Close.vue';
 import Gear from '@/Components/Icon/Gear.vue';
 import Download from '@/Components/Icon/Download.vue';
 import Download2 from '@/Components/Icon/Download2.vue';
-import UserPlus from '@/Components/Icon/UserPlus.vue'; // Import Icon Attendance
+import UserPlus from '@/Components/Icon/UserPlus.vue';
+import Pagination from '@/Components/Pagination.vue'; // 1. Import Pagination
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import SelectInput from '@/Components/SelectInput.vue';
 import { Head, router, usePage } from '@inertiajs/vue3';
@@ -44,21 +45,24 @@ const handleOpenOptions = () => {
 };
 
 const props = defineProps({
-  attendances: Array,
+  attendances: Object, // 2. Ubah Array ke Object untuk Pagination
   users: Array
 });
 
 // Grouping by Date
 const groupedAttendances = computed(() => {
   const grouped = {};
-  props.attendances.forEach(item => {
-    const date = moment(item.check_in_time).format('DD MMMM YYYY');
-    if (!grouped[date]) {
-      grouped[date] = { items: [], count: 0 };
-    }
-    grouped[date].items.push(item);
-    grouped[date].count += 1;
-  });
+  // 3. Akses data array melalui .data
+  if (props.attendances && props.attendances.data) {
+      props.attendances.data.forEach(item => {
+        const date = moment(item.check_in_time).format('DD MMMM YYYY');
+        if (!grouped[date]) {
+          grouped[date] = { items: [], count: 0 };
+        }
+        grouped[date].items.push(item);
+        grouped[date].count += 1;
+      });
+  }
   return grouped;
 });
 
@@ -179,7 +183,9 @@ const resetFilter = () => {
     >
       <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-8">
         
-        <div class="flex flex-col items-start">
+        <div 
+          class="flex flex-col items-start"
+        >
             
             <div class="relative z-10 -mb-[1px]">
                 <div class="w-40 h-10 bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm border-t border-l border-r border-slate-200 dark:border-slate-800 rounded-t-xl shadow-[0_-2px_5px_rgba(0,0,0,0.02)] relative flex items-center px-4">
@@ -233,12 +239,17 @@ const resetFilter = () => {
                     </td>
                     </tr>
                 </template>
-                <tr v-if="props.attendances.length === 0">
+                <tr v-if="props.attendances.data.length === 0">
                     <td colspan="4" class="p-8 text-center text-gray-500">No attendance data found.</td>
                 </tr>
                 </tbody>
             </table>
             </div>
+            
+            <div class="mt-4 flex justify-end w-full">
+                <Pagination :links="attendances.links" />
+            </div>
+
         </div>
 
       </div>

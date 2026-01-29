@@ -177,7 +177,7 @@ const handleSearch = () => {
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="task in tasks" :key="task.id" class="border-t border-slate-200 dark:border-slate-800 hover:bg-white/40 transition-colors">
+                <tr v-for="task in tasks.data" :key="task.id" class="border-t border-slate-200 dark:border-slate-800 hover:bg-white/40 transition-colors">
                   <td class="p-4 align-middle text-sm">{{ task.type }}</td>
                   <td class="p-4 align-middle min-w-[200px] text-sm">
                     {{ [...(task.programmer || []), ...(task.designer || []), ...(task.communicator || [])].map(id => users.find(u => u.id === id)?.name || id).join(', ') || '-' }}
@@ -251,6 +251,11 @@ const handleSearch = () => {
               </tbody>
             </table>
           </div>
+          
+          <div class="mt-4 flex justify-end w-full">
+             <Pagination :links="tasks.links" />
+          </div>
+
         </div>
 
       </div>
