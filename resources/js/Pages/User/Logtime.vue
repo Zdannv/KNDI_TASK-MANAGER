@@ -4,7 +4,8 @@ import Close from '@/Components/Icon/Close.vue';
 import Gear from '@/Components/Icon/Gear.vue';
 import Download from '@/Components/Icon/Download.vue';
 import Hamburger from '@/Components/Icon/Hamburger.vue';
-import Clock from '@/Components/Icon/Clock.vue'; // Import Icon Logtime
+import Clock from '@/Components/Icon/Clock.vue';
+import Pagination from '@/Components/Pagination.vue'; // 1. Import Pagination
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import LogtimeForm from '@/Components/Form/Logtime.vue';
 import SelectInput from '@/Components/SelectInput.vue';
@@ -63,14 +64,18 @@ const handleDelete = (id) => {
 };
 
 const props = defineProps({
-  logtimes: {},
+  logtimes: Object, // 2. Ubah tipe menjadi Object (Pagination structure)
   tasks: {},
   users: {}
 });
 
+// 3. Update grouping logic untuk support pagination (.data)
 const groupedLogtimes = computed(() => {
   const grouped = {};
-  props.logtimes.forEach(item => {
+  // Ambil data dari props.logtimes.data jika ada
+  const list = props.logtimes && props.logtimes.data ? props.logtimes.data : [];
+
+  list.forEach(item => {
     const date = formatDate(item.date);
     if (!grouped[date]) {
       grouped[date] = { items: [], totalTime: 0 };
@@ -298,6 +303,11 @@ const visibleButtons = computed(() => {
                 </tbody>
             </table>
             </div>
+            
+            <div class="mt-4 flex justify-end w-full">
+                <Pagination :links="logtimes.links" />
+            </div>
+
         </div>
 
       </div>

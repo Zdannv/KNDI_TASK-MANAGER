@@ -55,8 +55,9 @@ class TaskController extends Controller
             $tasksQuery->whereJsonContains('designer', Auth::id());
         }
 
-        $tasks = $tasksQuery->orderByRaw('ISNULL(due_date), due_date ASC')->get();
-        
+        $tasks = $tasksQuery->orderByRaw('ISNULL(due_date), due_date ASC')
+            ->paginate(10)
+            ->withQueryString();
         // Memuat client agar tidak error di frontend
         $projects = Project::with('projectOwner')->where('isDeleted', false)->get();
         

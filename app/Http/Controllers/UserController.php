@@ -18,7 +18,9 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::orderBy('role', 'asc')->get();
+        $users = User::orderBy('role', 'asc')
+            ->paginate(10)
+            ->withQueryString();
         return Inertia::render('User/Index', compact('users'));   
     }
 

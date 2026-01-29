@@ -1,6 +1,7 @@
 <script setup>
 import Plus from '@/Components/Icon/Plus.vue';
-import Folder from '@/Components/Icon/Folder.vue'; // Import Icon Folder
+import Folder from '@/Components/Icon/Folder.vue'; 
+import Pagination from '@/Components/Pagination.vue'; // Import Pagination
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ProjectForm from '@/Components/Form/Project.vue';
 import { Head, router, usePage } from '@inertiajs/vue3';
@@ -44,7 +45,8 @@ const handleDelete = (id) => {
 };
 
 const handleEdit = (id) => {
-  const project = props.projects.find(p => p.id === id);
+  // Cari di projects.data karena pagination
+  const project = props.projects.data.find(p => p.id === id);
   if (project) {
     isEditMode.value = true;
     selectedProject.value = project;
@@ -53,7 +55,7 @@ const handleEdit = (id) => {
 };
 
 const props = defineProps({
-  projects: {},
+  projects: {}, // Object Pagination
   projectOwners: {},
   users: {}
 });
@@ -122,12 +124,11 @@ const getNameUser = (id) => {
 
           <div class="relative z-10 -mb-[1px]">
              <div class="w-40 h-10 bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm border-t border-l border-r border-slate-200 dark:border-slate-800 rounded-t-xl shadow-[0_-2px_5px_rgba(0,0,0,0.02)] relative flex items-center px-4">
-                
                 <Folder class="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
-
                 <div class="absolute -bottom-[1px] left-0 right-0 h-[2px] bg-white/70 dark:bg-slate-900/70 z-20"></div>
              </div>
           </div>
+
           <div
             class="w-full overflow-x-auto bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm border border-slate-200 dark:border-slate-800 shadow-lg dark:shadow-sm shadow-indigo-500 dark:shadow-indigo-800 rounded-b-lg rounded-tr-lg rounded-tl-none relative z-0"
           >
@@ -155,7 +156,7 @@ const getNameUser = (id) => {
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="project in projects" :key="project.id" class="hover:bg-white/40 dark:hover:bg-slate-800/40 transition-colors">
+                <tr v-for="project in projects.data" :key="project.id" class="hover:bg-white/40 dark:hover:bg-slate-800/40 transition-colors">
                   <td class="p-4 border-t border-slate-200 dark:border-slate-800 align-middle">
                     <p class="block font-sans text-sm antialiased font-normal leading-normal">{{ project.id }}</p>
                   </td>
@@ -202,6 +203,11 @@ const getNameUser = (id) => {
               </tbody>
             </table>
           </div>
+
+          <div class="mt-4 flex justify-end w-full">
+             <Pagination :links="projects.links" />
+          </div>
+
         </div>
 
       </div>

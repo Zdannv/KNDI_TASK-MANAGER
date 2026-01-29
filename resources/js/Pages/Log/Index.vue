@@ -1,6 +1,7 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import Warning from '@/Components/Icon/Warning.vue'; // Import Icon Warning
+import Warning from '@/Components/Icon/Warning.vue';
+import Pagination from '@/Components/Pagination.vue'; // Import Pagination
 import { Head } from '@inertiajs/vue3';
 import moment from 'moment';
 import { ref, onMounted } from 'vue';
@@ -14,7 +15,7 @@ onMounted(() => {
 });
 
 const props = defineProps({
-  logs: {},
+  logs: {}, // Object Pagination
 });
 
 const formatDate = (date) => {
@@ -79,7 +80,7 @@ const formatDate = (date) => {
                 </tr>
                 </thead>
                 <tbody>
-                <tr v-for="log in logs" :key="log.id" class="border-t border-blue-gray-50 hover:bg-white/40 dark:hover:bg-slate-800/40 transition-colors">
+                <tr v-for="log in logs.data" :key="log.id" class="border-t border-blue-gray-50 hover:bg-white/40 dark:hover:bg-slate-800/40 transition-colors">
                     <td class="p-4 align-middle">
                     <p class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
                         {{ formatDate(log.created_at) }}
@@ -104,6 +105,11 @@ const formatDate = (date) => {
                 </tbody>
             </table>
             </div>
+
+            <div class="mt-4 flex justify-end w-full">
+               <Pagination :links="logs.links" />
+            </div>
+
         </div>
 
       </div>

@@ -1,6 +1,7 @@
 <script setup>
 import Plus from '@/Components/Icon/Plus.vue';
-import User from '@/Components/Icon/User.vue'; // Import Icon User
+import User from '@/Components/Icon/User.vue';
+import Pagination from '@/Components/Pagination.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputLabel from '@/Components/InputLabel.vue';
@@ -19,8 +20,8 @@ const props = defineProps({
 const openForm = ref(false);
 const isEditMode = ref(false);
 const isLoaded = ref(false);
-const showPassword = ref(false);        // State untuk mata password
-const showConfirmPassword = ref(false); // State untuk mata confirm password
+const showPassword = ref(false);        
+const showConfirmPassword = ref(false); 
 
 // --- FORM STATE ---
 const form = useForm({
@@ -61,7 +62,8 @@ const handleCloseForm = () => {
 };
 
 const handleEdit = (id) => {
-  const user = props.users.find(u => u.id === id);
+  // Karena data dipaginate, cari user di users.data
+  const user = props.users.data.find(u => u.id === id);
   if (user) {
     isEditMode.value = true;
     form.id = user.id;
@@ -224,9 +226,7 @@ const formatRole = (role) => {
 
           <div class="relative z-10 -mb-[1px]">
              <div class="w-40 h-10 bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm border-t border-l border-r border-slate-200 dark:border-slate-800 rounded-t-xl shadow-[0_-2px_5px_rgba(0,0,0,0.02)] relative flex items-center px-4">
-                
                 <User class="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
-
                 <div class="absolute -bottom-[1px] left-0 right-0 h-[2px] bg-white/70 dark:bg-slate-900/70 z-20"></div>
              </div>
           </div>
@@ -236,15 +236,17 @@ const formatRole = (role) => {
             <table class="w-full text-left dark:text-white table-auto">
               <thead>
                 <tr class="bg-indigo-50 dark:bg-gray-700">
-                  <th class="p-4 rounded-tl-none"><p class="text-sm opacity-70">No</p></th> <th class="p-4"><p class="text-sm opacity-70">Name</p></th>
+                  <th class="p-4 rounded-tl-none"><p class="text-sm opacity-70">No</p></th>
+                  <th class="p-4"><p class="text-sm opacity-70">Name</p></th>
                   <th class="p-4"><p class="text-sm opacity-70">Email</p></th>
                   <th class="p-4"><p class="text-sm opacity-70">Role</p></th>
                   <th class="p-4 text-center rounded-tr-lg"><p class="text-sm opacity-70 uppercase tracking-widest">Action</p></th>
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="(user, idx) in users" :key="user.id" class="border-t border-slate-200 dark:border-slate-800 hover:bg-white/40 transition-colors">
-                  <td class="p-4 align-middle text-sm">{{ idx + 1 }}</td>
+                <tr v-for="(user, idx) in users.data" :key="user.id" class="border-t border-slate-200 dark:border-slate-800 hover:bg-white/40 transition-colors">
+                  <td class="p-4 align-middle text-sm">{{ (users.current_page - 1) * users.per_page + idx + 1 }}</td>
+                  
                   <td class="p-4 align-middle text-sm font-bold">{{ user.name }}</td>
                   <td class="p-4 align-middle text-sm italic">{{ user.email }}</td>
                   <td class="p-4 align-middle text-sm">{{ formatRole(user.role) }}</td>
@@ -258,6 +260,11 @@ const formatRole = (role) => {
               </tbody>
             </table>
           </div>
+          
+          <div class="mt-4 flex justify-end w-full">
+             <Pagination :links="users.links" />
+          </div>
+
         </div>
 
       </div>
