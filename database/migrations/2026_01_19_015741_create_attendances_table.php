@@ -16,7 +16,6 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->dateTime('check_in_time');
             $table->dateTime('check_out_time')->nullable();
-            $table->string('snapshots')->nullable();
             $table->timestamps();
         });
     }
