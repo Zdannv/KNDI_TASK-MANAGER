@@ -10,7 +10,6 @@ use App\Http\Controllers\TaskController;
 use App\Http\Controllers\LogtimeController;
 use App\Http\Controllers\ImportController;
 use App\Http\Controllers\LogController;
-// Tambahkan controller Attendance di sini
 use App\Http\Controllers\AttendanceController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -22,7 +21,7 @@ Route::get('/', function () {
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
     ]);
-});
+})->name('welcome');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard')->middleware('role:other,pm');
@@ -78,6 +77,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::get('/recognize', function () {
     return Inertia::render('recognize/Index');
 })->name('attendance.recognize');
+
+Route::post('/attendance/store', [AttendanceController::class, 'store'])->name('attendance.store');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
