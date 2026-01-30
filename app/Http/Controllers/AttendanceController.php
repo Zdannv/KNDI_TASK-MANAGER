@@ -12,9 +12,13 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class AttendanceController extends Controller
 {
+    /**
+     * Menampilkan halaman log absensi (Dashboard Admin)
+     */
     public function index(Request $request)
     {
         $query = $request->query();
+        
         $attendanceQuery = Attendance::with('user')->orderBy('check_in_time', 'desc');
 
         if (isset($query['user_id'])) {
@@ -25,8 +29,11 @@ class AttendanceController extends Controller
             try {
                 $from = Carbon::createFromFormat('d-m-Y', $query['from'])->startOfDay();
                 $to = Carbon::createFromFormat('d-m-Y', $query['to'])->endOfDay();
+                
                 $attendanceQuery->whereBetween('check_in_time', [$from, $to]);
-            } catch (\Exception $e) {}
+            } catch (\Exception $e) {
+                // Jika format tanggal salah, filter diabaikan
+            }
         }
 
         $attendances = $attendanceQuery->paginate(10)->withQueryString();
@@ -36,10 +43,13 @@ class AttendanceController extends Controller
     }
 
     /**
-     * API Store: Khusus Face Recognition (Menerima Tipe Check In/Out Explicit)
+     * [BARU] API Store khusus untuk Face Recognition Kiosk
+     * Menerima 'name' dari Python dan 'type' (check_in/out) dari Vue.
+     * Tidak ada batasan jam (bebas jam berapa saja).
      */
     public function apiStore(Request $request)
     {
+        // 1. Validasi Input
         $request->validate([
             'name' => 'required|string',
             'type' => 'required|in:check_in,check_out',
@@ -48,28 +58,34 @@ class AttendanceController extends Controller
         $name = $request->name;
         $type = $request->type;
 
+        // 2. Cari User Berdasarkan Nama
         $user = User::where('name', $name)->first();
 
         if (!$user) {
             return response()->json([
                 'status' => 'error',
                 'name' => $name,
-                'message' => "User '{$name}' tidak ditemukan!",
+                'message' => "User '{$name}' tidak ditemukan di database!",
             ], 404);
         }
 
+        // 3. Cek Data Absen Hari Ini
         $today = Carbon::today();
         $attendance = Attendance::where('user_id', $user->id)
                                 ->whereDate('check_in_time', $today)
                                 ->first();
 
-        // Logika Explicit dari Tombol (Check In / Check Out)
+        // 4. Logika Check In / Check Out
         if ($type === 'check_in') {
+            // --- KASUS CHECK IN ---
             if ($attendance) {
+                // Ambil jam check-in yang sudah ada
+                $jamMasuk = Carbon::parse($attendance->check_in_time)->format('H:i');
+                
                 return response()->json([
                     'status' => 'error',
                     'name' => $user->name,
-                    'message' => "Anda sudah Check-In hari ini!"
+                    'message' => "Anda sudah Check-In hari ini pada pukul {$jamMasuk}!"
                 ]);
             }
 
@@ -85,23 +101,29 @@ class AttendanceController extends Controller
                 'message' => "Berhasil Check-In"
             ]);
 
-        } else { // Check Out
+        } else {
+            // --- KASUS CHECK OUT ---
             if (!$attendance) {
                 return response()->json([
                     'status' => 'error',
                     'name' => $user->name,
-                    'message' => "Anda belum Check-In hari ini!"
+                    'message' => "Anda belum melakukan Check-In hari ini!"
                 ]);
             }
 
+            // Cek apakah user sudah checkout sebelumnya
             if ($attendance->check_out_time) {
+                // Ambil jam check-out yang sudah ada
+                $jamPulang = Carbon::parse($attendance->check_out_time)->format('H:i');
+
                 return response()->json([
                     'status' => 'error',
                     'name' => $user->name,
-                    'message' => "Anda sudah Check-Out hari ini!"
+                    'message' => "Anda sudah Check-Out hari ini pada pukul {$jamPulang}!"
                 ]);
             }
 
+            // Update waktu pulang
             $attendance->update([
                 'check_out_time' => Carbon::now(),
             ]);
@@ -115,8 +137,8 @@ class AttendanceController extends Controller
     }
 
     /**
-     * Store Lama: Update menjadi Otomatis (Auto Detect) tanpa batasan jam.
-     * Logika: Kalau belum masuk -> Check In. Kalau sudah masuk -> Check Out.
+     * [LAMA] Store manual (biasanya dipakai untuk testing / input manual)
+     * Memiliki batasan jam kerja.
      */
     public function store(Request $request)
     {
@@ -151,19 +173,24 @@ class AttendanceController extends Controller
             return $this->performCheckOut($user, $now);
         }
 
-        // KASUS 3: Sudah Check In & Sudah Check Out -> Tolak
+        // KASUS 3: Sudah Check In & Sudah Check Out -> Beri Info Jam
+        $jamPulang = Carbon::parse($attendance->check_out_time)->format('H:i');
+        
         return response()->json([
             'success' => false,
-            'message' => "Anda sudah selesai bekerja hari ini (Sudah Check-Out)."
+            'message' => "Anda sudah selesai bekerja hari ini (Check-Out pukul {$jamPulang})."
         ]);
     }
 
+    /**
+     * Helper untuk method store lama
+     */
     private function performCheckIn($user, $now)
     {
         Attendance::create([
             'user_id' => $user->id,
             'check_in_time' => $now,
-            'status' => 'present' // Pastikan status terisi
+            'status' => 'present'
         ]);
 
         return response()->json([
@@ -172,11 +199,14 @@ class AttendanceController extends Controller
         ]);
     }
 
+    /**
+     * Helper untuk method store lama
+     */
     private function performCheckOut($user, $now)
     {
-        // Cari absen hari ini yang belum check out
+        $today = Carbon::today();
         $attendance = Attendance::where('user_id', $user->id)
-            ->whereDate('check_in_time', Carbon::today())
+            ->whereDate('check_in_time', $today)
             ->whereNull('check_out_time')
             ->first();
 
@@ -200,7 +230,9 @@ class AttendanceController extends Controller
     public function export(Request $request)
     {
         $query = $request->query();
+
         $isSummary = isset($query['summary']) && filter_var($query['summary'], FILTER_VALIDATE_BOOLEAN);
+
         $filename = $isSummary ? 'summary_attendance.xlsx' : 'attendance_report.xlsx';
         
         if (isset($query['user_id'])) {
@@ -213,6 +245,7 @@ class AttendanceController extends Controller
             }
         }
 
+        // Jalankan download Excel
         return Excel::download(new AttendanceMultiSheetExport($query), $filename);
     }
 }
