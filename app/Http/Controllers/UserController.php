@@ -7,8 +7,9 @@ use App\Models\Task;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\Rules;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Validation\Rules;
 use Inertia\Inertia;
 
 class UserController extends Controller
@@ -34,14 +35,23 @@ class UserController extends Controller
             'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
             'role' => ['required', 'in:other,pm,pg,co,ds'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'face_photo' => 'nullable|image|max:2048',
         ]);
+
+        $embedding = null;
+        if ($request->hasFile('face_photo')) {
+            $embedding = $this->getEmbeddingFromPhoto($request->file('face_photo'));
+            // dd($embedding);
+        }
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'role' => $request->role,
             'password' => Hash::make($request->password),
+            'face_embedding' => $embedding
         ]);
+        // dd($user);
 
         Auth::user()->logs()->create([
             'target' => 'user',
@@ -60,6 +70,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|lowercase|email|max:255|unique:users,email,' . $id,
             'role' => ['required', 'in:other,pm,pg,co,ds'],
+            'face_photo' => 'nullable|image|max:2048'
         ];
 
         if ($request->filled('password')) {
@@ -76,6 +87,13 @@ class UserController extends Controller
 
         if ($request->filled('password')) {
             $updateData['password'] = Hash::make($validated['password']);
+        }
+
+        if ($request->hasFile('face_photo')) {
+            $embedding = $this->getEmbeddingFromPhoto($request->file('face_photo'));
+            if ($embedding) {
+                $updateData['face_embedding'] = $embedding;
+            }
         }
 
         $user = User::findOrFail($id);
@@ -120,5 +138,25 @@ class UserController extends Controller
         ]);
 
         return redirect(route('user.list', absolute: false))->with('warning', "User '{$user->name}' berhasil dihapus!");
+    }
+    
+    private function getEmbeddingFromPhoto($file)
+    {
+        try {
+            $response = Http::attach(
+                'file', file_get_contents($file), 'face.jpg'
+            )->post('http://host.docker.internal:8000/extract-embedding');
+
+            if ($response->successful() && $response->json('success')) {
+                return $response->json('embedding');
+            }
+
+            dd($response->json());
+        } catch (\Exception $err) {
+            dd($err->getMessage());
+            return null;
+        }   
+
+        return null;
     }
 }
