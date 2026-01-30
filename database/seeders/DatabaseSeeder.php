@@ -235,7 +235,6 @@ class DatabaseSeeder extends Seeder
             'time_used' => 3
         ]);
 
-        // 6. BUAT DATA ATTENDANCE (YANG SUDAH DIPERBAIKI)
         
         Attendance::create([
             'user_id' => $farkhan->id,
