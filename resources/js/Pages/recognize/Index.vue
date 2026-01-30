@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue';
-import { Head, Link } from '@inertiajs/vue3'; // Import Link untuk tombol back
+import { Head, Link } from '@inertiajs/vue3';
 import axios from 'axios';
 
 // --- State Management ---
@@ -8,7 +8,7 @@ const videoRef = ref(null);
 const canvasRef = ref(null);
 const isCameraActive = ref(false);
 const attendanceType = ref('check_in');
-const recognitionResult = ref(null); // Menyimpan status terakhir
+const recognitionResult = ref(null);
 const isProcessing = ref(false);
 const currentTime = ref('');
 const currentDate = ref('');
@@ -40,7 +40,7 @@ const startCamera = async () => {
             isCameraActive.value = true;
         }
     } catch (error) {
-        alert("Gagal akses kamera.");
+        alert("Gagal akses kamera. Pastikan izin browser aktif.");
     }
 };
 
@@ -50,13 +50,11 @@ const stopCamera = () => {
         videoRef.value.srcObject = null;
     }
     isCameraActive.value = false;
-    // recognitionResult.value = null; // KITA HAPUS INI agar status tetap tampil meski kamera mati
+    // recognitionResult.value = null; // Biarkan hasil tetap tampil
 };
 
-// --- LOGIKA UTAMA (OPTIMIZED) ---
+// --- LOGIKA UTAMA (Resize + API) ---
 const captureAndRecognize = async () => {
-    // Tetap scan meskipun sudah ada result (agar bisa update status ke orang baru)
-    // Cuma stop kalau kamera mati atau sedang processing request sebelumnya
     if (!isCameraActive.value || isProcessing.value || !videoRef.value) return;
 
     isProcessing.value = true;
@@ -64,15 +62,12 @@ const captureAndRecognize = async () => {
     try {
         const context = canvasRef.value.getContext('2d');
         
-        // --- OPTIMASI SPEED: RESIZE GAMBAR ---
-        // Kita kecilkan gambar sebelum kirim ke Python agar proses deteksi LEBIH CEPAT
-        const scaleWidth = 500; // Lebar 500px cukup untuk wajah
+        // Resize gambar biar ringan (Lebar 500px)
+        const scaleWidth = 500;
         const scaleHeight = (videoRef.value.videoHeight / videoRef.value.videoWidth) * scaleWidth;
         
         canvasRef.value.width = scaleWidth;
         canvasRef.value.height = scaleHeight;
-        
-        // Gambar ulang video ke canvas ukuran kecil
         context.drawImage(videoRef.value, 0, 0, scaleWidth, scaleHeight);
 
         canvasRef.value.toBlob(async (blob) => {
@@ -82,26 +77,21 @@ const captureAndRecognize = async () => {
             formData.append('file', blob, 'scan.jpg'); 
 
             try {
-                // 1. Tembak Python (Port 8000)
-                // Timeout dipercepat (3 detik) agar tidak menunggu lama kalau python macet
+                // 1. Kirim ke Python (Timeout 3 detik)
                 const pyResponse = await axios.post('http://localhost:8000/recognize', formData, { timeout: 3000 });
                 
                 const detectedName = pyResponse.data.name; 
                 const score = pyResponse.data.score || 0;
 
-                // 2. Cek Hasil AI
-                // Kita hanya update status JIKA menemukan wajah yang JELAS (score > 0.50)
-                // Ini mencegah status berkedip-kedip kalau wajah samar
+                // 2. Validasi Akurasi (> 50%)
                 if (detectedName && detectedName !== 'unknown' && score > 0.50) {
                     
-                    // Cek apakah status yang tampil sekarang SUDAH SAMA dengan yang baru dideteksi?
-                    // Jika sama (orangnya masih diam di depan kamera), jangan kirim request ke Laravel lagi (Biar hemat resource)
+                    // Cek duplikasi status agar tidak spam request ke Laravel
                     if (recognitionResult.value && 
                         recognitionResult.value.name === detectedName && 
                         recognitionResult.value.status === 'success' &&
                         recognitionResult.value.type === attendanceType.value) {
-                        // Skip request, biarkan tampilan tetap sama
-                        return; 
+                        return; // Skip jika orang & statusnya sama
                     }
 
                     // 3. Kirim ke Laravel
@@ -112,27 +102,19 @@ const captureAndRecognize = async () => {
 
                     const res = laravelResponse.data;
 
-                    // UPDATE STATUS PERMANEN (Akan tampil terus sampai diganti)
                     recognitionResult.value = {
                         status: res.status === 'success' ? 'success' : 'error',
                         name: res.name,
                         message: res.message,
-                        type: attendanceType.value // simpan tipe biar tau konteks
+                        type: attendanceType.value
                     };
-
-                    // KITA HAPUS TIMEOUT PENGHAPUSAN DI SINI
-                    // Status akan stay forever.
-
                 } 
-                // Jika "Unknown", kita biarkan status terakhir tetap tampil di layar
-                // Atau bisa tambahkan logika lain jika mau menampilkan "Wajah Tidak Dikenal"
-
             } catch (error) {
-                // Silent error connection
+                // Silent error
             } finally {
                 isProcessing.value = false;
             }
-        }, 'image/jpeg', 0.8); // Kualitas JPG 80%
+        }, 'image/jpeg', 0.8);
 
     } catch (err) {
         console.error(err);
@@ -143,7 +125,6 @@ const captureAndRecognize = async () => {
 onMounted(() => {
     updateTime();
     timeInterval = setInterval(updateTime, 1000);
-    // Scan lebih sering (tiap 0.8 detik) karena gambar sudah dikompres jadi ringan
     scanInterval = setInterval(() => {
         if (isCameraActive.value) captureAndRecognize();
     }, 800); 
@@ -159,17 +140,23 @@ onBeforeUnmount(() => {
 <template>
     <Head title="Absensi Wajah" />
 
-    <div class="min-h-screen bg-gray-100 font-sans text-gray-900 flex flex-col relative">
+    <div class="min-h-screen bg-gray-100 font-sans text-gray-900 flex flex-col">
         
-        <Link href="/" class="absolute top-4 left-4 z-50 bg-white/80 backdrop-blur border border-gray-200 text-gray-700 px-4 py-2 rounded-xl shadow-sm hover:bg-white hover:text-indigo-600 hover:shadow-md transition-all flex items-center gap-2 font-bold text-sm">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-            Kembali
-        </Link>
+        <header class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+                
+                <Link href="/" class="group flex items-center gap-3 text-gray-500 hover:text-indigo-600 transition-colors">
+                    <div class="p-2 bg-gray-50 rounded-lg group-hover:bg-indigo-50 border border-gray-200 group-hover:border-indigo-100 transition-all">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                        </svg>
+                    </div>
+                    <div>
+                        <span class="block text-sm font-bold text-gray-800 group-hover:text-indigo-700">Kembali</span>
+                        <span class="block text-[10px] text-gray-400">Ke Halaman Utama</span>
+                    </div>
+                </Link>
 
-        <header class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-20">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-end">
                 <div class="text-right">
                     <div class="text-2xl font-mono font-bold text-gray-800 leading-none">{{ currentTime }}</div>
                     <div class="text-xs text-gray-500 font-medium uppercase mt-1">{{ currentDate }}</div>
@@ -182,20 +169,23 @@ onBeforeUnmount(() => {
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 h-[600px]">
                     
                     <div class="flex flex-col gap-4 h-full">
+                        
                         <div class="bg-white p-2 rounded-2xl shadow-sm border border-gray-200 flex">
                             <button @click="attendanceType = 'check_in'"
                                 class="flex-1 py-3 rounded-xl text-sm font-bold transition-all duration-200 flex items-center justify-center gap-2"
-                                :class="attendanceType === 'check_in' ? 'bg-indigo-600 text-white shadow-md' : 'text-gray-500 hover:bg-gray-50'">
+                                :class="attendanceType === 'check_in' ? 'bg-indigo-600 text-white shadow-md transform scale-[1.02]' : 'text-gray-500 hover:bg-gray-50'">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414z" clip-rule="evenodd" /></svg>
                                 CHECK IN
                             </button>
                             <button @click="attendanceType = 'check_out'"
                                 class="flex-1 py-3 rounded-xl text-sm font-bold transition-all duration-200 flex items-center justify-center gap-2"
-                                :class="attendanceType === 'check_out' ? 'bg-rose-600 text-white shadow-md' : 'text-gray-500 hover:bg-gray-50'">
+                                :class="attendanceType === 'check_out' ? 'bg-rose-600 text-white shadow-md transform scale-[1.02]' : 'text-gray-500 hover:bg-gray-50'">
                                 CHECK OUT
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm-1.293-9.293a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L10 5.586 8.707 4.293a1 1 0 00-1.414 1.414l3 3zM10 14a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" /><path d="M10 12a1 1 0 100 2 1 1 0 000-2z" /></svg>
                             </button>
                         </div>
 
-                        <div class="flex-grow bg-slate-900 rounded-3xl shadow-lg border border-gray-200 overflow-hidden relative group flex flex-col items-center justify-center">
+                        <div class="flex-grow bg-slate-900 rounded-3xl shadow-lg border border-gray-200 overflow-hidden relative group flex flex-col items-center justify-center isolate">
                             <video v-show="isCameraActive" ref="videoRef" autoplay playsinline muted 
                                 class="absolute inset-0 w-full h-full object-cover transform scale-x-[-1]"></video>
 
@@ -205,15 +195,24 @@ onBeforeUnmount(() => {
                             </div>
 
                             <div v-if="!isCameraActive" class="z-20 text-center">
-                                <button @click="toggleCamera" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition transform hover:scale-105">
+                                <button @click="toggleCamera" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition transform hover:scale-105 flex items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" /></svg>
                                     Nyalakan Kamera
                                 </button>
                             </div>
 
-                            <div v-if="isCameraActive" class="absolute top-4 right-4 z-20">
-                                <button @click="toggleCamera" class="bg-red-500/80 hover:bg-red-600 backdrop-blur text-white px-4 py-2 rounded-full text-xs font-bold shadow-sm">
-                                    Matikan
-                                </button>
+                            <button 
+                                v-if="isCameraActive"
+                                @click="toggleCamera"
+                                class="absolute top-4 right-4 z-50 bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-red-500/80 hover:border-red-500 px-4 py-2 rounded-full text-xs font-bold shadow-lg transition-all flex items-center gap-2 group"
+                            >
+                                <span class="w-2 h-2 rounded-full bg-red-500 group-hover:bg-white transition-colors animate-pulse"></span>
+                                Matikan
+                            </button>
+                            
+                            <div v-if="isCameraActive" class="absolute top-4 left-4 z-20 bg-black/40 backdrop-blur px-3 py-1.5 rounded-full flex items-center gap-2 border border-white/10">
+                                <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                                <span class="text-[10px] font-bold text-white uppercase tracking-wider">Live View</span>
                             </div>
                         </div>
                     </div>
@@ -230,13 +229,13 @@ onBeforeUnmount(() => {
                                     </svg>
                                 </div>
                                 <div>
-                                    <h3 class="text-2xl font-bold text-gray-800">Siap Memindai</h3>
-                                    <p class="text-gray-500">Silakan menghadap kamera.</p>
+                                    <h3 class="text-2xl font-bold text-gray-800">Menunggu Wajah</h3>
+                                    <p class="text-gray-500 text-sm">Pastikan wajah terlihat jelas di kamera.</p>
                                 </div>
                             </div>
 
                             <div v-else key="result" class="flex flex-col items-center gap-6 w-full">
-                                <div class="w-36 h-36 rounded-full flex items-center justify-center shadow-lg transform transition-all"
+                                <div class="w-36 h-36 rounded-full flex items-center justify-center shadow-lg transform transition-all duration-500"
                                     :class="recognitionResult.status === 'success' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'">
                                     
                                     <svg v-if="recognitionResult.status === 'success'" xmlns="http://www.w3.org/2000/svg" class="h-20 w-20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -255,7 +254,7 @@ onBeforeUnmount(() => {
                                         {{ recognitionResult.message }}
                                     </div>
                                     
-                                    <p class="text-xs text-gray-400 mt-4 uppercase tracking-widest font-semibold">
+                                    <p class="text-xs text-gray-400 mt-6 uppercase tracking-widest font-semibold">
                                         Status Terakhir • {{ recognitionResult.type === 'check_in' ? 'Masuk' : 'Pulang' }}
                                     </p>
                                 </div>
