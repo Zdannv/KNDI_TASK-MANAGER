@@ -79,10 +79,13 @@ class AttendanceController extends Controller
         if ($type === 'check_in') {
             // --- KASUS CHECK IN ---
             if ($attendance) {
+                // Ambil jam check-in yang sudah ada
+                $jamMasuk = Carbon::parse($attendance->check_in_time)->format('H:i');
+                
                 return response()->json([
                     'status' => 'error',
                     'name' => $user->name,
-                    'message' => "Anda sudah melakukan Check-In hari ini!"
+                    'message' => "Anda sudah Check-In hari ini pada pukul {$jamMasuk}!"
                 ]);
             }
 
@@ -108,7 +111,19 @@ class AttendanceController extends Controller
                 ]);
             }
 
-            // Update waktu pulang (overwrite jika scan berkali-kali)
+            // Cek apakah user sudah checkout sebelumnya
+            if ($attendance->check_out_time) {
+                // Ambil jam check-out yang sudah ada
+                $jamPulang = Carbon::parse($attendance->check_out_time)->format('H:i');
+
+                return response()->json([
+                    'status' => 'error',
+                    'name' => $user->name,
+                    'message' => "Anda sudah Check-Out hari ini pada pukul {$jamPulang}!"
+                ]);
+            }
+
+            // Update waktu pulang
             $attendance->update([
                 'check_out_time' => Carbon::now(),
             ]);
@@ -141,21 +156,30 @@ class AttendanceController extends Controller
         }
 
         $now = Carbon::now();
-        $currentTime = $now->format('H:i');
+        $today = Carbon::today();
 
-        // Logika Jam Kerja (Hardcoded)
-        if ($currentTime >= '07:00' && $currentTime <= '12:00') {
+        // Cek status absen hari ini
+        $attendance = Attendance::where('user_id', $user->id)
+            ->whereDate('check_in_time', $today)
+            ->first();
+
+        // KASUS 1: Belum ada data absen -> Lakukan CHECK IN
+        if (!$attendance) {
             return $this->performCheckIn($user, $now);
         }
 
-        if ($currentTime >= '16:00' && $currentTime <= '18:00') {
+        // KASUS 2: Sudah Check In tapi belum Check Out -> Lakukan CHECK OUT
+        if (is_null($attendance->check_out_time)) {
             return $this->performCheckOut($user, $now);
         }
 
+        // KASUS 3: Sudah Check In & Sudah Check Out -> Beri Info Jam
+        $jamPulang = Carbon::parse($attendance->check_out_time)->format('H:i');
+        
         return response()->json([
             'success' => false,
-            'message' => "Bukan Waktu Absensi"
-        ], 403);
+            'message' => "Anda sudah selesai bekerja hari ini (Check-Out pukul {$jamPulang})."
+        ]);
     }
 
     /**
@@ -163,21 +187,10 @@ class AttendanceController extends Controller
      */
     private function performCheckIn($user, $now)
     {
-        $today = Carbon::today();
-        $exists = Attendance::where('user_id', $user->id)
-            ->whereDate('check_in_time', $today)
-            ->exists();
-
-        if ($exists) {
-            return response()->json([
-                'success' => false,
-                'message' => "Anda sudah melakukan absensi!"
-            ]);
-        }
-
         Attendance::create([
             'user_id' => $user->id,
             'check_in_time' => $now,
+            'status' => 'present'
         ]);
 
         return response()->json([
@@ -197,20 +210,20 @@ class AttendanceController extends Controller
             ->whereNull('check_out_time')
             ->first();
 
-        if (!$attendance) {
+        if ($attendance) {
+            $attendance->update([
+                'check_out_time' => $now,
+            ]);
+            
             return response()->json([
-                'success' => false,
-                'message' => "Data Check-In Tidak Ada atau Anda Sudah Melakukan Absensi!"
+                'success' => true,
+                'message' => "Selamat Sore {$user->name}, Anda Berhasil Check-Out!",
             ]);
         }
-
-        $attendance->update([
-            'check_out_time' => $now,
-        ]);
-
+        
         return response()->json([
-            'success' => true,
-            'message' => "Selamat Sore {$user->name}, Anda Berhasil Check-Out!",
+            'success' => false,
+            'message' => "Gagal memproses Check-Out."
         ]);
     }
 
