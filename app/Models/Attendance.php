@@ -12,6 +12,14 @@ class Attendance extends Model
         'check_out_time',
     ];
 
+    protected function cast(): array
+    {
+        return [
+            'check_in_time' => 'datetime',
+            'check_out_time' => 'datetime',
+        ];
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);
