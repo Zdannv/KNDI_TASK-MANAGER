@@ -50,7 +50,6 @@ const cancelEditingName = () => {
 const showAvatarModal = ref(false);
 const avatarForm = useForm({ name: '', email: '', avatar: '' });
 
-// DATA DUMMY 12 AVATAR
 const avatarAssets = [
     '/avatars/avatar-1.jpeg', '/avatars/avatar-2.jpg', '/avatars/avatar-3.jpeg', '/avatars/avatar-4.jpg',
     '/avatars/avatar-5.jpeg', '/avatars/avatar-6.jpeg', '/avatars/avatar-1.jpeg', '/avatars/avatar-2.jpg',
@@ -144,7 +143,7 @@ const getInitials = (name) => {
             :class="[
                 openMenus ? 'w-72' : 'w-24',
                 showProfilePanel ? '-translate-x-[200%]' : 'translate-x-0',
-                'bg-[#0d1b3e]/85 dark:bg-slate-900/60 backdrop-blur-xl'
+                'bg-gradient-to-b from-[#0d1b3e]/80 to-[#1e1b4b]/80 dark:from-slate-900/70 dark:to-black/70 backdrop-blur-xl'
             ]"
         >
             <div 
@@ -219,7 +218,7 @@ const getInitials = (name) => {
 
         <aside 
             class="fixed top-0 right-0 h-screen w-80 shadow-[-10px_0_30px_-5px_rgba(0,0,0,0.1)] z-[70] transform transition-transform duration-500 cubic-bezier(0.4, 0, 0.2, 1) overflow-y-auto border-l border-white/20 dark:border-white/10
-            bg-white/40 dark:bg-gray-900/60 backdrop-blur-2xl"
+            bg-gradient-to-b from-white/70 to-white/50 dark:from-gray-900/70 dark:to-gray-800/70 backdrop-blur-2xl"
             :class="showProfilePanel ? 'translate-x-0' : 'translate-x-full'"
         >
             <div class="p-6 flex flex-col h-full relative">

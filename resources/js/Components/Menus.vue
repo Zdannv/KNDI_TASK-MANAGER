@@ -43,7 +43,7 @@ const visibleMenuItems = computed(() => {
     return rawMenuItems.value.filter(item => item.show);
 });
 
-// 3. Cari Index Menu Aktif (0, 1, 2...) untuk posisi slider
+// 3. Cari Index Menu Aktif
 const activeIndex = computed(() => {
     return visibleMenuItems.value.findIndex(item => {
         if (Array.isArray(item.pattern)) {
@@ -53,35 +53,23 @@ const activeIndex = computed(() => {
     });
 });
 
-// Konfigurasi Ukuran (Harus sama dengan class CSS)
-const ITEM_HEIGHT = 50; // Tinggi per item (px)
-const GAP = 8; // Gap antar item (px) -> gap-2 = 8px
+const ITEM_HEIGHT = 50; 
+const GAP = 8; 
 </script>
 
 <template>
     <div class="relative flex flex-col gap-2">
         
         <div
-            class="absolute left-0 z-0 bg-[#F2F5FA] transition-all duration-500 cubic-bezier(0.34, 1.56, 0.64, 1)"
+            class="absolute left-0 z-0 bg-gradient-to-r from-white/95 to-white/70 dark:from-indigo-500/80 dark:to-indigo-600/50 backdrop-blur-md border border-white/40 shadow-lg shadow-white/10 transition-all duration-500 cubic-bezier(0.34, 1.56, 0.64, 1)"
             :class="[
-                // Ukuran Tinggi Highlighter
                 'h-[50px]', 
-                
-                // Opacity: Sembunyi jika tidak ada menu aktif (-1)
                 activeIndex === -1 ? 'opacity-0 scale-90' : 'opacity-100 scale-100',
-
-                // Style saat Sidebar TERBUKA:
-                // Melengkung di kiri (rounded-l-full), Rata di kanan (rounded-r-none)
-                // Menempel ke kanan (mr-0) agar nyatu dengan konten
                 sidebarOpen 
-                    ? 'w-full ml-4 rounded-l-[30px] rounded-r-none mr-0 shadow-sm' 
-                    
-                // Style saat Sidebar TERTUTUP:
-                // Kotak kecil di tengah
-                    : 'w-[calc(100%-24px)] mx-3 rounded-xl shadow-md'
+                    ? 'w-full ml-4 rounded-l-[30px] rounded-r-none mr-0' 
+                    : 'w-[calc(100%-24px)] mx-3 rounded-xl'
             ]"
             :style="{
-                // MAGIC: Geser posisi Y sesuai urutan menu aktif
                 transform: `translateY(${activeIndex * (ITEM_HEIGHT + GAP)}px)`
             }"
         >
@@ -92,19 +80,15 @@ const GAP = 8; // Gap antar item (px) -> gap-2 = 8px
                 :href="route(item.route)"
                 class="group relative z-10 flex items-center h-[50px] font-medium no-underline transition-colors duration-300"
                 :class="[
-                    // Warna Teks
                     (Array.isArray(item.pattern) ? item.pattern.some(p => isActive(p)) : isActive(item.pattern))
-                        ? 'text-[#0d1b3e]' // Aktif: Gelap (karena background putih ada di belakangnya)
-                        : 'text-slate-400 hover:text-white' // Tidak Aktif: Abu -> Putih
+                        ? 'text-[#0d1b3e] dark:text-white' 
+                        : 'text-slate-300 hover:text-white dark:text-slate-400 dark:hover:text-white' 
                 ]"
             >
                 <div 
                     class="flex items-center justify-center shrink-0 transition-transform duration-300"
                     :class="[
-                        // Zoom dikit kalau aktif
                         (Array.isArray(item.pattern) ? item.pattern.some(p => isActive(p)) : isActive(item.pattern)) ? 'scale-110' : 'group-hover:scale-110',
-                        
-                        // Margin menyesuaikan sidebar
                         sidebarOpen ? 'ml-9 mr-3' : 'w-full'
                     ]"
                 >
@@ -121,10 +105,10 @@ const GAP = 8; // Gap antar item (px) -> gap-2 = 8px
 
                 <div
                     v-if="!sidebarOpen"
-                    class="absolute left-[calc(100%+10px)] top-1/2 -translate-y-1/2 bg-[#0d1b3e] text-white text-xs font-bold px-3 py-1.5 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap shadow-xl z-50 border border-white/10"
+                    class="absolute left-[calc(100%+10px)] top-1/2 -translate-y-1/2 bg-[#0d1b3e]/90 backdrop-blur-md text-white text-xs font-bold px-3 py-1.5 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap shadow-xl z-50 border border-white/20"
                 >
                     {{ item.label }}
-                    <div class="absolute top-1/2 -left-1 -translate-y-1/2 border-4 border-transparent border-r-[#0d1b3e]"></div>
+                    <div class="absolute top-1/2 -left-1 -translate-y-1/2 border-4 border-transparent border-r-[#0d1b3e]/90"></div>
                 </div>
             </Link>
         </template>
