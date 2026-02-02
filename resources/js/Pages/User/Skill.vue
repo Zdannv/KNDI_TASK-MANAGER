@@ -3,7 +3,8 @@ import Plus from '@/Components/Icon/Plus.vue';
 import Gear from '@/Components/Icon/Gear.vue';
 import Download from '@/Components/Icon/Download.vue';
 import Hamburger from '@/Components/Icon/Hamburger.vue';
-import Book from '@/Components/Icon/Book.vue'; // Import Icon Skill
+import Book from '@/Components/Icon/Book.vue'; 
+import Trash from '@/Components/Icon/Trash.vue'; // Import Icon Trash
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import SkillForm from '@/Components/Form/Skill.vue';
 import SelectInput from '@/Components/SelectInput.vue';
@@ -52,7 +53,7 @@ const handleDelete = (id) => {
 };
 
 const props = defineProps({
-  skills: {},
+  skills: {}, // Array
   users: {}
 });
 
@@ -85,43 +86,49 @@ watch(id, (newValue) => {
 <template>
   <Head title="Skills" />
   <AuthenticatedLayout>
+    
     <template #header>
       <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-8">
         <div
-          class="flex justify-between px-5 py-3 items-center text-gray-800 dark:text-gray-200 bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm border border-slate-200 dark:border-slate-800 shadow-lg dark:shadow-sm shadow-indigo-500 dark:shadow-indigo-800 rounded-lg transition-all duration-1000 ease-out"
+          class="flex justify-between px-6 py-4 items-center text-gray-800 dark:text-gray-200 
+                 bg-white/40 dark:bg-slate-900/60 backdrop-blur-md border border-white/40 dark:border-white/10 
+                 shadow-lg rounded-2xl transition-all duration-1000 ease-out"
           :class="{ 'translate-y-0 opacity-100': isLoaded, 'translate-y-8 opacity-0': !isLoaded }"
         >
-          <h2 class="font-semibold text-xl leading-tight">
-            Skills
-          </h2>
+          <div>
+            <h2 class="font-bold text-xl leading-tight text-gray-800 dark:text-white drop-shadow-sm">
+              Skills Matrix
+            </h2>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Manage user technical skills.</p>
+          </div>
+          
           <div class="flex gap-4 justify-end">
             <button
               v-if="['other', 'co'].includes(role)"
               @click="handleOpenOptions"
-              class="flex gap-2 p-[8px] border rounded-md border-gray-400 dark:border-gray-600 hover:bg-indigo-50 dark:hover:bg-indigo-950 transition-colors"
+              class="flex items-center gap-2 px-4 py-2 bg-white/50 dark:bg-gray-800/50 hover:bg-white dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-xl shadow-sm border border-white/40 dark:border-gray-600/50 backdrop-blur-sm transition-all"
             >
-              <Gear />
-              <span class="hidden sm:inline">Options</span>
+              <Gear class="w-4 h-4" />
+              <span class="hidden sm:inline font-medium text-sm">Options</span>
             </button>
             <button
               @click="handleOpenForm"
-              class="flex gap-2 p-[8px] border rounded-md border-gray-400 dark:border-gray-600 hover:bg-indigo-50 dark:hover:bg-indigo-950 transition-colors"
+              class="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow-md hover:shadow-indigo-500/30 transition-all duration-300 transform hover:scale-105"
             >
-              <Plus />
-              <span class="hidden sm:inline">New</span>
-              <span class="sm:hidden">New</span>
+              <Plus class="w-5 h-5" />
+              <span class="hidden sm:inline font-bold text-sm">Add Skill</span>
             </button>
           </div>
         </div>
       </div>
     </template>
 
-    <div v-if="['other', 'co'].includes(role)" class="fixed sm:hidden right-9 bottom-9 z-50">
+    <div v-if="['other', 'co'].includes(role)" class="fixed sm:hidden right-6 bottom-6 z-50">
       <div
-        class="shrink-0 inline-flex items-center justify-center p-2 rounded-full dark:text-gray-300 hover:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-500 dark:focus:text-gray-400 transition duration-150 ease-in-out border bg-white dark:bg-gray-700 shadow-sm transition-all duration-800 ease-out delay-500"
-        :class="{ 'translate-y-0 opacity-100 scale-100': isLoaded, 'translate-y-12 opacity-0 scale-75': !isLoaded }"
+        class="shrink-0 inline-flex items-center justify-center p-3 rounded-full text-white bg-indigo-600 shadow-xl z-40 transition-all duration-500 hover:scale-110 active:scale-95"
+        @click="showButtons = !showButtons"
       >
-        <Hamburger v-model="showButtons" />
+        <Hamburger v-model="showButtons" class="w-6 h-6" />
       </div>
       <TransitionGroup tag="div" name="button-list">
         <button
@@ -129,59 +136,64 @@ watch(id, (newValue) => {
           v-show="showButtons"
           :key="button.action"
           @click="button.handler"
-          class="fixed right-9 border rounded-full p-4 dark:text-white bg-white dark:bg-gray-700 shadow-sm"
-          :style="{ bottom: `${36 + (index + 1) * 76}px` }"
+          class="fixed right-6 border border-white/20 rounded-full p-3 text-gray-700 dark:text-white bg-white/90 dark:bg-gray-800/90 backdrop-blur-md shadow-lg"
+          :style="{ bottom: `${80 + (index) * 60}px` }"
         >
-          <component :is="button.icon" />
+          <component :is="button.icon" class="w-5 h-5" />
         </button>
       </TransitionGroup>
     </div>
     <button v-else
       @click="handleOpenForm"
-      class="fixed sm:hidden right-9 bottom-9 border rounded-full p-4 dark:text-white bg-white dark:bg-gray-700 shadow-sm z-40 transition-all duration-800 ease-out delay-500"
+      class="fixed sm:hidden right-6 bottom-6 border border-white/20 rounded-full p-4 text-white bg-indigo-600 shadow-xl z-40 transition-all duration-500 ease-out hover:scale-110 active:scale-95"
       :class="{ 'translate-y-0 opacity-100 scale-100': isLoaded, 'translate-y-12 opacity-0 scale-75': !isLoaded }"
     >
       <Plus />
     </button>
 
-    <div v-if="openForm" class="fixed inset-0 z-50 px-2 flex items-center justify-center bg-black bg-opacity-50">
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg max-w-lg w-full p-6 relative animate-in fade-in zoom-in duration-200">
+    <div v-if="openForm" class="fixed inset-0 z-50 px-4 flex items-center justify-center bg-black/40 backdrop-blur-sm transition-opacity">
+      <div class="bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl border border-white/50 dark:border-gray-700/50 rounded-2xl shadow-2xl max-w-lg w-full p-6 relative animate-in fade-in zoom-in duration-300">
         <SkillForm @close="handleCloseForm" />
       </div>
     </div>
 
     <div
       v-if="options"
-      class="w-full pt-3 sm:pt-8 transition-all duration-1000 ease-out"
+      class="w-full pt-4 sm:pt-6 transition-all duration-500 ease-out"
       :class="{ 'translate-y-0 opacity-100': isLoaded, 'translate-y-12 opacity-0': !isLoaded }"
     >
       <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-8">
-        <div class="flex flex-col py-4 px-5 text-gray-800 dark:text-gray-200 bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm border border-slate-200 dark:border-slate-800 shadow-lg dark:shadow-sm shadow-indigo-500 dark:shadow-indigo-800 rounded-lg">
-          <div class="flex flex-col sm:flex-row gap-4 pb-4">
-            <SelectInput
-              id="user"
-              v-model="id"
-              :options="users"
-              label="name"
-              valueKey="id"
-              class="block w-full text-gray-700"
-              placeholder="Filter user..."
-              :dark="true"
-            />
+        <div class="flex flex-col py-6 px-6 text-gray-800 dark:text-gray-200 
+                    bg-white/40 dark:bg-slate-900/60 backdrop-blur-md border border-white/40 dark:border-white/10 
+                    shadow-lg rounded-2xl font-medium">
+          <div class="flex flex-col sm:flex-row gap-4 pb-4 border-b border-gray-200/50 dark:border-gray-700/50 mb-4">
+             <div class="w-full sm:w-1/2">
+                <label class="text-xs font-bold text-gray-500 dark:text-gray-400 mb-1 block uppercase">Filter User</label>
+                <SelectInput
+                  id="user"
+                  v-model="id"
+                  :options="users"
+                  label="name"
+                  valueKey="id"
+                  class="block w-full"
+                  placeholder="Select user..."
+                  :dark="true"
+                />
+            </div>
           </div>
-          <div class="hidden sm:flex justify-end gap-4">
+          <div class="hidden sm:flex justify-end gap-3">
             <button
               @click="exportSkill"
-              class="flex gap-2 p-[8px] border rounded-md border-gray-400 dark:border-gray-600 hover:bg-indigo-50 dark:hover:bg-indigo-950 transition-colors"
+              class="flex items-center gap-2 px-3 py-2 text-sm rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:hover:bg-indigo-900/50 dark:text-indigo-300 transition-colors border border-indigo-200 dark:border-indigo-800"
             >
-              <Download />
-              <span>{{ id ? 'Export' : 'ExportAll' }}</span>
+              <Download class="w-4 h-4" />
+              <span>{{ id ? 'Export Data' : 'Export All' }}</span>
             </button>
             <button
               @click="() => router.get(route('skill.list'))"
-              class="flex gap-2 p-[8px] border rounded-md border-gray-400 dark:border-gray-600 hover:bg-indigo-50 dark:hover:bg-indigo-950 transition-colors"
+              class="flex items-center gap-2 px-3 py-2 text-sm rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-300 transition-colors"
             >
-              <Close />
+              <Close class="w-4 h-4" />
               <span>Reset</span>
             </button>
           </div>
@@ -190,7 +202,7 @@ watch(id, (newValue) => {
     </div>
 
     <div
-      class="w-full py-8 transition-all duration-700 ease-out delay-100"
+      class="w-full py-6 sm:py-8 transition-all duration-700 ease-out delay-100"
       :class="{ 'opacity-100': isLoaded, 'translate-y-12 opacity-0': !isLoaded }"
     >
       <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-8">
@@ -198,47 +210,52 @@ watch(id, (newValue) => {
         <div class="flex flex-col items-start">
             
             <div class="relative z-10 -mb-[1px]">
-                <div class="w-40 h-10 bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm border-t border-l border-r border-slate-200 dark:border-slate-800 rounded-t-xl shadow-[0_-2px_5px_rgba(0,0,0,0.02)] relative flex items-center px-4">
-                    <Book class="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
-                    <div class="absolute -bottom-[1px] left-0 right-0 h-[2px] bg-white/70 dark:bg-slate-900/70 z-20"></div>
+                <div class="w-fit px-6 h-12 bg-white/40 dark:bg-slate-900/60 backdrop-blur-md border-t border-l border-r border-white/40 dark:border-white/10 rounded-t-2xl shadow-sm relative flex items-center gap-3">
+                    <Book class="w-5 h-5 text-indigo-600 dark:text-indigo-400 drop-shadow-sm" />
+                    <span class="font-bold text-gray-800 dark:text-white text-sm tracking-wide shadow-black drop-shadow-sm">Skills List</span>
+                    <div class="absolute -bottom-[1px] left-0 right-0 h-[2px] bg-white/40 dark:bg-slate-900/60 z-20"></div>
                 </div>
             </div>
 
-            <div class="w-full overflow-x-auto bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 shadow-lg dark:shadow-sm shadow-indigo-500 dark:shadow-indigo-800 rounded-b-lg rounded-tr-lg rounded-tl-none relative z-0">
-            <table class="w-full text-left dark:text-white table-auto">
-                <thead>
-                <tr class="bg-indigo-50 dark:bg-gray-700">
-                    <th class="p-4 rounded-tl-none">
-                    <p class="text-sm opacity-70">Skill</p>
+            <div class="w-full overflow-x-auto bg-white/40 dark:bg-slate-900/60 backdrop-blur-md border border-white/40 dark:border-white/10 shadow-xl rounded-b-2xl rounded-tr-2xl relative z-0">
+            <table class="w-full text-left dark:text-white table-auto border-collapse">
+                <thead class="bg-white/50 dark:bg-gray-800/80 backdrop-blur-md border-b border-white/20 dark:border-white/10">
+                <tr>
+                    <th class="p-5 font-semibold text-gray-600 dark:text-gray-300 text-sm uppercase tracking-wider">
+                      Skill Name
                     </th>
-                    <th class="p-4">
-                    <p class="text-sm opacity-70">Created At</p>
+                    <th class="p-5 font-semibold text-gray-600 dark:text-gray-300 text-sm uppercase tracking-wider">
+                      Date Added
                     </th>
-                    <th class="p-4 text-center rounded-tr-lg">
-                    <p class="text-sm opacity-70 uppercase tracking-widest">Action</p>
+                    <th class="p-5 text-center font-semibold text-gray-600 dark:text-gray-300 text-sm uppercase tracking-wider">
+                      Action
                     </th>
                 </tr>
                 </thead>
-                <tbody>
-                <tr v-for="value in skills" :key="value.id" class="border-t border-slate-200 dark:border-slate-800 hover:bg-white/40 transition-colors">
-                    <td class="p-4 align-middle">
-                    <p class="text-sm font-bold">{{ value.skill }}</p>
+                <tbody class="divide-y divide-white/20 dark:divide-white/5">
+                <tr v-for="value in skills" :key="value.id" class="hover:bg-white/30 dark:hover:bg-white/5 transition duration-200">
+                    <td class="p-5 align-middle">
+                      <div class="flex items-center gap-2">
+                          <span class="px-2.5 py-1 rounded-full bg-indigo-100/50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 text-sm font-bold border border-indigo-200/50 dark:border-indigo-800/50">
+                             {{ value.skill }}
+                          </span>
+                      </div>
                     </td>
-                    <td class="p-4 align-middle">
-                    <p class="text-sm italic">
+                    <td class="p-5 align-middle text-sm text-gray-500 dark:text-gray-400 font-mono">
                         {{ formatDate(value.created_at) }}
-                    </p>
                     </td>
-                    <td class="p-4 align-middle">
-                    <div class="flex justify-center items-center">
+                    <td class="p-5 align-middle text-center">
                         <button
                         @click.prevent="handleDelete(value.id)"
-                        class="text-sm text-red-600 dark:text-red-400 hover:underline font-medium"
+                        class="p-1.5 rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 transition tooltip-trigger inline-flex"
+                        title="Delete"
                         >
-                        Delete
+                          <Trash class="w-4 h-4" />
                         </button>
-                    </div>
                     </td>
+                </tr>
+                <tr v-if="skills.length === 0">
+                    <td colspan="3" class="p-8 text-center text-gray-400 dark:text-gray-500 italic">No skills added yet.</td>
                 </tr>
                 </tbody>
             </table>

@@ -5,9 +5,9 @@ import moment from 'moment';
 import { ref, onMounted } from 'vue';
 
 // Import Icons
-import Document from '@/Components/Icon/Document.vue'; // Untuk Tasks
-import Folder from '@/Components/Icon/Folder.vue';     // Untuk Projects
-import User from '@/Components/Icon/User.vue';         // Untuk Users
+import Document from '@/Components/Icon/Document.vue';
+import Folder from '@/Components/Icon/Folder.vue';
+import User from '@/Components/Icon/User.vue';
 
 defineProps({
   projects: {},
@@ -41,57 +41,69 @@ const formatDate = (date) => {
             class="lg:col-span-2 flex flex-col transition-all duration-1000 ease-out"
             :class="{ 'translate-y-0 opacity-100': isLoaded, 'translate-y-10 opacity-0': !isLoaded }"
           >
-            
             <div class="relative z-10 -mb-[1px] shrink-0">
-               <div class="w-fit px-4 h-10 bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm border-t border-l border-r border-slate-200 dark:border-slate-800 rounded-t-xl shadow-[0_-2px_5px_rgba(0,0,0,0.02)] relative flex items-center gap-3">
-                  <Document class="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
-                  <span class="font-bold text-gray-700 dark:text-gray-200">Task Active</span>
-                  <div class="absolute -bottom-[1px] left-0 right-0 h-[2px] bg-white/70 dark:bg-slate-900/70 z-20"></div>
+               <div class="w-fit px-6 h-12 bg-white/40 dark:bg-slate-900/60 backdrop-blur-md border-t border-l border-r border-white/40 dark:border-white/10 rounded-t-2xl shadow-sm relative flex items-center gap-3">
+                  <Document class="w-5 h-5 text-indigo-600 dark:text-indigo-400 drop-shadow-sm" />
+                  <span class="font-bold text-gray-800 dark:text-white text-sm tracking-wide shadow-black drop-shadow-sm">Task Active</span>
+                  <div class="absolute -bottom-[1px] left-0 right-0 h-[2px] bg-white/40 dark:bg-slate-900/60 z-20"></div>
                </div>
             </div>
 
-            <div class="bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm border border-slate-200 dark:border-slate-800 shadow-lg dark:shadow-sm shadow-indigo-500 dark:shadow-indigo-800 rounded-b-lg rounded-tr-lg rounded-tl-none relative z-0 flex flex-col"> 
-              <div class="overflow-x-auto w-full rounded-b-lg"> 
+            <div class="bg-white/40 dark:bg-slate-900/60 backdrop-blur-md border border-white/40 dark:border-white/10 shadow-xl rounded-b-2xl rounded-tr-2xl relative z-0 flex flex-col overflow-hidden"> 
+              <div class="overflow-x-auto w-full"> 
                 <div class="max-h-[700px] overflow-y-auto custom-scrollbar">
                   <table class="w-full text-left dark:text-white table-auto border-collapse">
-                    <thead class="sticky top-0 bg-indigo-50 dark:bg-gray-700 z-10">
-                      <tr>
-                        <th class="p-4 whitespace-nowrap rounded-tl-none">Type</th>
-                        <th class="p-4 whitespace-nowrap min-w-[200px]">Assign</th>
-                        <th class="p-4 whitespace-nowrap">Project</th>
-                        <th class="p-4 whitespace-nowrap">Issue</th>
-                        <th class="p-4 whitespace-nowrap min-w-[300px]">Ticket</th>
-                        <th class="p-4 whitespace-nowrap">Start Date</th>
-                        <th class="p-4 whitespace-nowrap rounded-tr-lg">Due Date</th>
+                    <thead class="sticky top-0 bg-white/50 dark:bg-gray-800/80 z-10 backdrop-blur-md border-b border-white/20 dark:border-white/10">
+                      <tr class="text-xs uppercase tracking-wider text-gray-600 dark:text-gray-300">
+                        <th class="p-4 whitespace-nowrap font-semibold">Type</th>
+                        <th class="p-4 whitespace-nowrap min-w-[200px] font-semibold">Assign</th>
+                        <th class="p-4 whitespace-nowrap font-semibold">Project</th>
+                        <th class="p-4 whitespace-nowrap font-semibold">Issue</th>
+                        <th class="p-4 whitespace-nowrap min-w-[300px] font-semibold">Ticket</th>
+                        <th class="p-4 whitespace-nowrap font-semibold">Start Date</th>
+                        <th class="p-4 whitespace-nowrap font-semibold">Due Date</th>
                       </tr>
                     </thead>
-                    <tbody>
-                      <tr v-for="task in tasks" :key="task.id" class="border-t border-blue-gray-50 hover:bg-white/50 dark:hover:bg-slate-800/50 transition">
-                        <td class="p-4 align-middle">{{ task.type }}</td>
-                        <td class="p-4 align-middle">
+                    <tbody class="divide-y divide-white/20 dark:divide-white/5">
+                      <tr v-for="task in tasks" :key="task.id" class="hover:bg-white/30 dark:hover:bg-white/5 transition duration-200">
+                        <td class="p-4 align-middle text-sm font-medium">{{ task.type }}</td>
+                        <td class="p-4 align-middle text-sm">
                           <template v-if="task.programmer?.length || task.designer?.length || task.communicator?.length">
-                            <span v-for="(id, i) in [...(task.programmer || []), ...(task.designer || []), ...(task.communicator || [])]" :key="id">
-                              {{ members.find(m => m.id === id)?.name ?? id }}{{ i < [...(task.programmer || []), ...(task.designer || []), ...(task.communicator || [])].length - 1 ? ', ' : '' }}
-                            </span>
+                            <div class="flex flex-wrap gap-1">
+                                <span v-for="(id, i) in [...(task.programmer || []), ...(task.designer || []), ...(task.communicator || [])]" :key="id" 
+                                      class="inline-block px-2 py-0.5 rounded-md bg-indigo-50/50 dark:bg-indigo-900/30 border border-indigo-100/50 dark:border-indigo-800/30 text-xs text-indigo-700 dark:text-indigo-300">
+                                  {{ members.find(m => m.id === id)?.name ?? id }}
+                                </span>
+                            </div>
                           </template>
-                          <span v-else>-</span>
+                          <span v-else class="text-gray-400 text-xs italic">-</span>
                         </td>
-                        <td class="p-4 align-middle">{{ task.project.name }}</td>
-                        <td class="p-4 align-middle">{{ task.issue }}</td>
-                        <td class="p-4 align-middle break-all">
-                          <a :href="task.ticket_link" target="_blank" class="text-indigo-600 hover:underline">
+                        <td class="p-4 align-middle text-sm font-medium text-gray-700 dark:text-gray-200">{{ task.project.name }}</td>
+                        <td class="p-4 align-middle text-sm text-gray-600 dark:text-gray-300">{{ task.issue }}</td>
+                        <td class="p-4 align-middle break-all text-sm">
+                          <a :href="task.ticket_link" target="_blank" class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 hover:underline decoration-indigo-300 underline-offset-2 transition">
                             {{ task.ticket_link || '-' }}
                           </a>
                         </td>
-                        <td class="p-4 align-middle">{{ formatDate(task.start_date) }}</td>
-                        <td class="p-4 align-middle">
-                          <span :class="{ 'text-red-600 font-bold': task.due_date && moment().startOf('day').isAfter(moment(task.due_date).startOf('day')) }">
+                        <td class="p-4 align-middle text-sm text-gray-500 dark:text-gray-400">{{ formatDate(task.start_date) }}</td>
+                        <td class="p-4 align-middle text-sm">
+                          <span :class="[
+                            'px-2 py-1 rounded-md text-xs font-bold border',
+                            task.due_date && moment().startOf('day').isAfter(moment(task.due_date).startOf('day'))
+                                ? 'bg-red-50/50 text-red-600 border-red-100 dark:bg-red-900/20 dark:text-red-400 dark:border-red-900/30'
+                                : 'bg-emerald-50/50 text-emerald-600 border-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-900/30'
+                          ]">
                             {{ formatDate(task.due_date) }}
                           </span>
                         </td>
                       </tr>
                       <tr v-if="tasks.length === 0">
-                        <td colspan="7" class="p-8 text-center text-gray-500">No active tasks</td>
+                        <td colspan="7" class="p-12 text-center text-gray-400 dark:text-gray-500 italic">
+                            <div class="flex flex-col items-center gap-2">
+                                <Document class="w-8 h-8 opacity-20" />
+                                <span>No active tasks found</span>
+                            </div>
+                        </td>
                       </tr>
                     </tbody>
                   </table>
@@ -103,34 +115,38 @@ const formatDate = (date) => {
           <div class="flex flex-col gap-8"> 
             
             <div 
-              class="flex flex-col transition-all duration-1000 ease-out"
+              class="flex flex-col transition-all duration-1000 ease-out delay-100"
               :class="{ 'translate-y-0 opacity-100': isLoaded, 'translate-y-10 opacity-0': !isLoaded }"
             >
               <div class="relative z-10 -mb-[1px] shrink-0">
-                 <div class="w-fit px-4 h-10 bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm border-t border-l border-r border-slate-200 dark:border-slate-800 rounded-t-xl shadow-[0_-2px_5px_rgba(0,0,0,0.02)] relative flex items-center gap-3">
-                    <Folder class="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
-                    <span class="font-bold text-gray-700 dark:text-gray-200">Project Active</span>
-                    <div class="absolute -bottom-[1px] left-0 right-0 h-[2px] bg-white/70 dark:bg-slate-900/70 z-20"></div>
+                 <div class="w-fit px-6 h-12 bg-white/40 dark:bg-slate-900/60 backdrop-blur-md border-t border-l border-r border-white/40 dark:border-white/10 rounded-t-2xl shadow-sm relative flex items-center gap-3">
+                    <Folder class="w-5 h-5 text-indigo-600 dark:text-indigo-400 drop-shadow-sm" />
+                    <span class="font-bold text-gray-800 dark:text-white text-sm tracking-wide">Project Active</span>
+                    <div class="absolute -bottom-[1px] left-0 right-0 h-[2px] bg-white/40 dark:bg-slate-900/60 z-20"></div>
                  </div>
               </div>
 
-              <div class="bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm border border-slate-200 dark:border-slate-800 shadow-lg dark:shadow-sm shadow-indigo-500 dark:shadow-indigo-800 rounded-b-lg rounded-tr-lg rounded-tl-none relative z-0 flex flex-col">
-                <div class="overflow-x-auto w-full rounded-b-lg">
+              <div class="bg-white/40 dark:bg-slate-900/60 backdrop-blur-md border border-white/40 dark:border-white/10 shadow-xl rounded-b-2xl rounded-tr-2xl relative z-0 flex flex-col overflow-hidden">
+                <div class="overflow-x-auto w-full">
                   <div class="max-h-[300px] overflow-y-auto custom-scrollbar">
                     <table class="w-full text-left dark:text-white table-auto">
-                      <thead class="sticky top-0 bg-indigo-50 dark:bg-gray-700 z-10">
-                        <tr>
-                          <th class="p-4 rounded-tl-none">Project</th>
-                          <th class="p-4 rounded-tr-lg">Task Count</th>
+                      <thead class="sticky top-0 bg-white/50 dark:bg-gray-800/80 z-10 backdrop-blur-md border-b border-white/20 dark:border-white/10">
+                        <tr class="text-xs uppercase tracking-wider text-gray-600 dark:text-gray-300">
+                          <th class="p-4 font-semibold">Project Name</th>
+                          <th class="p-4 font-semibold text-center">Tasks</th>
                         </tr>
                       </thead>
-                      <tbody>
-                        <tr v-for="project in projects" :key="project.id" class="border-t border-blue-gray-50 hover:bg-white/50 dark:hover:bg-slate-800/50 transition">
-                          <td class="p-4">{{ project.name }}</td>
-                          <td class="p-4">{{ project.tasks.length || '-' }}</td>
+                      <tbody class="divide-y divide-white/20 dark:divide-white/5">
+                        <tr v-for="project in projects" :key="project.id" class="hover:bg-white/30 dark:hover:bg-white/5 transition duration-200">
+                          <td class="p-4 font-medium text-sm text-gray-700 dark:text-gray-200">{{ project.name }}</td>
+                          <td class="p-4 text-center">
+                              <span class="inline-flex items-center justify-center min-w-[2rem] px-2 py-1 text-xs font-bold rounded-full bg-indigo-100/50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-300 border border-indigo-200/50 dark:border-indigo-700/30">
+                                {{ project.tasks.length }}
+                              </span>
+                          </td>
                         </tr>
                         <tr v-if="projects.length === 0">
-                          <td colspan="2" class="p-8 text-center text-gray-500">No active projects</td>
+                          <td colspan="2" class="p-8 text-center text-gray-400 dark:text-gray-500 italic">No active projects</td>
                         </tr>
                       </tbody>
                     </table>
@@ -140,34 +156,44 @@ const formatDate = (date) => {
             </div>
 
             <div 
-              class="flex flex-col transition-all duration-1000 ease-out"
+              class="flex flex-col transition-all duration-1000 ease-out delay-200"
               :class="{ 'translate-y-0 opacity-100': isLoaded, 'translate-y-10 opacity-0': !isLoaded }"
             >
               <div class="relative z-10 -mb-[1px] shrink-0">
-                 <div class="w-fit px-4 h-10 bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm border-t border-l border-r border-slate-200 dark:border-slate-800 rounded-t-xl shadow-[0_-2px_5px_rgba(0,0,0,0.02)] relative flex items-center gap-3">
-                    <User class="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
-                    <span class="font-bold text-gray-700 dark:text-gray-200">User Active</span>
-                    <div class="absolute -bottom-[1px] left-0 right-0 h-[2px] bg-white/70 dark:bg-slate-900/70 z-20"></div>
+                 <div class="w-fit px-6 h-12 bg-white/40 dark:bg-slate-900/60 backdrop-blur-md border-t border-l border-r border-white/40 dark:border-white/10 rounded-t-2xl shadow-sm relative flex items-center gap-3">
+                    <User class="w-5 h-5 text-indigo-600 dark:text-indigo-400 drop-shadow-sm" />
+                    <span class="font-bold text-gray-800 dark:text-white text-sm tracking-wide">User Active</span>
+                    <div class="absolute -bottom-[1px] left-0 right-0 h-[2px] bg-white/40 dark:bg-slate-900/60 z-20"></div>
                  </div>
               </div>
 
-              <div class="bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm border border-slate-200 dark:border-slate-800 shadow-lg dark:shadow-sm shadow-indigo-500 dark:shadow-indigo-800 rounded-b-lg rounded-tr-lg rounded-tl-none relative z-0 flex flex-col">
-                <div class="overflow-x-auto w-full rounded-b-lg">
+              <div class="bg-white/40 dark:bg-slate-900/60 backdrop-blur-md border border-white/40 dark:border-white/10 shadow-xl rounded-b-2xl rounded-tr-2xl relative z-0 flex flex-col overflow-hidden">
+                <div class="overflow-x-auto w-full">
                   <div class="max-h-[300px] overflow-y-auto custom-scrollbar">
                     <table class="w-full text-left dark:text-white table-auto">
-                      <thead class="sticky top-0 bg-indigo-50 dark:bg-gray-700 z-10">
-                        <tr>
-                          <th class="p-4 rounded-tl-none">Name</th>
-                          <th class="p-4 rounded-tr-lg">Task Count</th>
+                      <thead class="sticky top-0 bg-white/50 dark:bg-gray-800/80 z-10 backdrop-blur-md border-b border-white/20 dark:border-white/10">
+                        <tr class="text-xs uppercase tracking-wider text-gray-600 dark:text-gray-300">
+                          <th class="p-4 font-semibold">Team Member</th>
+                          <th class="p-4 font-semibold text-center">Tasks</th>
                         </tr>
                       </thead>
-                      <tbody>
-                        <tr v-for="member in members" :key="member.id" class="border-t border-blue-gray-50 hover:bg-white/50 dark:hover:bg-slate-800/50 transition">
-                          <td class="p-4">{{ member.name }}</td>
-                          <td class="p-4">{{ member.total_tasks > 0 ? member.total_tasks : '-' }}</td>
+                      <tbody class="divide-y divide-white/20 dark:divide-white/5">
+                        <tr v-for="member in members" :key="member.id" class="hover:bg-white/30 dark:hover:bg-white/5 transition duration-200">
+                          <td class="p-4 text-sm flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-indigo-50/50 dark:bg-slate-800 flex items-center justify-center text-xs font-bold text-indigo-600 border border-indigo-100/50">
+                                {{ member.name.charAt(0).toUpperCase() }}
+                            </div>
+                            <span class="font-medium text-gray-700 dark:text-gray-200">{{ member.name }}</span>
+                          </td>
+                          <td class="p-4 text-center">
+                            <span v-if="member.total_tasks > 0" class="inline-flex items-center justify-center min-w-[2rem] px-2 py-1 text-xs font-bold rounded-full bg-emerald-100/50 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-300 border border-emerald-200/50 dark:border-emerald-700/30">
+                                {{ member.total_tasks }}
+                            </span>
+                            <span v-else class="text-gray-400 text-xs">-</span>
+                          </td>
                         </tr>
                         <tr v-if="members.length === 0">
-                          <td colspan="2" class="p-8 text-center text-gray-500">No members found</td>
+                          <td colspan="2" class="p-8 text-center text-gray-400 dark:text-gray-500 italic">No members found</td>
                         </tr>
                       </tbody>
                     </table>
@@ -184,24 +210,26 @@ const formatDate = (date) => {
 </template>
 
 <style scoped>
+/* Scrollbar yang lebih halus dan sesuai tema */
 .custom-scrollbar {
   scrollbar-gutter: stable;
   scrollbar-width: thin;
-  scrollbar-color: #6366f1 #f1f5f9;
+  scrollbar-color: rgba(99, 102, 241, 0.5) rgba(241, 245, 249, 0.1);
 }
 .custom-scrollbar::-webkit-scrollbar {
-  height: 8px;
-  width: 8px;
+  height: 6px;
+  width: 6px;
   display: block;
 }
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: #f1f5f9;
-  border-radius: 10px;
+  background: transparent; 
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: #818cf8;
+  background-color: rgba(99, 102, 241, 0.3); /* Semi transparan */
   border-radius: 10px;
-  border: 2px solid #f1f5f9;
-  background-clip: content-box;
+  backdrop-filter: blur(5px);
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(99, 102, 241, 0.6);
 }
 </style>
