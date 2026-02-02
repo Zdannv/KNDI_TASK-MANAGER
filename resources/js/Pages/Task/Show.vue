@@ -111,14 +111,10 @@ const props = defineProps({
   prs: {},
 });
 
-// --- UPDATED FORMAT DATE (Bisa pakai Jam) ---
 const formatDate = (date, withTime = false) => {
   if (!date) return '-';
-  // Format default: 21 January 2026
   let formatString = 'DD MMMM YYYY';
-  // Kalau butuh jam (untuk komentar): 21 Jan 2026, 14:30
   if (withTime) formatString = 'DD MMM YYYY, HH:mm';
-  
   return moment(date).format(formatString);
 };
 
@@ -156,7 +152,7 @@ const logtimeSegments = computed(() => {
     totalCalc += time;
   });
 
-  const colors = ['#3B82F6', '#EF4444', '#10B981', '#F59E0B', '#8B5CF6', '#EC4899', '#06B6D4', '#6366F1'];
+  const colors = ['#6366f1', '#ec4899', '#10b981', '#f59e0b', '#8b5cf6', '#3b82f6', '#06b6d4', '#f43f5e'];
   const circumference = 2 * Math.PI * 40; 
   let currentOffset = 0;
 
@@ -213,51 +209,63 @@ const visibleButtons = computed(() => {
 </script>
 
 <template>
-  <Head title="Task" />
+  <Head title="Task Detail" />
   <AuthenticatedLayout>
+    
     <template #header>
       <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-8">
         <div
-          class="flex justify-between px-5 py-3 items-center text-gray-800 dark:text-gray-200 bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm border border-slate-200 dark:border-slate-800 shadow-lg dark:shadow-sm shadow-indigo-500 dark:shadow-indigo-800 rounded-lg transition-all duration-700 ease-out"
+          class="flex flex-col md:flex-row justify-between px-6 py-4 items-start md:items-center gap-4 text-gray-800 dark:text-gray-200 
+                 bg-white/40 dark:bg-slate-900/60 backdrop-blur-md border border-white/40 dark:border-white/10 
+                 shadow-lg rounded-2xl transition-all duration-700 ease-out"
           :class="{ 'opacity-100': isLoaded, 'translate-y-8 opacity-0': !isLoaded }"
         >
-          <div class="flex items-center gap-4 lg:col-span-2">
+          <div class="flex items-center gap-4">
             <button 
               @click="handleBack"
-              class="p-[8px] border rounded-md border-gray-400 dark:border-gray-600 hover:bg-indigo-50 dark:hover:bg-indigo-950 transition-colors text-gray-600 dark:text-gray-300"
-              title="Back to Task List"
+              class="p-2 rounded-xl bg-white/50 dark:bg-gray-800/50 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 text-gray-600 dark:text-gray-300 border border-white/40 dark:border-gray-600/30 transition-all shadow-sm group"
+              title="Back"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 group-hover:-translate-x-1 transition-transform">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
               </svg>
             </button>
               
-            <h2 class="font-semibold text-xl leading-tight">
-              {{ task.issue }}
-            </h2>
+            <div>
+                <h2 class="font-bold text-xl leading-tight text-gray-900 dark:text-white drop-shadow-sm">
+                {{ task.issue }}
+                </h2>
+                <div class="flex items-center gap-2 mt-1 text-xs font-medium text-gray-500 dark:text-gray-400">
+                    <span class="px-2 py-0.5 rounded-md bg-indigo-50/50 dark:bg-indigo-900/30 border border-indigo-100/50 dark:border-indigo-800/30 text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">
+                        {{ task.type }}
+                    </span>
+                    <span>&bull;</span>
+                    <span>{{ project.name }}</span>
+                </div>
+            </div>
           </div>
 
-          <div class="lg:col-span-4 flex justify-end gap-2">
+          <div class="flex flex-wrap gap-2 w-full md:w-auto justify-end">
             <button
               v-for="button in visibleButtons"
               :key="button.action"
               @click="button.handler"
-              class="flex gap-2 p-[8px] border rounded-md border-gray-400 dark:border-gray-600 hover:bg-indigo-50 dark:hover:bg-indigo-950 transition-colors"
+              class="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-xl bg-white/50 dark:bg-gray-800/50 hover:bg-white dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200 border border-white/40 dark:border-gray-600/30 shadow-sm backdrop-blur-sm transition-all hover:scale-105 active:scale-95"
             >
-              <component :is="button.icon" />
-              <span class="hidden sm:inline">{{ button.text }}</span>
+              <component :is="button.icon" class="w-4 h-4" />
+              <span class="hidden lg:inline">{{ button.text }}</span>
             </button>
           </div>
         </div>
       </div>
     </template>
 
-    <div class="fixed sm:hidden right-9 bottom-9 z-50">
+    <div class="fixed sm:hidden right-6 bottom-6 z-50">
       <div
-        class="shrink-0 inline-flex items-center justify-center p-2 rounded-full dark:text-gray-300 hover:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-500 dark:focus:text-gray-400 transition duration-150 ease-in-out border bg-white dark:bg-gray-700 shadow-sm transition-all duration-800 ease-out delay-500"
-        :class="{ 'translate-y-0 opacity-100 scale-100': isLoaded, 'translate-y-12 opacity-0 scale-75': !isLoaded }"
+        class="shrink-0 inline-flex items-center justify-center p-3 rounded-full text-white bg-indigo-600 shadow-xl z-40 transition-all duration-500 hover:scale-110 active:scale-95"
+        @click="showButtons = !showButtons"
       >
-        <Hamburger v-model="showButtons" />
+        <Hamburger v-model="showButtons" class="w-6 h-6" />
       </div>
       <TransitionGroup tag="div" name="button-list">
         <button
@@ -265,40 +273,40 @@ const visibleButtons = computed(() => {
           v-show="showButtons"
           :key="button.action"
           @click="button.handler"
-          class="fixed right-9 border rounded-full p-4 dark:text-white bg-white dark:bg-gray-700 shadow-sm"
-          :style="{ bottom: `${36 + (index + 1) * 76}px` }"
+          class="fixed right-6 border border-white/20 rounded-full p-3 text-gray-700 dark:text-white bg-white/90 dark:bg-gray-800/90 backdrop-blur-md shadow-lg"
+          :style="{ bottom: `${80 + (index) * 60}px` }"
         >
-          <component :is="button.icon" />
+          <component :is="button.icon" class="w-5 h-5" />
         </button>
       </TransitionGroup>
     </div>
 
-    <div v-if="openCreateEditForm" class="fixed inset-0 z-[100] px-4 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-5xl w-full p-8 relative animate-in fade-in zoom-in duration-300 overflow-y-auto max-h-[90vh]">
+    <div v-if="openCreateEditForm" class="fixed inset-0 z-[100] px-4 flex items-center justify-center bg-black/40 backdrop-blur-sm transition-opacity">
+      <div class="bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl border border-white/50 dark:border-gray-700/50 rounded-2xl shadow-2xl max-w-5xl w-full p-6 relative animate-in fade-in zoom-in duration-300 overflow-y-auto max-h-[90vh]">
         <TaskCreateEditForm :task="selectedTask" :projects="projects" :isEditMode="isEditMode" @close="handleCloseForm" />
       </div>
     </div>
 
-    <div v-if="openAssignForm" class="fixed inset-0 z-[100] px-4 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-lg w-full p-6 relative animate-in fade-in zoom-in duration-200">
+    <div v-if="openAssignForm" class="fixed inset-0 z-[100] px-4 flex items-center justify-center bg-black/40 backdrop-blur-sm transition-opacity">
+      <div class="bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl border border-white/50 dark:border-gray-700/50 rounded-2xl shadow-2xl max-w-lg w-full p-6 relative animate-in fade-in zoom-in duration-200">
         <TaskAssignForm :task="selectedTask" :pl="users" :co="communicator" :pg="programmer" :ds="designer" @close="handleCloseForm" />
       </div>
     </div>
 
-    <div v-if="openPrForm" class="fixed inset-0 z-[100] px-4 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-lg w-full p-6 relative animate-in fade-in zoom-in duration-200">
+    <div v-if="openPrForm" class="fixed inset-0 z-[100] px-4 flex items-center justify-center bg-black/40 backdrop-blur-sm transition-opacity">
+      <div class="bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl border border-white/50 dark:border-gray-700/50 rounded-2xl shadow-2xl max-w-lg w-full p-6 relative animate-in fade-in zoom-in duration-200">
         <TaskPrForm :task="selectedTask" :pg="programmer" @close="handleCloseForm" />
       </div>
     </div>
 
-    <div v-if="openCommentForm" class="fixed inset-0 z-[100] px-4 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-lg w-full p-6 relative animate-in fade-in zoom-in duration-200">
+    <div v-if="openCommentForm" class="fixed inset-0 z-[100] px-4 flex items-center justify-center bg-black/40 backdrop-blur-sm transition-opacity">
+      <div class="bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl border border-white/50 dark:border-gray-700/50 rounded-2xl shadow-2xl max-w-lg w-full p-6 relative animate-in fade-in zoom-in duration-200">
         <TaskCommentForm :task="selectedTask" @close="handleCloseForm" />
       </div>
     </div>
 
-    <div v-if="openReplyForm" class="fixed inset-0 z-[100] px-4 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-lg w-full p-6 relative animate-in fade-in zoom-in duration-200">
+    <div v-if="openReplyForm" class="fixed inset-0 z-[100] px-4 flex items-center justify-center bg-black/40 backdrop-blur-sm transition-opacity">
+      <div class="bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl border border-white/50 dark:border-gray-700/50 rounded-2xl shadow-2xl max-w-lg w-full p-6 relative animate-in fade-in zoom-in duration-200">
         <TaskReplyForm :comment="selectedComment" @close="handleCloseForm" />
       </div>
     </div>
@@ -308,147 +316,204 @@ const visibleButtons = computed(() => {
       :class="{ 'translate-y-0 opacity-100': isLoaded, 'translate-y-12 opacity-0': !isLoaded }"
     >
       <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-8">
-        <div class="overflow-x-auto bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm border border-slate-200 dark:border-slate-800 shadow-lg dark:shadow-sm shadow-indigo-500 dark:shadow-indigo-800 rounded-lg">
+        
+        <div class="bg-white/40 dark:bg-slate-900/60 backdrop-blur-md border border-white/40 dark:border-white/10 shadow-xl rounded-2xl overflow-hidden">
 
-          <div class="p-6 border-b border-gray-200 dark:border-gray-700">
-            <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Task Overview</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <div class="mb-4"><label class="text-sm font-medium text-gray-600 dark:text-gray-400">Client</label><p class="text-gray-800 dark:text-gray-200">{{ project.client?.name || '-' }}</p></div>
-                <div class="mb-4"><label class="text-sm font-medium text-gray-600 dark:text-gray-400">Project</label><p class="text-gray-800 dark:text-gray-200">{{ project.name || '-' }}</p></div>
-                <div class="mb-4"><label class="text-sm font-medium text-gray-600 dark:text-gray-400">Type</label><p class="text-gray-800 dark:text-gray-200">{{ task.type }}</p></div>
-                <div class="mb-4"><label class="text-sm font-medium text-gray-600 dark:text-gray-400">Creator</label><p class="text-gray-800 dark:text-gray-200">{{ getNameUser(task.creator) }}</p></div>
+          <div class="p-8 border-b border-white/20 dark:border-white/5">
+            <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-6 flex items-center gap-2">
+                <span class="w-1 h-6 bg-indigo-500 rounded-full"></span>
+                Overview
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div class="space-y-4">
+                <div class="grid grid-cols-3 gap-2">
+                    <span class="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Client</span>
+                    <span class="col-span-2 text-sm font-medium text-gray-800 dark:text-gray-200">{{ project.client?.name || '-' }}</span>
+                </div>
+                <div class="grid grid-cols-3 gap-2">
+                    <span class="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Project</span>
+                    <span class="col-span-2 text-sm font-medium text-gray-800 dark:text-gray-200">{{ project.name || '-' }}</span>
+                </div>
+                <div class="grid grid-cols-3 gap-2">
+                    <span class="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Creator</span>
+                    <span class="col-span-2 text-sm font-medium text-gray-800 dark:text-gray-200">{{ getNameUser(task.creator) }}</span>
+                </div>
               </div>
-              <div>
-                <div class="mb-4"><label class="text-sm font-medium text-gray-600 dark:text-gray-400">Start Date</label><p class="text-gray-800 dark:text-gray-200">{{ formatDate(task.start_date) }}</p></div>
-                <div class="mb-4"><label class="text-sm font-medium text-gray-600 dark:text-gray-400">Due Date</label><p class="text-gray-800 dark:text-gray-200">{{ formatDate(task.due_date) }}</p></div>
-                <div class="mb-4"><label class="text-sm font-medium text-gray-600 dark:text-gray-400">End Date</label><p class="text-gray-800 dark:text-gray-200">{{ formatDate(task.end_date) }}</p></div>
-                <div class="mb-4"><label class="text-sm font-medium text-gray-600 dark:text-gray-400">Updater</label><p class="text-gray-800 dark:text-gray-200">{{ getNameUser(task.updater) }}</p></div>
+              <div class="space-y-4">
+                <div class="grid grid-cols-3 gap-2">
+                    <span class="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Start Date</span>
+                    <span class="col-span-2 text-sm font-medium text-gray-800 dark:text-gray-200">{{ formatDate(task.start_date) }}</span>
+                </div>
+                <div class="grid grid-cols-3 gap-2">
+                    <span class="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Due Date</span>
+                    <span class="col-span-2 text-sm font-medium text-red-500 dark:text-red-400">{{ formatDate(task.due_date) }}</span>
+                </div>
+                <div class="grid grid-cols-3 gap-2">
+                    <span class="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide">End Date</span>
+                    <span class="col-span-2 text-sm font-medium text-gray-800 dark:text-gray-200">{{ formatDate(task.end_date) }}</span>
+                </div>
               </div>
             </div>
           </div>
 
-          <div class="p-6 border-b border-gray-200 dark:border-gray-700">
-            <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Team</h3>
-            <div class="grid grid-cols-1 md:grid-cols-5 gap-6">
-              <div><label class="text-sm font-medium text-gray-600 dark:text-gray-400">Project Leader</label><p class="text-gray-800 dark:text-gray-200">{{ getNameUser(task.pl) }}</p></div>
-              <div><label class="text-sm font-medium text-gray-600 dark:text-gray-400">Communicator</label><p class="text-gray-800 dark:text-gray-200">{{ formatJsonList(task.communicator) }}</p></div>
-              <div><label class="text-sm font-medium text-gray-600 dark:text-gray-400">Programmer</label><p class="text-gray-800 dark:text-gray-200">{{ formatJsonList(task.programmer) }}</p></div>
-              <div><label class="text-sm font-medium text-gray-600 dark:text-gray-400">Designer</label><p class="text-gray-800 dark:text-gray-200">{{ formatJsonList(task.designer) }}</p></div>
-              <div><label class="text-sm font-medium text-gray-600 dark:text-gray-400">Reviewer</label><p class="text-gray-800 dark:text-gray-200">{{ formatJsonList(task.reviewer) }}</p></div>
+          <div class="p-8 border-b border-white/20 dark:border-white/5 bg-white/20 dark:bg-white/5">
+            <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-6 flex items-center gap-2">
+                <span class="w-1 h-6 bg-emerald-500 rounded-full"></span>
+                Team Members
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+              <div class="flex flex-col gap-1">
+                  <span class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Project Leader</span>
+                  <span class="text-sm font-semibold text-gray-800 dark:text-gray-200">{{ getNameUser(task.pl) }}</span>
+              </div>
+              <div class="flex flex-col gap-1">
+                  <span class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Communicator</span>
+                  <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ formatJsonList(task.communicator) }}</span>
+              </div>
+              <div class="flex flex-col gap-1">
+                  <span class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Programmer</span>
+                  <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ formatJsonList(task.programmer) }}</span>
+              </div>
+              <div class="flex flex-col gap-1">
+                  <span class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Designer</span>
+                  <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ formatJsonList(task.designer) }}</span>
+              </div>
+              <div class="flex flex-col gap-1">
+                  <span class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Reviewer</span>
+                  <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ formatJsonList(task.reviewer) }}</span>
+              </div>
             </div>
           </div>
 
-          <div class="p-6 border-b border-gray-200 dark:border-gray-700">
-            <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Details</h3>
-            <div class="mb-4"><label class="text-sm font-medium text-gray-600 dark:text-gray-400">Description</label><p class="text-gray-800 dark:text-gray-200 whitespace-pre-wrap">{{ task.description || '-' }}</p></div>
-            <div class="mb-4 flex flex-col">
-              <label class="text-sm font-medium text-gray-600 dark:text-gray-400">Ticket Link</label>
-              <a :href="'//' + task.ticket_link" target="_blank" class="text-indigo-600 dark:text-indigo-400 hover:underline">{{ task.ticket_link }}</a>
-            </div>
-            <div class="mb-4 flex flex-col">
-              <label class="text-sm font-medium text-gray-600 dark:text-gray-400">Related Links</label>
-              <div v-if="task.related_links?.length > 0" v-for="link in task.related_links" :key="link">
-                <a :href="'//' + link" target="_blank" class="text-indigo-600 dark:text-indigo-400 hover:underline block">{{ link }}</a>
-              </div>
-              <div v-else class="text-gray-600 dark:text-gray-400" >-</div>
-            </div>
+          <div class="p-8 border-b border-white/20 dark:border-white/5">
+            <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-6 flex items-center gap-2">
+                <span class="w-1 h-6 bg-amber-500 rounded-full"></span>
+                Task Details
+            </h3>
             
-            <div class="mb-4">
-              <label class="text-sm font-medium text-gray-600 dark:text-gray-400">Time Used</label>
-              <div v-if="logtimeSegments.length > 0" class="flex flex-col sm:flex-row items-center gap-6 mt-2 bg-indigo-50 dark:bg-slate-800/50 p-4 rounded-lg border border-indigo-100 dark:border-slate-700">
-                <div class="relative w-32 h-32 shrink-0">
-                   <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-                      <circle cx="50" cy="50" r="40" fill="transparent" stroke-width="15" class="stroke-gray-200 dark:stroke-gray-700" />
-                      <circle 
-                        v-for="seg in logtimeSegments" 
-                        :key="seg.id"
-                        cx="50" cy="50" r="40" 
-                        fill="transparent" 
-                        stroke-width="15" 
-                        :stroke="seg.color"
-                        :stroke-dasharray="seg.strokeDasharray"
-                        :stroke-dashoffset="seg.strokeDashoffset"
-                        class="transition-all duration-500 ease-out hover:opacity-80"
-                      />
-                   </svg>
-                   <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                      <span class="text-lg font-bold text-gray-800 dark:text-gray-200">{{ totalTimeUsed }}</span>
-                      <span class="text-[0.6rem] text-gray-500 uppercase">Hours</span>
-                   </div>
-                </div>
-                <div class="flex-1 w-full min-w-0">
-                  <div class="flex flex-col gap-2">
-                    <div v-for="seg in logtimeSegments" :key="seg.id" class="flex items-center justify-between text-sm">
-                      <div class="flex items-center gap-2 min-w-0">
-                        <span class="w-3 h-3 rounded-full shrink-0" :style="{ backgroundColor: seg.color }"></span>
-                        <span class="text-gray-700 dark:text-gray-300 font-medium truncate" :title="seg.name">{{ seg.name }}</span>
-                      </div>
-                      <div class="flex items-center gap-3 shrink-0">
-                        <span class="text-gray-500 dark:text-gray-400 text-xs">{{ seg.percentage }}%</span>
-                        <span class="font-bold text-gray-800 dark:text-gray-200 tabular-nums">{{ seg.time }}h</span>
-                      </div>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-2 space-y-6">
+                    <div>
+                        <label class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide block mb-2">Description</label>
+                        <div class="p-4 rounded-xl bg-white/50 dark:bg-gray-800/50 border border-white/40 dark:border-white/10 text-gray-700 dark:text-gray-300 text-sm whitespace-pre-wrap leading-relaxed shadow-inner">
+                            {{ task.description || 'No description provided.' }}
+                        </div>
                     </div>
-                  </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide block mb-1">Ticket Link</label>
+                            <a :href="'//' + task.ticket_link" target="_blank" class="text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:underline break-all flex items-center gap-1">
+                                {{ task.ticket_link }} <span class="text-[10px]">↗</span>
+                            </a>
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide block mb-1">Related Links</label>
+                            <div v-if="task.related_links?.length > 0" v-for="link in task.related_links" :key="link">
+                                <a :href="'//' + link" target="_blank" class="text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:underline break-all flex items-center gap-1">
+                                    {{ link }} <span class="text-[10px]">↗</span>
+                                </a>
+                            </div>
+                            <span v-else class="text-sm text-gray-400 italic">-</span>
+                        </div>
+                    </div>
                 </div>
-              </div>
-              <p v-else class="text-gray-800 dark:text-gray-200 mt-1 font-mono">
-                {{ totalTimeUsed ? `${totalTimeUsed} hours` : '0 hours' }}
-              </p>
+
+                <div>
+                    <label class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide block mb-2">Time Allocation</label>
+                    <div v-if="logtimeSegments.length > 0" class="p-5 rounded-xl bg-white/50 dark:bg-gray-800/50 border border-white/40 dark:border-white/10 shadow-sm flex flex-col items-center">
+                        <div class="relative w-40 h-40 mb-6">
+                           <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                              <circle cx="50" cy="50" r="40" fill="transparent" stroke-width="12" class="stroke-gray-200/50 dark:stroke-gray-700/50" />
+                              <circle 
+                                v-for="seg in logtimeSegments" 
+                                :key="seg.id"
+                                cx="50" cy="50" r="40" 
+                                fill="transparent" 
+                                stroke-width="12" 
+                                :stroke="seg.color"
+                                :stroke-dasharray="seg.strokeDasharray"
+                                :stroke-dashoffset="seg.strokeDashoffset"
+                                class="transition-all duration-700 ease-out hover:stroke-width-[14]"
+                              />
+                           </svg>
+                           <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                              <span class="text-2xl font-bold text-gray-800 dark:text-white">{{ totalTimeUsed }}</span>
+                              <span class="text-[0.65rem] font-bold text-gray-400 uppercase tracking-widest">Hours</span>
+                           </div>
+                        </div>
+                        <div class="w-full space-y-2">
+                            <div v-for="seg in logtimeSegments" :key="seg.id" class="flex justify-between items-center text-xs">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2.5 h-2.5 rounded-full" :style="{ backgroundColor: seg.color }"></span>
+                                    <span class="text-gray-600 dark:text-gray-300 font-medium truncate max-w-[100px]" :title="seg.name">{{ seg.name }}</span>
+                                </div>
+                                <div class="flex gap-2">
+                                    <span class="text-gray-400">{{ seg.percentage }}%</span>
+                                    <span class="font-bold text-gray-700 dark:text-gray-200">{{ seg.time }}h</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div v-else class="p-6 rounded-xl bg-gray-50/50 dark:bg-gray-800/50 border border-dashed border-gray-300 dark:border-gray-700 text-center">
+                        <p class="text-sm text-gray-400">No time logged yet.</p>
+                    </div>
+                </div>
             </div>
           </div>
 
-          <div class="p-6">
-            <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Pull Request & Comments</h3>
+          <div class="p-8 bg-gray-50/30 dark:bg-black/20">
+            <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-6 flex items-center gap-2">
+                <span class="w-1 h-6 bg-purple-500 rounded-full"></span>
+                Discussion & PRs
+            </h3>
             
-            <div v-for="pr in prs" :key="pr.id" class="border border-indigo-400 dark:border-indigo-800 rounded-md pt-4 px-4 mb-4 bg-white dark:bg-gray-800" :class="{ 'pb-4': !pr.replies?.length, 'pb-2': pr.replies?.length }">
-              
-              <div class="flex justify-between items-start mb-2 border-b border-gray-100 dark:border-gray-700 pb-2">
-                <span class="font-bold text-gray-800 dark:text-gray-200 text-sm">
-                  {{ getNameUser(pr.from) }}
-                </span>
-                <span class="text-xs text-gray-500 dark:text-gray-400">
-                  {{ formatDate(pr.created_at, true) }}
-                </span>
-              </div>
+            <div v-if="prs.length > 0" class="space-y-6">
+                <div v-for="pr in prs" :key="pr.id" class="relative pl-6 border-l-2 border-indigo-200 dark:border-indigo-900/50">
+                    <div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-indigo-500 ring-4 ring-white dark:ring-slate-900"></div>
+                    
+                    <div class="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-white/50 dark:border-gray-700/50 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="flex justify-between items-start mb-3">
+                            <div class="flex items-center gap-2">
+                                <span class="font-bold text-sm text-gray-900 dark:text-white">{{ getNameUser(pr.from) }}</span>
+                                <span class="px-1.5 py-0.5 rounded text-[10px] bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400">Commented</span>
+                            </div>
+                            <span class="text-xs text-gray-400">{{ formatDate(pr.created_at, true) }}</span>
+                        </div>
 
-              <div class="flex flex-col">
-                <div v-if="pr.pr_links && pr.pr_links.length > 0" class="mb-2">
-                   <div v-for="link in pr.pr_links" :key="link">
-                    <a :href="'//' + link" target="_blank" class="text-indigo-600 dark:text-indigo-400 hover:underline text-sm break-all">🔗 {{ link }}</a>
-                  </div>
-                </div>
-                
-                <p class="text-gray-700 dark:text-gray-300 whitespace-pre-wrap text-sm mb-3">{{ pr.comment }}</p>
-                
-                <div class="flex justify-end">
-                   <button @click="handleReply(pr.id)" class="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 hover:underline">
-                     Reply
-                   </button>
-                </div>
-              </div>
+                        <div class="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap mb-4">
+                            {{ pr.comment }}
+                        </div>
 
-              <div v-if="pr.replies && pr.replies.length > 0" class="mt-3 pl-4 border-l-2 border-indigo-200 dark:border-gray-600 space-y-3">
-                <div v-for="r in pr.replies" :key="r.id" class="bg-gray-50 dark:bg-gray-700/50 p-3 rounded-md">
-                  <div class="flex justify-between items-center mb-1">
-                    <span class="font-semibold text-xs text-gray-700 dark:text-gray-300">
-                      {{ r.user ? r.user.name : getNameUser(r.from) }}
-                    </span>
-                    <span class="text-[10px] text-gray-400">
-                      {{ formatDate(r.created_at, true) }}
-                    </span>
-                  </div>
-                  
-                  <div v-if="r.pr_links && r.pr_links.length > 0" class="mb-1">
-                     <div v-for="link in r.pr_links" :key="link">
-                      <a :href="'//' + link" target="_blank" class="text-indigo-500 dark:text-indigo-300 hover:underline text-xs break-all">🔗 {{ link }}</a>
+                        <div v-if="pr.pr_links && pr.pr_links.length > 0" class="mb-4 flex flex-wrap gap-2">
+                           <a v-for="link in pr.pr_links" :key="link" :href="'//' + link" target="_blank" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 text-xs font-medium border border-indigo-100 dark:border-indigo-800 hover:bg-indigo-100 dark:hover:bg-indigo-900/40 transition">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>
+                                PR Link
+                           </a>
+                        </div>
+
+                        <div v-if="pr.replies && pr.replies.length > 0" class="mt-4 space-y-3 pl-4 border-l border-gray-200 dark:border-gray-700">
+                            <div v-for="r in pr.replies" :key="r.id" class="bg-gray-50/80 dark:bg-gray-900/50 p-3 rounded-lg border border-gray-100 dark:border-gray-700">
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="font-semibold text-xs text-gray-800 dark:text-gray-200">{{ r.user ? r.user.name : getNameUser(r.from) }}</span>
+                                    <span class="text-[10px] text-gray-400">{{ formatDate(r.created_at, true) }}</span>
+                                </div>
+                                <p class="text-xs text-gray-600 dark:text-gray-400 whitespace-pre-wrap">{{ r.comment }}</p>
+                            </div>
+                        </div>
+
+                        <div class="mt-3 flex justify-end">
+                           <button @click="handleReply(pr.id)" class="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 hover:underline">
+                             Reply
+                           </button>
+                        </div>
                     </div>
-                  </div>
-
-                  <p class="text-gray-600 dark:text-gray-400 whitespace-pre-wrap text-xs">{{ r.comment }}</p>
                 </div>
-              </div>
-
+            </div>
+            <div v-else class="text-center py-10">
+                <div class="inline-flex p-4 rounded-full bg-gray-100 dark:bg-gray-800 mb-3">
+                    <Chat class="w-6 h-6 text-gray-400" />
+                </div>
+                <p class="text-sm text-gray-500 dark:text-gray-400">No comments or PRs yet.</p>
             </div>
           </div>
 

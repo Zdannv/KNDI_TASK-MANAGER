@@ -5,7 +5,8 @@ import Gear from '@/Components/Icon/Gear.vue';
 import Download from '@/Components/Icon/Download.vue';
 import Hamburger from '@/Components/Icon/Hamburger.vue';
 import Clock from '@/Components/Icon/Clock.vue';
-import Pagination from '@/Components/Pagination.vue'; // 1. Import Pagination
+import Trash from '@/Components/Icon/Trash.vue'; // Import Icon Trash
+import Pagination from '@/Components/Pagination.vue'; 
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import LogtimeForm from '@/Components/Form/Logtime.vue';
 import SelectInput from '@/Components/SelectInput.vue';
@@ -64,15 +65,13 @@ const handleDelete = (id) => {
 };
 
 const props = defineProps({
-  logtimes: Object, // 2. Ubah tipe menjadi Object (Pagination structure)
+  logtimes: Object, 
   tasks: {},
   users: {}
 });
 
-// 3. Update grouping logic untuk support pagination (.data)
 const groupedLogtimes = computed(() => {
   const grouped = {};
-  // Ambil data dari props.logtimes.data jika ada
   const list = props.logtimes && props.logtimes.data ? props.logtimes.data : [];
 
   list.forEach(item => {
@@ -133,28 +132,35 @@ const visibleButtons = computed(() => {
 <template>
   <Head title="Logtimes" />
   <AuthenticatedLayout>
+    
     <template #header>
       <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-8">
         <div
-          class="flex justify-between px-5 py-3 items-center text-gray-800 dark:text-gray-200 bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm border border-slate-200 dark:border-slate-800 shadow-lg dark:shadow-sm shadow-indigo-500 dark:shadow-indigo-800 rounded-lg transition-all duration-1000 ease-out"
+          class="flex justify-between px-6 py-4 items-center text-gray-800 dark:text-gray-200 
+                 bg-white/40 dark:bg-slate-900/60 backdrop-blur-md border border-white/40 dark:border-white/10 
+                 shadow-lg rounded-2xl transition-all duration-1000 ease-out"
           :class="{ 'translate-y-0 opacity-100': isLoaded, 'translate-y-8 opacity-0': !isLoaded }"
         >
-          <h2 class="font-semibold text-xl leading-tight">Logtimes</h2>
+          <div>
+            <h2 class="font-bold text-xl leading-tight text-gray-800 dark:text-white drop-shadow-sm">Logtimes</h2>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Track and manage work hours.</p>
+          </div>
+          
           <div class="flex gap-4 justify-end">
             <button
               v-if="['other', 'co'].includes(role)"
               @click="handleOpenOptions"
-              class="flex gap-2 p-[8px] border rounded-md border-gray-400 dark:border-gray-600 hover:bg-indigo-50 dark:hover:bg-indigo-950 transition-colors"
+              class="flex items-center gap-2 px-4 py-2 bg-white/50 dark:bg-gray-800/50 hover:bg-white dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-xl shadow-sm border border-white/40 dark:border-gray-600/50 backdrop-blur-sm transition-all"
             >
-              <Gear />
-              <span class="hidden sm:inline">Options</span>
+              <Gear class="w-4 h-4" />
+              <span class="hidden sm:inline font-medium text-sm">Options</span>
             </button>
             <button
               @click="handleOpenForm"
-              class="flex gap-2 p-[8px] border rounded-md border-gray-400 dark:border-gray-600 hover:bg-indigo-50 dark:hover:bg-indigo-950 transition-colors"
+              class="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow-md hover:shadow-indigo-500/30 transition-all duration-300 transform hover:scale-105"
             >
-              <Plus />
-              <span class="hidden sm:inline">New</span>
+              <Plus class="w-5 h-5" />
+              <span class="hidden sm:inline font-bold text-sm">Log Time</span>
               <span class="sm:hidden">New</span>
             </button>
           </div>
@@ -162,12 +168,12 @@ const visibleButtons = computed(() => {
       </div>
     </template>
 
-    <div v-if="['other', 'co'].includes(role)" class="fixed sm:hidden right-9 bottom-9 z-50">
+    <div v-if="['other', 'co'].includes(role)" class="fixed sm:hidden right-6 bottom-6 z-50">
       <div
-        class="shrink-0 inline-flex items-center justify-center p-2 rounded-full dark:text-gray-300 hover:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-500 dark:focus:text-gray-400 transition duration-150 ease-in-out border bg-white dark:bg-gray-700 shadow-sm transition-all duration-800 ease-out delay-500"
-        :class="{ 'translate-y-0 opacity-100 scale-100': isLoaded, 'translate-y-12 opacity-0 scale-75': !isLoaded }"
+        class="shrink-0 inline-flex items-center justify-center p-3 rounded-full text-white bg-indigo-600 shadow-xl z-40 transition-all duration-500 hover:scale-110 active:scale-95"
+        @click="showButtons = !showButtons"
       >
-        <Hamburger v-model="showButtons" />
+        <Hamburger v-model="showButtons" class="w-6 h-6" />
       </div>
       <TransitionGroup tag="div" name="button-list">
         <button
@@ -175,64 +181,73 @@ const visibleButtons = computed(() => {
           v-show="showButtons"
           :key="button.action"
           @click="button.handler"
-          class="fixed right-9 border rounded-full p-4 dark:text-white bg-white dark:bg-gray-700 shadow-sm"
-          :style="{ bottom: `${36 + (index + 1) * 76}px` }"
+          class="fixed right-6 border border-white/20 rounded-full p-3 text-gray-700 dark:text-white bg-white/90 dark:bg-gray-800/90 backdrop-blur-md shadow-lg"
+          :style="{ bottom: `${80 + (index) * 60}px` }"
         >
-          <component :is="button.icon" />
+          <component :is="button.icon" class="w-5 h-5" />
         </button>
       </TransitionGroup>
     </div>
     <button v-else
       @click="handleOpenForm"
-      class="fixed sm:hidden right-9 bottom-9 border rounded-full p-4 dark:text-white bg-white dark:bg-gray-700 shadow-sm z-40 transition-all duration-800 ease-out delay-500"
+      class="fixed sm:hidden right-6 bottom-6 border border-white/20 rounded-full p-4 text-white bg-indigo-600 shadow-xl z-40 transition-all duration-500 ease-out hover:scale-110 active:scale-95"
       :class="{ 'translate-y-0 opacity-100 scale-100': isLoaded, 'translate-y-12 opacity-0 scale-75': !isLoaded }"
     >
       <Plus />
     </button>
 
-    <div v-if="openForm" class="fixed inset-0 z-50 px-2 flex items-center justify-center bg-black bg-opacity-50">
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg max-w-lg w-full p-6 relative animate-in fade-in zoom-in duration-200">
+    <div v-if="openForm" class="fixed inset-0 z-50 px-4 flex items-center justify-center bg-black/40 backdrop-blur-sm transition-opacity">
+      <div class="bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl border border-white/50 dark:border-gray-700/50 rounded-2xl shadow-2xl max-w-lg w-full p-6 relative animate-in fade-in zoom-in duration-300">
         <LogtimeForm :tasks="tasks" @close="handleCloseForm" />
       </div>
     </div>
 
     <div
       v-if="options"
-      class="w-full pt-3 sm:pt-8 transition-all duration-1000 ease-out"
+      class="w-full pt-4 sm:pt-6 transition-all duration-500 ease-out"
       :class="{ 'translate-y-0 opacity-100': isLoaded, 'translate-y-12 opacity-0': !isLoaded }"
     >
       <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-8">
-        <div class="flex flex-col py-4 px-5 text-gray-800 dark:text-gray-200 bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm border border-slate-200 dark:border-slate-800 shadow-lg dark:shadow-sm shadow-indigo-500 dark:shadow-indigo-800 rounded-lg font-medium">
-          <div class="flex flex-col sm:flex-row gap-4 pb-4">
-            <Datepicker
-              v-model="dates"
-              range
-              placeholder="Select Range Dates"
-              :enable-time-picker="false"
-              @update:model-value="handleDateChange"
-            />
-            <SelectInput
-              id="user"
-              v-model="id"
-              :options="users"
-              label="name"
-              valueKey="id"
-              class="block w-full text-gray-700"
-              placeholder="Filter user..."
-              :dark="true"
-            />
+        <div class="flex flex-col py-6 px-6 text-gray-800 dark:text-gray-200 
+                    bg-white/40 dark:bg-slate-900/60 backdrop-blur-md border border-white/40 dark:border-white/10 
+                    shadow-lg rounded-2xl font-medium">
+          <div class="flex flex-col sm:flex-row gap-4 pb-4 border-b border-gray-200/50 dark:border-gray-700/50 mb-4">
+            <div class="w-full sm:w-1/3">
+                 <label class="text-xs font-bold text-gray-500 dark:text-gray-400 mb-1 block uppercase">Date Range</label>
+                 <Datepicker
+                  v-model="dates"
+                  range
+                  placeholder="Select Range Dates"
+                  :enable-time-picker="false"
+                  @update:model-value="handleDateChange"
+                  input-class-name="glass-datepicker"
+                />
+            </div>
+            <div class="w-full sm:w-1/3">
+                <label class="text-xs font-bold text-gray-500 dark:text-gray-400 mb-1 block uppercase">Filter User</label>
+                <SelectInput
+                  id="user"
+                  v-model="id"
+                  :options="users"
+                  label="name"
+                  valueKey="id"
+                  class="block w-full"
+                  placeholder="Select user..."
+                  :dark="true"
+                />
+            </div>
           </div>
-          <div class="hidden sm:flex justify-end gap-4">
-            <button @click="exportLogtime(false)" class="flex gap-2 p-[8px] border rounded-md border-gray-400 dark:border-gray-600 hover:bg-indigo-50 dark:hover:bg-indigo-950 transition-colors">
-              <Download />
-              <span>{{ (id || dates.length > 0) ? 'Export' : 'ExportAll' }}</span>
+          <div class="hidden sm:flex justify-end gap-3">
+            <button @click="exportLogtime(false)" class="flex items-center gap-2 px-3 py-2 text-sm rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:hover:bg-indigo-900/50 dark:text-indigo-300 transition-colors border border-indigo-200 dark:border-indigo-800">
+              <Download class="w-4 h-4" />
+              <span>{{ (id || dates.length > 0) ? 'Export Data' : 'Export All' }}</span>
             </button>
-            <button @click="exportLogtime(true)" class="flex gap-2 p-[8px] border rounded-md border-gray-400 dark:border-gray-600 hover:bg-indigo-50 dark:hover:bg-indigo-950 transition-colors">
-              <Download2 />
-              <span>{{ (id || dates.length > 0) ? 'ExportSummary' : 'ExportSummaryAll' }}</span>
+            <button @click="exportLogtime(true)" class="flex items-center gap-2 px-3 py-2 text-sm rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:hover:bg-emerald-900/50 dark:text-emerald-300 transition-colors border border-emerald-200 dark:border-emerald-800">
+              <Download2 class="w-4 h-4" />
+              <span>Summary</span>
             </button>
-            <button @click="() => router.get(route('logtime.list'))" class="flex gap-2 p-[8px] border rounded-md border-gray-400 dark:border-gray-600 hover:bg-indigo-50 dark:hover:bg-indigo-950 transition-colors">
-              <Close />
+            <button @click="() => router.get(route('logtime.list'))" class="flex items-center gap-2 px-3 py-2 text-sm rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-300 transition-colors">
+              <Close class="w-4 h-4" />
               <span>Reset</span>
             </button>
           </div>
@@ -241,7 +256,7 @@ const visibleButtons = computed(() => {
     </div>
 
     <div
-      class="w-full py-4 sm:py-8 transition-all duration-700 ease-out delay-100"
+      class="w-full py-6 sm:py-8 transition-all duration-700 ease-out delay-100"
       :class="{ 'opacity-100': isLoaded, 'translate-y-12 opacity-0': !isLoaded }"
     >
       <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-8">
@@ -249,62 +264,73 @@ const visibleButtons = computed(() => {
         <div class="flex flex-col items-start">
             
             <div class="relative z-10 -mb-[1px]">
-                <div class="w-40 h-10 bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm border-t border-l border-r border-slate-200 dark:border-slate-800 rounded-t-xl shadow-[0_-2px_5px_rgba(0,0,0,0.02)] relative flex items-center px-4">
-                    <Clock class="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
-                    <div class="absolute -bottom-[1px] left-0 right-0 h-[2px] bg-white/70 dark:bg-slate-900/70 z-20"></div>
+                <div class="w-fit px-6 h-12 bg-white/40 dark:bg-slate-900/60 backdrop-blur-md border-t border-l border-r border-white/40 dark:border-white/10 rounded-t-2xl shadow-sm relative flex items-center gap-3">
+                    <Clock class="w-5 h-5 text-indigo-600 dark:text-indigo-400 drop-shadow-sm" />
+                    <span class="font-bold text-gray-800 dark:text-white text-sm tracking-wide shadow-black drop-shadow-sm">Time Logs</span>
+                    <div class="absolute -bottom-[1px] left-0 right-0 h-[2px] bg-white/40 dark:bg-slate-900/60 z-20"></div>
                 </div>
             </div>
 
             <div
             :class="{ 'sm:max-h-[39rem]': options, 'max-h-[49rem]': !options }"
-            class="w-full overflow-x-auto bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 shadow-lg dark:shadow-sm shadow-indigo-500 dark:shadow-indigo-800 rounded-b-lg rounded-tr-lg rounded-tl-none relative z-0"
+            class="w-full overflow-x-auto bg-white/40 dark:bg-slate-900/60 backdrop-blur-md border border-white/40 dark:border-white/10 shadow-xl rounded-b-2xl rounded-tr-2xl relative z-0"
             >
-            <table class="w-full min-w-[40rem] text-left dark:text-white table-auto">
-                <thead class="bg-gray-200 dark:bg-gray-700 border-b-2 border-gray-300">
-                <tr class="bg-indigo-100 dark:bg-gray-700">
-                    <th class="p-4 rounded-tl-none"><p class="text-sm opacity-70">Date</p></th>
-                    <th class="p-4"><p class="text-sm opacity-70">Issue</p></th>
-                    <th class="p-4"><p class="text-sm opacity-70">Ticket</p></th>
-                    <th class="p-4"><p class="text-sm opacity-70">Time used</p></th>
-                    <th v-if="['other', 'co'].includes(role)" class="p-4 text-center rounded-tr-lg"><p class="text-sm opacity-70 uppercase tracking-widest">Action</p></th>
+            <table class="w-full min-w-[40rem] text-left dark:text-white table-auto border-collapse">
+                <thead class="sticky top-0 z-20 bg-white/50 dark:bg-gray-800/80 backdrop-blur-md border-b border-white/20 dark:border-white/10">
+                <tr>
+                    <th class="p-5 font-semibold text-gray-600 dark:text-gray-300 text-sm uppercase tracking-wider">Date</th>
+                    <th class="p-5 font-semibold text-gray-600 dark:text-gray-300 text-sm uppercase tracking-wider">Issue</th>
+                    <th class="p-5 font-semibold text-gray-600 dark:text-gray-300 text-sm uppercase tracking-wider">Ticket</th>
+                    <th class="p-5 font-semibold text-gray-600 dark:text-gray-300 text-sm uppercase tracking-wider">Time used</th>
+                    <th v-if="['other', 'co'].includes(role)" class="p-5 text-center font-semibold text-gray-600 dark:text-gray-300 text-sm uppercase tracking-wider">Action</th>
                 </tr>
                 </thead>
-                <tbody>
+                <tbody class="divide-y divide-white/20 dark:divide-white/5">
                 <template v-for="(group, date) in groupedLogtimes" :key="date">
-                    <tr class="bg-indigo-50 dark:bg-slate-800 border-t border-gray-300">
-                    <td class="py-2 px-4 italic font-bold text-indigo-700 dark:text-indigo-400" colspan="3">{{ date }}</td>
-                    <td class="py-2 px-4">
-                        <p class="font-bold text-blue-gray-900">{{ group.totalTime }} h</p>
-                    </td>
-                    <td v-if="['other', 'co'].includes(role)" class="py-2 px-4"></td>
+                    <tr class="bg-indigo-50/50 dark:bg-slate-800/50 backdrop-blur-sm border-t border-white/30 dark:border-gray-700/50">
+                        <td class="py-3 px-5" colspan="3">
+                            <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-100/50 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 text-xs font-bold border border-indigo-200 dark:border-indigo-800">
+                                {{ date }}
+                            </span>
+                        </td>
+                        <td class="py-3 px-5">
+                            <span class="font-bold text-gray-700 dark:text-gray-200 text-sm">{{ group.totalTime }} h</span>
+                        </td>
+                        <td v-if="['other', 'co'].includes(role)" class="py-3 px-5"></td>
                     </tr>
-                    <tr v-for="value in group.items" :key="value.id" class="border-t border-gray-200 hover:bg-white/50 transition-colors">
-                    <td class="p-4 text-sm">{{ formatDate(value.date) }}</td>
-                    <td class="p-4">
-                        <a :href="route('task.show', value.task.id)" class="text-sm font-bold text-indigo-600 dark:text-indigo-400 hover:underline">
+
+                    <tr v-for="value in group.items" :key="value.id" class="hover:bg-white/30 dark:hover:bg-white/5 transition duration-200">
+                    <td class="p-5 text-sm text-gray-500 dark:text-gray-400">{{ formatDate(value.date) }}</td>
+                    <td class="p-5">
+                        <a :href="route('task.show', value.task.id)" class="text-sm font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 hover:underline decoration-indigo-300 underline-offset-2 transition">
                         {{ value.task.issue }}
                         </a>
                     </td>
-                    <td class="p-4">
-                        <a :href="'//' + value.task.ticket_link" target="_blank" class="text-sm text-indigo-600 dark:text-indigo-400 hover:underline">
+                    <td class="p-5">
+                        <a :href="'//' + value.task.ticket_link" target="_blank" class="text-sm font-mono text-indigo-600 dark:text-indigo-400 hover:underline">
                         {{ value.task.ticket_link }}
                         </a>
                     </td>
-                    <td class="p-4 text-sm">{{ value.time_used }} h</td>
-                    <td v-if="['other', 'co'].includes(role)" class="p-4">
-                        <div class="flex justify-center">
-                        <button @click.prevent="handleDelete(value.id)" class="text-red-600 dark:text-red-400 font-medium hover:underline text-sm">
-                            Delete
+                    <td class="p-5 text-sm font-medium text-gray-700 dark:text-gray-300">{{ value.time_used }} h</td>
+                    <td v-if="['other', 'co'].includes(role)" class="p-5 text-center">
+                        <button
+                          @click.prevent="handleDelete(value.id)"
+                          class="p-1.5 rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 transition tooltip-trigger inline-flex" 
+                          title="Delete"
+                        >
+                            <Trash class="w-4 h-4" />
                         </button>
-                        </div>
                     </td>
                     </tr>
                 </template>
+                <tr v-if="logtimes.data.length === 0">
+                    <td colspan="5" class="p-12 text-center text-gray-400 dark:text-gray-500 italic">No logtimes found.</td>
+                </tr>
                 </tbody>
             </table>
             </div>
             
-            <div class="mt-4 flex justify-end w-full">
+            <div class="mt-6 flex justify-end w-full">
                 <Pagination :links="logtimes.links" />
             </div>
 
@@ -316,18 +342,32 @@ const visibleButtons = computed(() => {
 </template>
 
 <style scoped>
+/* Custom style for Datepicker input to match glass theme */
 :deep(.dp__input) {
-  height: 42px !important;
-  border-radius: 7px !important;
-  border-color: #6B7280;
+  background-color: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(4px);
+  border-color: rgba(209, 213, 219, 0.5); /* gray-300 */
+  border-radius: 0.5rem; /* rounded-lg */
+  height: 42px;
+  font-size: 0.875rem;
 }
+
+:deep(.dp__input):hover {
+    border-color: #6366f1; /* indigo-500 */
+}
+
 @media (prefers-color-scheme: dark) {
   :deep(.dp__input) {
-    background-color: #1F2937;
-    color: #E5E7EB;
+    background-color: rgba(31, 41, 55, 0.5); /* gray-800 */
+    border-color: rgba(75, 85, 99, 0.5); /* gray-600 */
+    color: #e5e7eb;
   }
   :deep(.dp__menu) {
-    background-color: #1F2937;
+    background-color: #1f2937;
+    border-color: #374151;
+  }
+  :deep(.dp__cell_inner), :deep(.dp__month_year_select), :deep(.dp__calendar_header_item) {
+      color: #e5e7eb;
   }
 }
 </style>

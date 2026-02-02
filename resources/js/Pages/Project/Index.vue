@@ -1,7 +1,9 @@
 <script setup>
 import Plus from '@/Components/Icon/Plus.vue';
 import Folder from '@/Components/Icon/Folder.vue'; 
-import Pagination from '@/Components/Pagination.vue'; // Import Pagination
+import Pen from '@/Components/Icon/Pen.vue';     // Import Icon Edit
+import Trash from '@/Components/Icon/Trash.vue'; // Import Icon Delete
+import Pagination from '@/Components/Pagination.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ProjectForm from '@/Components/Form/Project.vue';
 import { Head, router, usePage } from '@inertiajs/vue3';
@@ -69,22 +71,29 @@ const getNameUser = (id) => {
 <template>
   <Head title="Projects" />
   <AuthenticatedLayout>
+    
     <template #header>
       <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-8">
         <div
-          class="flex justify-between px-5 py-3 items-center text-gray-800 dark:text-gray-200 bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm border border-slate-200 dark:border-slate-800 shadow-lg dark:shadow-sm shadow-indigo-500 dark:shadow-indigo-800 rounded-lg transition-all duration-1000 ease-out"
+          class="flex justify-between px-6 py-4 items-center text-gray-800 dark:text-gray-200 
+                 bg-white/40 dark:bg-slate-900/60 backdrop-blur-md border border-white/40 dark:border-white/10 
+                 shadow-lg rounded-2xl transition-all duration-1000 ease-out"
           :class="{ 'translate-y-0 opacity-100': isLoaded, 'translate-y-8 opacity-0': !isLoaded }"
         >
-          <h2 class="lg:col-span-2 font-semibold text-xl leading-tight">
-            Projects
-          </h2>
-          <div v-if="['other', 'pm', 'co'].includes(role)" class="lg:col-span-4 flex justify-end">
+          <div>
+            <h2 class="font-bold text-xl leading-tight text-gray-800 dark:text-white drop-shadow-sm">
+              Projects List
+            </h2>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Manage all projects and assignments.</p>
+          </div>
+          
+          <div v-if="['other', 'pm', 'co'].includes(role)" class="flex justify-end">
             <button
               @click="handleOpenForm"
-              class="flex gap-2 p-[8px] border rounded-md border-gray-400 dark:border-gray-600 hover:bg-indigo-50 dark:hover:bg-indigo-950 transition-colors"
+              class="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow-md hover:shadow-indigo-500/30 transition-all duration-300 transform hover:scale-105"
             >
-              <Plus />
-              <span>New</span>
+              <Plus class="w-5 h-5" />
+              <span class="hidden sm:inline font-bold text-sm">New Project</span>
             </button>
           </div>
         </div>
@@ -94,15 +103,15 @@ const getNameUser = (id) => {
     <button
       v-if="['other', 'pm', 'co'].includes(role)"
       @click="handleOpenForm"
-      class="fixed sm:hidden right-9 bottom-9 border rounded-full p-4 dark:text-white bg-white dark:bg-gray-700 shadow-sm z-40 transition-all duration-800 ease-out delay-500"
+      class="fixed sm:hidden right-6 bottom-6 border border-white/20 rounded-full p-4 text-white bg-indigo-600 shadow-xl z-40 transition-all duration-500 ease-out hover:scale-110 active:scale-95"
       :class="{ 'translate-y-0 opacity-100 scale-100': isLoaded, 'translate-y-12 opacity-0 scale-75': !isLoaded }"
     >
       <Plus />
     </button>
 
-    <div v-if="openForm" class="fixed inset-0 z-50 px-2 flex items-center justify-center bg-black bg-opacity-50">
+    <div v-if="openForm" class="fixed inset-0 z-50 px-4 flex items-center justify-center bg-black/40 backdrop-blur-sm transition-opacity">
       <div
-        class="bg-white dark:bg-gray-800 rounded-lg shadow-lg max-w-lg w-full p-6 relative animate-in fade-in zoom-in duration-200"
+        class="bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl border border-white/50 dark:border-gray-700/50 rounded-2xl shadow-2xl max-w-lg w-full p-6 relative animate-in fade-in zoom-in duration-300"
       >
         <ProjectForm
           :project="selectedProject"
@@ -123,80 +132,77 @@ const getNameUser = (id) => {
         >
 
           <div class="relative z-10 -mb-[1px]">
-             <div class="w-40 h-10 bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm border-t border-l border-r border-slate-200 dark:border-slate-800 rounded-t-xl shadow-[0_-2px_5px_rgba(0,0,0,0.02)] relative flex items-center px-4">
-                <Folder class="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
-                <div class="absolute -bottom-[1px] left-0 right-0 h-[2px] bg-white/70 dark:bg-slate-900/70 z-20"></div>
+             <div class="w-fit px-6 h-12 bg-white/40 dark:bg-slate-900/60 backdrop-blur-md border-t border-l border-r border-white/40 dark:border-white/10 rounded-t-2xl shadow-sm relative flex items-center gap-3">
+                <Folder class="w-5 h-5 text-indigo-600 dark:text-indigo-400 drop-shadow-sm" />
+                <span class="font-bold text-gray-800 dark:text-white text-sm tracking-wide shadow-black drop-shadow-sm">Projects Data</span>
+                <div class="absolute -bottom-[1px] left-0 right-0 h-[2px] bg-white/40 dark:bg-slate-900/60 z-20"></div>
              </div>
           </div>
 
           <div
-            class="w-full overflow-x-auto bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm border border-slate-200 dark:border-slate-800 shadow-lg dark:shadow-sm shadow-indigo-500 dark:shadow-indigo-800 rounded-b-lg rounded-tr-lg rounded-tl-none relative z-0"
+            class="w-full overflow-x-auto bg-white/40 dark:bg-slate-900/60 backdrop-blur-md border border-white/40 dark:border-white/10 shadow-xl rounded-b-2xl rounded-tr-2xl relative z-0"
           >
-            <table class="w-full text-left dark:text-white table-auto">
+            <table class="w-full text-left dark:text-white table-auto border-collapse">
               <thead>
-                <tr class="bg-indigo-50 dark:bg-gray-700">
-                  <th class="p-4 rounded-tl-none">
-                    <p class="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">ID</p>
-                  </th>
-                  <th class="p-4">
-                    <p class="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">Name</p>
-                  </th>
-                  <th class="p-4">
-                    <p class="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">Project Owner</p>
-                  </th>
-                  <th class="p-4">
-                    <p class="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">Creator</p>
-                  </th>
-                  <th class="p-4">
-                    <p class="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">Updater</p>
-                  </th>
-                  <th v-if="['other', 'pm', 'co'].includes(role)" class="p-4 text-center rounded-tr-lg">
-                    <p class="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">Action</p>
-                  </th>
+                <tr class="bg-white/50 dark:bg-gray-800/80 backdrop-blur-md border-b border-white/20 dark:border-white/10">
+                  <th class="p-5 font-semibold text-gray-600 dark:text-gray-300 text-sm uppercase tracking-wider">ID</th>
+                  <th class="p-5 font-semibold text-gray-600 dark:text-gray-300 text-sm uppercase tracking-wider">Name</th>
+                  <th class="p-5 font-semibold text-gray-600 dark:text-gray-300 text-sm uppercase tracking-wider">Project Owner</th>
+                  <th class="p-5 font-semibold text-gray-600 dark:text-gray-300 text-sm uppercase tracking-wider">Creator</th>
+                  <th class="p-5 font-semibold text-gray-600 dark:text-gray-300 text-sm uppercase tracking-wider">Updater</th>
+                  <th v-if="['other', 'pm', 'co'].includes(role)" class="p-5 text-center font-semibold text-gray-600 dark:text-gray-300 text-sm uppercase tracking-wider">Action</th>
                 </tr>
               </thead>
-              <tbody>
-                <tr v-for="project in projects.data" :key="project.id" class="hover:bg-white/40 dark:hover:bg-slate-800/40 transition-colors">
-                  <td class="p-4 border-t border-slate-200 dark:border-slate-800 align-middle">
-                    <p class="block font-sans text-sm antialiased font-normal leading-normal">{{ project.id }}</p>
+              <tbody class="divide-y divide-white/20 dark:divide-white/5">
+                <tr v-for="project in projects.data" :key="project.id" class="hover:bg-white/30 dark:hover:bg-white/5 transition duration-200">
+                  <td class="p-5 align-middle text-sm text-gray-500 dark:text-gray-400">
+                    #{{ project.id }}
                   </td>
-                  <td class="p-4 border-t border-slate-200 dark:border-slate-800 align-middle">
+                  <td class="p-5 align-middle">
                     <a
                       :href="route('task.list', { project_id: project.id })"
-                      class="block font-sans text-sm antialiased font-bold leading-normal text-indigo-600 dark:text-indigo-400 hover:underline"
+                      class="font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 hover:underline decoration-indigo-300 underline-offset-2 transition flex items-center gap-2"
                     >
+                      <Folder class="w-4 h-4 opacity-50" />
                       {{ project.name }}
                     </a>
                   </td>
-                  <td class="p-4 border-t border-slate-200 dark:border-slate-800 align-middle">
-                    <p class="block font-sans text-sm antialiased font-normal leading-normal">
-                      {{ project.project_owner?.name || '-' }}
-                    </p>
+                  <td class="p-5 align-middle">
+                    <span v-if="project.project_owner" class="px-2.5 py-1 rounded-md bg-slate-100/50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-300 text-xs font-bold border border-slate-200/50 dark:border-slate-700/50">
+                        {{ project.project_owner.name }}
+                    </span>
+                    <span v-else class="text-gray-400 text-xs">-</span>
                   </td>
-                  <td class="p-4 border-t border-slate-200 dark:border-slate-800 align-middle">
-                    <p class="block font-sans text-sm antialiased font-normal leading-normal">
-                      {{ getNameUser(project.creator) }}
-                    </p>
+                  <td class="p-5 align-middle">
+                     <div class="flex items-center gap-2">
+                        <div class="w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-[10px] font-bold text-slate-600 dark:text-slate-300">
+                             {{ getNameUser(project.creator).charAt(0).toUpperCase() }}
+                        </div>
+                        <span class="text-sm text-gray-700 dark:text-gray-200">{{ getNameUser(project.creator) }}</span>
+                     </div>
                   </td>
-                  <td class="p-4 border-t border-slate-200 dark:border-slate-800 align-middle">
-                    <p class="block font-sans text-sm antialiased font-normal leading-normal">
-                      {{ getNameUser(project.updater) }}
-                    </p>
+                  <td class="p-5 align-middle">
+                     <div class="flex items-center gap-2">
+                         <div class="w-6 h-6 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-[10px] font-bold text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700">
+                             {{ getNameUser(project.updater).charAt(0).toUpperCase() }}
+                        </div>
+                        <span class="text-sm text-gray-500 dark:text-gray-400">{{ getNameUser(project.updater) }}</span>
+                     </div>
                   </td>
-                  <td v-if="['other', 'pm', 'co'].includes(role)" class="p-4 border-t border-slate-200 dark:border-slate-800 align-middle">
-                    <div class="flex gap-4 justify-center items-center text-sm">
-                      <a
+                  <td v-if="['other', 'pm', 'co'].includes(role)" class="p-5 align-middle">
+                    <div class="flex gap-3 justify-center items-center">
+                      <button
                         @click.prevent="handleEdit(project.id)"
-                        class="cursor-pointer text-indigo-600 hover:text-indigo-800 dark:text-gray-200 dark:hover:text-indigo-400 font-medium transition-colors"
+                        class="p-1.5 rounded-lg text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 transition tooltip-trigger" title="Edit"
                       >
-                        Edit
-                      </a>
-                      <a
+                        <Pen class="w-4 h-4" />
+                      </button>
+                      <button
                         @click.prevent="handleDelete(project.id)"
-                        class="cursor-pointer text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 font-medium transition-colors"
+                        class="p-1.5 rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 transition tooltip-trigger" title="Delete"
                       >
-                        Delete
-                      </a>
+                        <Trash class="w-4 h-4" />
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -204,7 +210,7 @@ const getNameUser = (id) => {
             </table>
           </div>
 
-          <div class="mt-4 flex justify-end w-full">
+          <div class="mt-6 flex justify-end w-full">
              <Pagination :links="projects.links" />
           </div>
 
