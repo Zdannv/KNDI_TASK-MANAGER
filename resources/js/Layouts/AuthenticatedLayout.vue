@@ -49,10 +49,14 @@ const cancelEditingName = () => {
 
 const showAvatarModal = ref(false);
 const avatarForm = useForm({ name: '', email: '', avatar: '' });
+
+// DATA DUMMY 12 AVATAR
 const avatarAssets = [
-    '/avatars/avatar-1.jpeg', '/avatars/avatar-2.jpg', '/avatars/avatar-3.jpeg',
-    '/avatars/avatar-4.jpg', '/avatars/avatar-5.jpeg', '/avatars/avatar-6.jpeg',
+    '/avatars/avatar-1.jpeg', '/avatars/avatar-2.jpg', '/avatars/avatar-3.jpeg', '/avatars/avatar-4.jpg',
+    '/avatars/avatar-5.jpeg', '/avatars/avatar-6.jpeg', '/avatars/avatar-1.jpeg', '/avatars/avatar-2.jpg',
+    '/avatars/avatar-3.jpeg', '/avatars/avatar-4.jpg', '/avatars/avatar-5.jpeg', '/avatars/avatar-6.jpeg',
 ];
+
 const selectedAvatarTemp = ref('');
 
 const openAvatarModal = () => {
@@ -294,16 +298,49 @@ const getInitials = (name) => {
         </aside>
 
         <Modal :show="showAvatarModal" @close="showAvatarModal = false">
-            <div class="p-6 bg-white/90 dark:bg-gray-800/90 backdrop-blur-md">
-                <h2 class="text-lg font-bold text-gray-900 dark:text-gray-100 mb-4">Choose Avatar</h2>
-                <div class="grid grid-cols-3 gap-4 mb-6">
-                    <div v-for="(asset, index) in avatarAssets" :key="index" @click="selectAvatar(asset)" class="cursor-pointer rounded-full overflow-hidden border-4 transition-all hover:scale-105" :class="selectedAvatarTemp === asset ? 'border-indigo-500 ring-2 ring-indigo-200' : 'border-transparent'">
-                        <img :src="asset" class="w-full h-auto">
+            <div class="p-6 bg-white/95 dark:bg-gray-800/95 backdrop-blur-md">
+                <h2 class="text-lg font-bold text-gray-900 dark:text-gray-100 mb-6 text-center">Choose Your Avatar</h2>
+                
+                <div class="flex flex-col items-center gap-6 mb-8">
+                    <div class="relative group">
+                        <div class="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-blue-500 rounded-full blur opacity-40 animate-pulse"></div>
+                        <img 
+                            :src="selectedAvatarTemp" 
+                            alt="Selected Preview" 
+                            class="relative w-32 h-32 rounded-full object-cover border-4 border-white dark:border-gray-700 shadow-xl"
+                        />
+                        <div class="absolute bottom-0 right-0 bg-green-500 text-white rounded-full p-1 border-2 border-white dark:border-gray-800">
+                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
+                                <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="w-full px-2">
+                        <div class="grid grid-cols-4 gap-3 sm:gap-4 justify-items-center">
+                            <button 
+                                v-for="(asset, index) in avatarAssets" 
+                                :key="index" 
+                                type="button"
+                                @click="selectAvatar(asset)" 
+                                class="relative rounded-full transition-all duration-200 focus:outline-none"
+                                :class="[
+                                    selectedAvatarTemp === asset 
+                                        ? 'ring-2 ring-offset-2 ring-indigo-500 scale-110 opacity-100 z-10' 
+                                        : 'opacity-60 hover:opacity-100 hover:scale-105 grayscale hover:grayscale-0'
+                                ]"
+                            >
+                                <img :src="asset" class="w-12 h-12 sm:w-14 sm:h-14 rounded-full object-cover shadow-sm" />
+                            </button>
+                        </div>
                     </div>
                 </div>
-                <div class="flex justify-end gap-3">
+
+                <div class="flex justify-end gap-3 pt-4 border-t border-gray-200/20">
                     <SecondaryButton @click="showAvatarModal = false">Cancel</SecondaryButton>
-                    <PrimaryButton @click="saveAvatar" :disabled="avatarForm.processing">Save</PrimaryButton>
+                    <PrimaryButton @click="saveAvatar" :disabled="avatarForm.processing" class="w-24 justify-center">
+                        Save
+                    </PrimaryButton>
                 </div>
             </div>
         </Modal>
