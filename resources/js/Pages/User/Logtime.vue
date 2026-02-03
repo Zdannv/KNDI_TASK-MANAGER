@@ -5,7 +5,7 @@ import Gear from '@/Components/Icon/Gear.vue';
 import Download from '@/Components/Icon/Download.vue';
 import Hamburger from '@/Components/Icon/Hamburger.vue';
 import Clock from '@/Components/Icon/Clock.vue';
-import Trash from '@/Components/Icon/Trash.vue'; // Import Icon Trash
+import Trash from '@/Components/Icon/Trash.vue'; 
 import Pagination from '@/Components/Pagination.vue'; 
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import LogtimeForm from '@/Components/Form/Logtime.vue';
@@ -137,20 +137,20 @@ const visibleButtons = computed(() => {
       <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-8">
         <div
           class="flex justify-between px-6 py-4 items-center text-gray-800 dark:text-gray-200 
-                 bg-white/40 dark:bg-slate-900/60 backdrop-blur-md border border-white/40 dark:border-white/10 
+                 bg-white/40 dark:bg-gradient-to-b dark:from-slate-700/30 dark:to-slate-900/60 backdrop-blur-xl border border-white/40 dark:border-white/20 
                  shadow-lg rounded-2xl transition-all duration-1000 ease-out"
           :class="{ 'translate-y-0 opacity-100': isLoaded, 'translate-y-8 opacity-0': !isLoaded }"
         >
           <div>
-            <h2 class="font-bold text-xl leading-tight text-gray-800 dark:text-white drop-shadow-sm">Logtimes</h2>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Track and manage work hours.</p>
+            <h2 class="font-bold text-xl leading-tight text-gray-800 dark:text-slate-100 drop-shadow-sm">Logtimes</h2>
+            <p class="text-sm text-gray-500 dark:text-slate-400 mt-1">Track and manage work hours.</p>
           </div>
           
           <div class="flex gap-4 justify-end">
             <button
               v-if="['other', 'co'].includes(role)"
               @click="handleOpenOptions"
-              class="flex items-center gap-2 px-4 py-2 bg-white/50 dark:bg-gray-800/50 hover:bg-white dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-xl shadow-sm border border-white/40 dark:border-gray-600/50 backdrop-blur-sm transition-all"
+              class="flex items-center gap-2 px-4 py-2 bg-white/50 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-700/50 text-gray-700 dark:text-gray-200 rounded-xl shadow-sm border border-white/40 dark:border-white/10 backdrop-blur-sm transition-all"
             >
               <Gear class="w-4 h-4" />
               <span class="hidden sm:inline font-medium text-sm">Options</span>
@@ -181,23 +181,16 @@ const visibleButtons = computed(() => {
           v-show="showButtons"
           :key="button.action"
           @click="button.handler"
-          class="fixed right-6 border border-white/20 rounded-full p-3 text-gray-700 dark:text-white bg-white/90 dark:bg-gray-800/90 backdrop-blur-md shadow-lg"
+          class="fixed right-6 border border-white/20 rounded-full p-3 text-gray-700 dark:text-white bg-white/90 dark:bg-slate-800/90 backdrop-blur-md shadow-lg"
           :style="{ bottom: `${80 + (index) * 60}px` }"
         >
           <component :is="button.icon" class="w-5 h-5" />
         </button>
       </TransitionGroup>
     </div>
-    <button v-else
-      @click="handleOpenForm"
-      class="fixed sm:hidden right-6 bottom-6 border border-white/20 rounded-full p-4 text-white bg-indigo-600 shadow-xl z-40 transition-all duration-500 ease-out hover:scale-110 active:scale-95"
-      :class="{ 'translate-y-0 opacity-100 scale-100': isLoaded, 'translate-y-12 opacity-0 scale-75': !isLoaded }"
-    >
-      <Plus />
-    </button>
 
-    <div v-if="openForm" class="fixed inset-0 z-50 px-4 flex items-center justify-center bg-black/40 backdrop-blur-sm transition-opacity">
-      <div class="bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl border border-white/50 dark:border-gray-700/50 rounded-2xl shadow-2xl max-w-lg w-full p-6 relative animate-in fade-in zoom-in duration-300">
+    <div v-if="openForm" class="fixed inset-0 z-50 px-4 flex items-center justify-center bg-black/60 backdrop-blur-sm transition-opacity">
+      <div class="bg-white/90 dark:bg-gradient-to-b dark:from-slate-800/90 dark:to-slate-950 backdrop-blur-2xl border border-white/50 dark:border-white/10 rounded-2xl shadow-2xl max-w-lg w-full p-6 relative animate-in fade-in zoom-in duration-300">
         <LogtimeForm :tasks="tasks" @close="handleCloseForm" />
       </div>
     </div>
@@ -209,11 +202,11 @@ const visibleButtons = computed(() => {
     >
       <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-8">
         <div class="flex flex-col py-6 px-6 text-gray-800 dark:text-gray-200 
-                    bg-white/40 dark:bg-slate-900/60 backdrop-blur-md border border-white/40 dark:border-white/10 
+                    bg-white/40 dark:bg-gradient-to-b dark:from-slate-700/30 dark:to-slate-900/60 backdrop-blur-xl border border-white/40 dark:border-white/10 
                     shadow-lg rounded-2xl font-medium">
-          <div class="flex flex-col sm:flex-row gap-4 pb-4 border-b border-gray-200/50 dark:border-gray-700/50 mb-4">
+          <div class="flex flex-col sm:flex-row gap-4 pb-4 border-b border-gray-200/50 dark:border-white/5 mb-4">
             <div class="w-full sm:w-1/3">
-                 <label class="text-xs font-bold text-gray-500 dark:text-gray-400 mb-1 block uppercase">Date Range</label>
+                 <label class="text-xs font-bold text-gray-500 dark:text-slate-400 mb-1 block uppercase">Date Range</label>
                  <Datepicker
                   v-model="dates"
                   range
@@ -224,7 +217,7 @@ const visibleButtons = computed(() => {
                 />
             </div>
             <div class="w-full sm:w-1/3">
-                <label class="text-xs font-bold text-gray-500 dark:text-gray-400 mb-1 block uppercase">Filter User</label>
+                <label class="text-xs font-bold text-gray-500 dark:text-slate-400 mb-1 block uppercase">Filter User</label>
                 <SelectInput
                   id="user"
                   v-model="id"
@@ -238,15 +231,15 @@ const visibleButtons = computed(() => {
             </div>
           </div>
           <div class="hidden sm:flex justify-end gap-3">
-            <button @click="exportLogtime(false)" class="flex items-center gap-2 px-3 py-2 text-sm rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:hover:bg-indigo-900/50 dark:text-indigo-300 transition-colors border border-indigo-200 dark:border-indigo-800">
+            <button @click="exportLogtime(false)" class="flex items-center gap-2 px-3 py-2 text-sm font-bold rounded-lg bg-indigo-50/50 hover:bg-indigo-100/50 text-indigo-700 dark:bg-indigo-900/30 dark:hover:bg-indigo-900/50 dark:text-indigo-300 transition-colors border border-indigo-200/50 dark:border-indigo-800/50">
               <Download class="w-4 h-4" />
               <span>{{ (id || dates.length > 0) ? 'Export Data' : 'Export All' }}</span>
             </button>
-            <button @click="exportLogtime(true)" class="flex items-center gap-2 px-3 py-2 text-sm rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:hover:bg-emerald-900/50 dark:text-emerald-300 transition-colors border border-emerald-200 dark:border-emerald-800">
+            <button @click="exportLogtime(true)" class="flex items-center gap-2 px-3 py-2 text-sm font-bold rounded-lg bg-emerald-50/50 hover:bg-emerald-100/50 text-emerald-700 dark:bg-emerald-900/30 dark:hover:bg-emerald-900/50 dark:text-emerald-300 transition-colors border border-emerald-200/50 dark:border-emerald-800/50">
               <Download2 class="w-4 h-4" />
               <span>Summary</span>
             </button>
-            <button @click="() => router.get(route('logtime.list'))" class="flex items-center gap-2 px-3 py-2 text-sm rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-300 transition-colors">
+            <button @click="() => router.get(route('logtime.list'))" class="flex items-center gap-2 px-3 py-2 text-sm font-bold rounded-lg bg-gray-100/50 hover:bg-gray-200/50 text-gray-600 dark:bg-slate-700/50 dark:hover:bg-slate-600/50 dark:text-slate-300 transition-colors border border-gray-200/50 dark:border-slate-600/50">
               <Close class="w-4 h-4" />
               <span>Reset</span>
             </button>
@@ -264,43 +257,43 @@ const visibleButtons = computed(() => {
         <div class="flex flex-col items-start">
             
             <div class="relative z-10 -mb-[1px]">
-                <div class="w-fit px-6 h-12 bg-white/40 dark:bg-slate-900/60 backdrop-blur-md border-t border-l border-r border-white/40 dark:border-white/10 rounded-t-2xl shadow-sm relative flex items-center gap-3">
+                <div class="w-fit px-6 h-12 bg-white/40 dark:bg-slate-700/50 dark:to-slate-800/60 backdrop-blur-xl border-t border-l border-r border-white/40 dark:border-white/20 rounded-t-2xl shadow-sm relative flex items-center gap-3">
                     <Clock class="w-5 h-5 text-indigo-600 dark:text-indigo-400 drop-shadow-sm" />
-                    <span class="font-bold text-gray-800 dark:text-white text-sm tracking-wide shadow-black drop-shadow-sm">Time Logs</span>
-                    <div class="absolute -bottom-[1px] left-0 right-0 h-[2px] bg-white/40 dark:bg-slate-900/60 z-20"></div>
+                    <span class="font-bold text-gray-800 dark:text-slate-100 text-sm tracking-wide shadow-black drop-shadow-sm">Time Logs</span>
+                    <div class="absolute -bottom-[1px] left-0 right-0 h-[2px] bg-white/40 dark:bg-slate-800/80 z-20"></div>
                 </div>
             </div>
 
             <div
             :class="{ 'sm:max-h-[39rem]': options, 'max-h-[49rem]': !options }"
-            class="w-full overflow-x-auto bg-white/40 dark:bg-slate-900/60 backdrop-blur-md border border-white/40 dark:border-white/10 shadow-xl rounded-b-2xl rounded-tr-2xl relative z-0"
+            class="w-full overflow-x-auto bg-white/40 dark:bg-gradient-to-b dark:from-slate-800/60 dark:to-slate-950/80 backdrop-blur-xl border border-white/40 dark:border-white/20 shadow-xl rounded-b-2xl rounded-tr-2xl relative z-0 flex flex-col"
             >
-            <table class="w-full min-w-[40rem] text-left dark:text-white table-auto border-collapse">
-                <thead class="sticky top-0 z-20 bg-white/50 dark:bg-gray-800/80 backdrop-blur-md border-b border-white/20 dark:border-white/10">
+            <table class="w-full min-w-[40rem] text-left dark:text-slate-200 table-auto border-collapse">
+                <thead class="sticky top-0 z-20 bg-white/50 dark:bg-slate-800/90 backdrop-blur-md border-b border-white/20 dark:border-white/10">
                 <tr>
-                    <th class="p-5 font-semibold text-gray-600 dark:text-gray-300 text-sm uppercase tracking-wider">Date</th>
-                    <th class="p-5 font-semibold text-gray-600 dark:text-gray-300 text-sm uppercase tracking-wider">Issue</th>
-                    <th class="p-5 font-semibold text-gray-600 dark:text-gray-300 text-sm uppercase tracking-wider">Ticket</th>
-                    <th class="p-5 font-semibold text-gray-600 dark:text-gray-300 text-sm uppercase tracking-wider">Time used</th>
-                    <th v-if="['other', 'co'].includes(role)" class="p-5 text-center font-semibold text-gray-600 dark:text-gray-300 text-sm uppercase tracking-wider">Action</th>
+                    <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Date</th>
+                    <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Issue</th>
+                    <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Ticket</th>
+                    <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Time used</th>
+                    <th v-if="['other', 'co'].includes(role)" class="p-5 text-center font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Action</th>
                 </tr>
                 </thead>
                 <tbody class="divide-y divide-white/20 dark:divide-white/5">
                 <template v-for="(group, date) in groupedLogtimes" :key="date">
-                    <tr class="bg-indigo-50/50 dark:bg-slate-800/50 backdrop-blur-sm border-t border-white/30 dark:border-gray-700/50">
+                    <tr class="bg-indigo-50/50 dark:bg-indigo-500/5 backdrop-blur-sm border-t border-white/30 dark:border-white/5">
                         <td class="py-3 px-5" colspan="3">
-                            <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-100/50 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 text-xs font-bold border border-indigo-200 dark:border-indigo-800">
+                            <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-100/50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 text-xs font-bold border border-indigo-200/50 dark:border-indigo-700/30">
                                 {{ date }}
                             </span>
                         </td>
                         <td class="py-3 px-5">
-                            <span class="font-bold text-gray-700 dark:text-gray-200 text-sm">{{ group.totalTime }} h</span>
+                            <span class="font-bold text-gray-700 dark:text-slate-200 text-sm">{{ group.totalTime }} h</span>
                         </td>
                         <td v-if="['other', 'co'].includes(role)" class="py-3 px-5"></td>
                     </tr>
 
-                    <tr v-for="value in group.items" :key="value.id" class="hover:bg-white/30 dark:hover:bg-white/5 transition duration-200">
-                    <td class="p-5 text-sm text-gray-500 dark:text-gray-400">{{ formatDate(value.date) }}</td>
+                    <tr v-for="value in group.items" :key="value.id" class="hover:bg-white/30 dark:hover:bg-indigo-500/10 transition duration-200">
+                    <td class="p-5 text-sm text-gray-500 dark:text-slate-400">{{ formatDate(value.date) }}</td>
                     <td class="p-5">
                         <a :href="route('task.show', value.task.id)" class="text-sm font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 hover:underline decoration-indigo-300 underline-offset-2 transition">
                         {{ value.task.issue }}
@@ -311,7 +304,7 @@ const visibleButtons = computed(() => {
                         {{ value.task.ticket_link }}
                         </a>
                     </td>
-                    <td class="p-5 text-sm font-medium text-gray-700 dark:text-gray-300">{{ value.time_used }} h</td>
+                    <td class="p-5 text-sm font-medium text-gray-700 dark:text-slate-300">{{ value.time_used }} h</td>
                     <td v-if="['other', 'co'].includes(role)" class="p-5 text-center">
                         <button
                           @click.prevent="handleDelete(value.id)"
@@ -342,32 +335,53 @@ const visibleButtons = computed(() => {
 </template>
 
 <style scoped>
-/* Custom style for Datepicker input to match glass theme */
 :deep(.dp__input) {
-  background-color: rgba(255, 255, 255, 0.5);
-  backdrop-filter: blur(4px);
-  border-color: rgba(209, 213, 219, 0.5); /* gray-300 */
-  border-radius: 0.5rem; /* rounded-lg */
+  background-color: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(8px);
+  border-color: rgba(255, 255, 255, 0.3);
+  border-radius: 0.75rem;
   height: 42px;
   font-size: 0.875rem;
+  font-weight: 500;
 }
 
 :deep(.dp__input):hover {
-    border-color: #6366f1; /* indigo-500 */
+    border-color: #6366f1;
 }
 
-@media (prefers-color-scheme: dark) {
-  :deep(.dp__input) {
-    background-color: rgba(31, 41, 55, 0.5); /* gray-800 */
-    border-color: rgba(75, 85, 99, 0.5); /* gray-600 */
-    color: #e5e7eb;
-  }
-  :deep(.dp__menu) {
-    background-color: #1f2937;
-    border-color: #374151;
-  }
-  :deep(.dp__cell_inner), :deep(.dp__month_year_select), :deep(.dp__calendar_header_item) {
-      color: #e5e7eb;
-  }
+:deep(.dark .dp__input) {
+  background-color: rgba(15, 23, 42, 0.5); 
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #f1f5f9;
+}
+
+:deep(.dp__menu) {
+  background-color: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(12px);
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+:deep(.dark .dp__menu) {
+  background-color: rgba(30, 41, 59, 0.95);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+:deep(.dark .dp__cell_inner), :deep(.dark .dp__month_year_select), :deep(.dark .dp__calendar_header_item) {
+    color: #e2e8f0;
+}
+
+.custom-scrollbar {
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+}
+.custom-scrollbar::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
 }
 </style>
