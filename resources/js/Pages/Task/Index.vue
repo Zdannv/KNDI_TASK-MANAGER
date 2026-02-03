@@ -99,13 +99,13 @@ const handleSearch = () => {
       <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-8">
         <div
           class="flex flex-col md:flex-row justify-between px-6 py-4 items-center gap-4 text-gray-800 dark:text-gray-200 
-                 bg-white/40 dark:bg-slate-900/60 backdrop-blur-md border border-white/40 dark:border-white/10 
+                 bg-white/40 dark:bg-gradient-to-b dark:from-slate-700/30 dark:to-slate-900/60 backdrop-blur-xl border border-white/40 dark:border-white/20 
                  shadow-lg rounded-2xl transition-all duration-1000 ease-out"
           :class="{ 'translate-y-0 opacity-100': isLoaded, 'translate-y-8 opacity-0': !isLoaded }"
         >
           <div>
-            <h2 class="font-bold text-xl leading-tight text-gray-800 dark:text-white drop-shadow-sm">Tasks List</h2>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Manage project issues and tickets.</p>
+            <h2 class="font-bold text-xl leading-tight text-gray-800 dark:text-slate-100 drop-shadow-sm">Tasks List</h2>
+            <p class="text-sm text-gray-500 dark:text-slate-400 mt-1">Manage project issues and tickets.</p>
           </div>
 
           <div class="flex flex-col md:flex-row gap-3 justify-end items-center text-sm w-full md:w-auto">
@@ -116,7 +116,7 @@ const handleSearch = () => {
                 <TextInput
                   id="search"
                   type="text"
-                  class="pl-10 w-full bg-white/50 dark:bg-gray-800/50 border-white/40 dark:border-gray-600/50 backdrop-blur-sm focus:bg-white/80 dark:focus:bg-gray-800/80 transition-all shadow-sm rounded-xl"
+                  class="pl-10 w-full bg-white/50 dark:bg-slate-900/50 border-white/40 dark:border-white/10 backdrop-blur-sm focus:bg-white/80 dark:focus:bg-slate-800/80 transition-all shadow-sm rounded-xl dark:text-white"
                   v-model="search"
                   placeholder="Search issue or ticket..."
                   @keydown.enter="handleSearch"
@@ -145,8 +145,8 @@ const handleSearch = () => {
       <Plus />
     </button>
 
-    <div v-if="openCreateEditForm" class="fixed inset-0 z-[100] px-4 flex items-center justify-center bg-black/40 backdrop-blur-sm transition-opacity">
-      <div class="bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl border border-white/50 dark:border-gray-700/50 rounded-2xl shadow-2xl max-w-5xl w-full p-6 relative animate-in fade-in zoom-in duration-300 overflow-y-auto max-h-[90vh]">
+    <div v-if="openCreateEditForm" class="fixed inset-0 z-[100] px-4 flex items-center justify-center bg-black/60 backdrop-blur-sm transition-opacity">
+      <div class="bg-white/90 dark:bg-gradient-to-b dark:from-slate-800 dark:to-slate-950 backdrop-blur-2xl border border-white/50 dark:border-white/10 rounded-2xl shadow-2xl max-w-5xl w-full p-6 relative animate-in fade-in zoom-in duration-300 overflow-y-auto max-h-[90vh]">
         <TaskCreateEditForm 
             :task="selectedTask" 
             :projects="projects" 
@@ -157,8 +157,8 @@ const handleSearch = () => {
       </div>
     </div>
 
-    <div v-if="openAssignForm" class="fixed inset-0 z-[100] px-4 flex items-center justify-center bg-black/40 backdrop-blur-sm transition-opacity">
-      <div class="bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl border border-white/50 dark:border-gray-700/50 rounded-2xl shadow-2xl max-w-lg w-full p-6 relative animate-in fade-in zoom-in duration-200">
+    <div v-if="openAssignForm" class="fixed inset-0 z-[100] px-4 flex items-center justify-center bg-black/60 backdrop-blur-sm transition-opacity">
+      <div class="bg-white/90 dark:bg-gradient-to-b dark:from-slate-800 dark:to-slate-950 backdrop-blur-2xl border border-white/50 dark:border-white/10 rounded-2xl shadow-2xl max-w-lg w-full p-6 relative animate-in fade-in zoom-in duration-200">
         <TaskAssignForm :task="selectedTask" :pl="users" :co="communicator" :pg="programmer" :ds="designer" @close="handleCloseForm" />
       </div>
     </div>
@@ -172,115 +172,117 @@ const handleSearch = () => {
         >
 
           <div class="relative z-10 -mb-[1px]">
-             <div class="w-fit px-6 h-12 bg-white/40 dark:bg-slate-900/60 backdrop-blur-md border-t border-l border-r border-white/40 dark:border-white/10 rounded-t-2xl shadow-sm relative flex items-center gap-3">
+             <div class="w-fit px-6 h-12 bg-white/40 dark:bg-slate-700/50 dark:to-slate-800/60 backdrop-blur-xl border-t border-l border-r border-white/40 dark:border-white/20 rounded-t-2xl shadow-sm relative flex items-center gap-3">
                 <Document class="w-5 h-5 text-indigo-600 dark:text-indigo-400 drop-shadow-sm" />
-                <span class="font-bold text-gray-800 dark:text-white text-sm tracking-wide shadow-black drop-shadow-sm">Task Data</span>
-                <div class="absolute -bottom-[1px] left-0 right-0 h-[2px] bg-white/40 dark:bg-slate-900/60 z-20"></div>
+                <span class="font-bold text-gray-800 dark:text-slate-100 text-sm tracking-wide shadow-black drop-shadow-sm">Task Data</span>
+                <div class="absolute -bottom-[1px] left-0 right-0 h-[2px] bg-white/40 dark:bg-slate-800/80 z-20"></div>
              </div>
           </div>
 
           <div
-            class="w-full custom-scrollbar bg-white/40 dark:bg-slate-900/60 backdrop-blur-md border border-white/40 dark:border-white/10 shadow-xl rounded-b-2xl rounded-tr-2xl relative z-0"
+            class="w-full bg-white/40 dark:bg-gradient-to-b dark:from-slate-800/60 dark:to-slate-950/80 backdrop-blur-xl border border-white/40 dark:border-white/20 shadow-xl rounded-b-2xl rounded-tr-2xl relative z-0 flex flex-col overflow-hidden"
           >
-            <table class="w-full text-left dark:text-white table-auto min-w-[1100px] border-collapse">
-              <thead>
-                <tr class="bg-white/50 dark:bg-gray-800/80 backdrop-blur-md border-b border-white/20 dark:border-white/10">
-                  <th class="p-5 font-semibold text-gray-600 dark:text-gray-300 text-sm uppercase tracking-wider">Type</th>
-                  <th class="p-5 font-semibold text-gray-600 dark:text-gray-300 text-sm uppercase tracking-wider">Assign</th>
-                  <th class="p-5 font-semibold text-gray-600 dark:text-gray-300 text-sm uppercase tracking-wider">Issue</th>
-                  <th class="p-5 font-semibold text-gray-600 dark:text-gray-300 text-sm uppercase tracking-wider">Project</th>
-                  <th class="p-5 font-semibold text-gray-600 dark:text-gray-300 text-sm uppercase tracking-wider">Ticket</th>
-                  <th class="p-5 font-semibold text-gray-600 dark:text-gray-300 text-sm uppercase tracking-wider">Start date</th>
-                  <th class="p-5 font-semibold text-gray-600 dark:text-gray-300 text-sm uppercase tracking-wider">Due date</th>
-                  <th v-if="['other', 'pm', 'co'].includes(role)" class="p-5 text-center font-semibold text-gray-600 dark:text-gray-300 text-sm uppercase tracking-wider">
-                    Is Active
-                  </th>
-                  <th class="p-5 text-center font-semibold text-gray-600 dark:text-gray-300 text-sm uppercase tracking-wider">Actions</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-white/20 dark:divide-white/5">
-                <tr v-for="task in tasks.data" :key="task.id" class="hover:bg-white/30 dark:hover:bg-white/5 transition duration-200">
-                  <td class="p-5 align-middle text-sm font-medium">{{ task.type }}</td>
-                  <td class="p-5 align-middle min-w-[200px] text-sm">
-                    <div class="flex flex-wrap gap-1">
-                         <span v-for="(id, idx) in [...(task.programmer || []), ...(task.designer || []), ...(task.communicator || [])]" 
-                            :key="idx"
-                            class="inline-block px-2 py-0.5 rounded-md bg-white/50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 text-xs text-gray-700 dark:text-gray-300"
-                         >
-                            {{ users.find(u => u.id === id)?.name || id }}
-                         </span>
-                         <span v-if="![...(task.programmer || []), ...(task.designer || []), ...(task.communicator || [])].length" class="text-gray-400 text-xs italic">-</span>
-                    </div>
-                  </td>
-
-                  <td class="p-5 min-w-[250px] align-middle">
-                    <div class="flex flex-col gap-1.5 items-start">
-                      <a :href="route('task.show', task.id)" 
-                        class="flex items-center gap-1 text-sm font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 hover:underline decoration-indigo-300 underline-offset-2 transition"
-                      >
-                        {{ task.issue }}
-                        <externalLink class="w-3 h-3 opacity-50" />
-                      </a>
-
-                      <div v-if="task.is_git_automated" 
-                           class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-mono bg-slate-100/60 dark:bg-slate-800/60 border border-slate-200/60 dark:border-slate-700/60 text-slate-600 dark:text-slate-300 shadow-sm backdrop-blur-sm"
-                           title="Updated via Git Webhook">
-                        <svg class="w-3 h-3" viewBox="0 0 24 24" fill="currentColor">
-                          <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                        </svg>
-                        <span class="opacity-90">{{ task.last_commit_hash }}</span>
+            <div class="overflow-x-auto custom-scrollbar">
+              <table class="w-full text-left dark:text-slate-200 table-auto min-w-[1100px] border-collapse">
+                <thead>
+                  <tr class="bg-white/50 dark:bg-slate-800/90 backdrop-blur-md border-b border-white/20 dark:border-white/10">
+                    <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Type</th>
+                    <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Assign</th>
+                    <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Issue</th>
+                    <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Project</th>
+                    <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Ticket</th>
+                    <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Start date</th>
+                    <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Due date</th>
+                    <th v-if="['other', 'pm', 'co'].includes(role)" class="p-5 text-center font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">
+                      Is Active
+                    </th>
+                    <th class="p-5 text-center font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Actions</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-white/20 dark:divide-white/5">
+                  <tr v-for="task in tasks.data" :key="task.id" class="hover:bg-white/30 dark:hover:bg-indigo-500/10 transition duration-200">
+                    <td class="p-5 align-middle text-sm font-medium">{{ task.type }}</td>
+                    <td class="p-5 align-middle min-w-[200px] text-sm">
+                      <div class="flex flex-wrap gap-1">
+                           <span v-for="(id, idx) in [...(task.programmer || []), ...(task.designer || []), ...(task.communicator || [])]" 
+                              :key="idx"
+                              class="inline-block px-2 py-0.5 rounded-md bg-white/50 dark:bg-slate-800/40 border border-gray-200 dark:border-white/10 text-xs text-gray-700 dark:text-slate-300"
+                           >
+                              {{ users.find(u => u.id === id)?.name || id }}
+                           </span>
+                           <span v-if="![...(task.programmer || []), ...(task.designer || []), ...(task.communicator || [])].length" class="text-gray-400 text-xs italic">-</span>
                       </div>
-                    </div>
-                  </td>
+                    </td>
 
-                  <td class="p-5 align-middle text-sm text-gray-700 dark:text-gray-200">{{ task.project?.name || '-' }}</td>
-                  <td class="p-5 align-middle">
-                    <a :href="'//' + task.ticket_link" target="_blank" class="text-sm text-indigo-600 dark:text-indigo-400 hover:underline truncate block max-w-[200px]">
-                      {{ task.ticket_link }}
-                    </a>
-                  </td>
-                  <td class="p-5 align-middle text-sm text-gray-500 dark:text-gray-400">{{ formatDate(task.start_date) }}</td>
-                  <td class="p-5 align-middle text-sm">
-                    <span :class="[
-                        'px-2 py-1 rounded-md text-xs font-bold border',
-                        task.due_date && moment().startOf('day').isAfter(moment(task.due_date).startOf('day'))
-                            ? 'bg-red-50/50 text-red-600 border-red-100 dark:bg-red-900/20 dark:text-red-400 dark:border-red-900/30'
-                            : 'bg-emerald-50/50 text-emerald-600 border-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-900/30'
-                      ]">
-                      {{ formatDate(task.due_date) }}
-                    </span>
-                  </td>
-                  
-                  <td v-if="['other', 'pm', 'co'].includes(role)" class="p-5 align-middle">
-                    <div class="flex justify-center">
-                      <SwitchInput v-slot:default v-model="task.isActive" @update:modelValue="handleUpdateIsActive(task.id)" />
-                    </div>
-                  </td>
+                    <td class="p-5 min-w-[250px] align-middle">
+                      <div class="flex flex-col gap-1.5 items-start">
+                        <a :href="route('task.show', task.id)" 
+                          class="flex items-center gap-1 text-sm font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 hover:underline decoration-indigo-300 underline-offset-2 transition"
+                        >
+                          {{ task.issue }}
+                          <externalLink class="w-3 h-3 opacity-50" />
+                        </a>
 
-                  <td class="p-5 align-middle">
-                    <div class="flex items-center justify-center gap-3">
-                      <button 
-                        v-if="['other', 'pm'].includes(role)"
-                        @click="handleAssignTask(task)"
-                        class="p-1.5 rounded-lg text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 transition tooltip-trigger"
-                        title="Assign User"
-                      >
-                         <UserPlus class="w-5 h-5" />
-                      </button>
+                        <div v-if="task.is_git_automated" 
+                             class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-mono bg-slate-100/60 dark:bg-slate-800/60 border border-slate-200/60 dark:border-slate-700/60 text-slate-600 dark:text-slate-300 shadow-sm backdrop-blur-sm"
+                             title="Updated via Git Webhook">
+                          <svg class="w-3 h-3" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                          </svg>
+                          <span class="opacity-90">{{ task.last_commit_hash }}</span>
+                        </div>
+                      </div>
+                    </td>
 
-                      <button 
-                        v-if="['other', 'pm', 'co'].includes(role)"
-                        @click="handleEditTask(task)"
-                        class="p-1.5 rounded-lg text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/30 transition tooltip-trigger"
-                        title="Edit Task"
-                      >
-                         <Pen class="w-5 h-5" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+                    <td class="p-5 align-middle text-sm text-gray-700 dark:text-slate-200">{{ task.project?.name || '-' }}</td>
+                    <td class="p-5 align-middle">
+                      <a :href="'//' + task.ticket_link" target="_blank" class="text-sm text-indigo-600 dark:text-indigo-400 hover:underline truncate block max-w-[200px]">
+                        {{ task.ticket_link }}
+                      </a>
+                    </td>
+                    <td class="p-5 align-middle text-sm text-gray-500 dark:text-slate-400">{{ formatDate(task.start_date) }}</td>
+                    <td class="p-5 align-middle text-sm">
+                      <span :class="[
+                          'px-2 py-1 rounded-md text-xs font-bold border',
+                          task.due_date && moment().startOf('day').isAfter(moment(task.due_date).startOf('day'))
+                              ? 'bg-red-50/50 text-red-600 border-red-100 dark:bg-red-900/20 dark:text-red-400 dark:border-red-900/30'
+                              : 'bg-emerald-50/50 text-emerald-600 border-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-900/30'
+                        ]">
+                        {{ formatDate(task.due_date) }}
+                      </span>
+                    </td>
+                    
+                    <td v-if="['other', 'pm', 'co'].includes(role)" class="p-5 align-middle">
+                      <div class="flex justify-center">
+                        <SwitchInput v-slot:default v-model="task.isActive" @update:modelValue="handleUpdateIsActive(task.id)" />
+                      </div>
+                    </td>
+
+                    <td class="p-5 align-middle">
+                      <div class="flex items-center justify-center gap-3">
+                        <button 
+                          v-if="['other', 'pm'].includes(role)"
+                          @click="handleAssignTask(task)"
+                          class="p-1.5 rounded-lg text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-500/10 transition tooltip-trigger"
+                          title="Assign User"
+                        >
+                           <UserPlus class="w-5 h-5" />
+                        </button>
+
+                        <button 
+                          v-if="['other', 'pm', 'co'].includes(role)"
+                          @click="handleEditTask(task)"
+                          class="p-1.5 rounded-lg text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-500/10 transition tooltip-trigger"
+                          title="Edit Task"
+                        >
+                           <Pen class="w-5 h-5" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
           
           <div class="mt-6 flex justify-end w-full">
@@ -296,10 +298,9 @@ const handleSearch = () => {
 
 <style scoped>
 .custom-scrollbar {
-  overflow-x: auto;
   scrollbar-gutter: stable;
   scrollbar-width: thin;
-  scrollbar-color: rgba(99, 102, 241, 0.5) rgba(241, 245, 249, 0.1);
+  scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
 }
 .custom-scrollbar::-webkit-scrollbar {
   height: 8px;
@@ -309,11 +310,10 @@ const handleSearch = () => {
   background: transparent;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: rgba(99, 102, 241, 0.3);
+  background-color: rgba(255, 255, 255, 0.1);
   border-radius: 10px;
-  backdrop-filter: blur(5px);
 }
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(99, 102, 241, 0.6);
+  background-color: rgba(255, 255, 255, 0.2);
 }
 </style>

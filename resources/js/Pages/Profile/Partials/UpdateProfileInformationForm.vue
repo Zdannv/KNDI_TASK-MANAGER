@@ -16,9 +16,27 @@ defineProps({
 
 const user = usePage().props.auth.user;
 
+// Daftar 12 Avatar (Menggunakan file yang sudah ada, diduplikasi agar jadi 12)
+const availableAvatars = [
+    '/avatars/avatar-1.jpeg',
+    '/avatars/avatar-2.jpg',
+    '/avatars/avatar-3.jpeg',
+    '/avatars/avatar-4.jpg',
+    '/avatars/avatar-5.jpeg',
+    '/avatars/avatar-6.jpeg',
+    '/avatars/avatar-1.jpeg', 
+    '/avatars/avatar-2.jpg',
+    '/avatars/avatar-3.jpeg',
+    '/avatars/avatar-4.jpg',
+    '/avatars/avatar-5.jpeg',
+    '/avatars/avatar-6.jpeg',
+];
+
 const form = useForm({
     name: user.name,
     email: user.email,
+    // Gunakan avatar user saat ini, atau default ke avatar-1 jika belum ada
+    avatar: user.avatar || '/avatars/avatar-1.jpeg',
 });
 </script>
 
@@ -38,6 +56,42 @@ const form = useForm({
             @submit.prevent="form.patch(route('profile.update'))"
             class="mt-6 space-y-6"
         >
+            <div class="flex flex-col items-center gap-6 mb-8">
+                <div class="flex flex-col items-center">
+                    <InputLabel value="Selected Profile Photo" class="mb-2" />
+                    <div class="relative group">
+                        <div class="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 to-blue-500 rounded-full blur opacity-50 group-hover:opacity-100 transition duration-200"></div>
+                        <img 
+                            :src="form.avatar" 
+                            alt="Current Avatar" 
+                            class="relative w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg"
+                        />
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-6 gap-3 sm:gap-4">
+                    <button 
+                        v-for="(avatar, index) in availableAvatars" 
+                        :key="index"
+                        type="button"
+                        @click="form.avatar = avatar"
+                        class="relative rounded-full transition-all duration-200 focus:outline-none"
+                        :class="[
+                            form.avatar === avatar 
+                                ? 'ring-2 ring-offset-2 ring-indigo-500 scale-110' 
+                                : 'opacity-70 hover:opacity-100 hover:scale-105'
+                        ]"
+                    >
+                        <img 
+                            :src="avatar" 
+                            alt="Avatar Option" 
+                            class="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover shadow-sm"
+                        />
+                    </button>
+                </div>
+                
+                <InputError class="mt-2" :message="form.errors.avatar" />
+            </div>
             <div>
                 <InputLabel for="name" value="Name" />
 

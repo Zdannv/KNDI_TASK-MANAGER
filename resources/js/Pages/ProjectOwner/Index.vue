@@ -69,15 +69,15 @@ const getNameUser = (id) => {
       <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-8">
         <div
           class="flex justify-between px-6 py-4 items-center text-gray-800 dark:text-gray-200 
-                 bg-white/40 dark:bg-slate-900/60 backdrop-blur-md border border-white/40 dark:border-white/10 
+                 bg-white/40 dark:bg-gradient-to-b dark:from-slate-700/30 dark:to-slate-900/60 backdrop-blur-xl border border-white/40 dark:border-white/20 
                  shadow-lg rounded-2xl transition-all duration-1000 ease-out"
           :class="{ 'translate-y-0 opacity-100': isLoaded, 'translate-y-8 opacity-0': !isLoaded }"
         >
           <div>
-            <h2 class="font-bold text-xl leading-tight text-gray-800 dark:text-white drop-shadow-sm">
+            <h2 class="font-bold text-xl leading-tight text-gray-800 dark:text-slate-100 drop-shadow-sm">
               Project Owners
             </h2>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Manage client and project owner list.</p>
+            <p class="text-sm text-gray-500 dark:text-slate-400 mt-1">Manage client and project owner list.</p>
           </div>
           
           <div v-if="['other', 'pm', 'co'].includes(role)" class="flex justify-end">
@@ -102,9 +102,9 @@ const getNameUser = (id) => {
       <Plus />
     </button>
 
-    <div v-if="openForm" class="fixed inset-0 z-50 px-4 flex items-center justify-center bg-black/40 backdrop-blur-sm transition-opacity">
+    <div v-if="openForm" class="fixed inset-0 z-50 px-4 flex items-center justify-center bg-black/60 backdrop-blur-sm transition-opacity">
       <div
-        class="bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl border border-white/50 dark:border-gray-700/50 rounded-2xl shadow-2xl max-w-lg w-full p-6 relative animate-in fade-in zoom-in duration-300"
+        class="bg-white/90 dark:bg-gradient-to-b dark:from-slate-800 dark:to-slate-950 backdrop-blur-2xl border border-white/50 dark:border-white/10 rounded-2xl shadow-2xl max-w-lg w-full p-6 relative animate-in fade-in zoom-in duration-300"
       >
         <ClientForm :projectOwners="selectedClient" :isEditMode="isEditMode" @close="handleCloseForm" />
       </div>
@@ -119,29 +119,29 @@ const getNameUser = (id) => {
         >
 
           <div class="relative z-10 -mb-[1px]">
-             <div class="w-fit px-6 h-12 bg-white/40 dark:bg-slate-900/60 backdrop-blur-md border-t border-l border-r border-white/40 dark:border-white/10 rounded-t-2xl shadow-sm relative flex items-center gap-3">
+             <div class="w-fit px-6 h-12 bg-white/40 dark:bg-slate-700/50 dark:to-slate-800/60 backdrop-blur-xl border-t border-l border-r border-white/40 dark:border-white/20 rounded-t-2xl shadow-sm relative flex items-center gap-3">
                 <Build class="w-5 h-5 text-indigo-600 dark:text-indigo-400 drop-shadow-sm" />
-                <span class="font-bold text-gray-800 dark:text-white text-sm tracking-wide shadow-black drop-shadow-sm">Client List</span>
-                <div class="absolute -bottom-[1px] left-0 right-0 h-[2px] bg-white/40 dark:bg-slate-900/60 z-20"></div>
+                <span class="font-bold text-gray-800 dark:text-slate-100 text-sm tracking-wide shadow-black drop-shadow-sm">Client List</span>
+                <div class="absolute -bottom-[1px] left-0 right-0 h-[2px] bg-white/40 dark:bg-slate-800/80 z-20"></div>
              </div>
           </div>
 
           <div
-            class="w-full overflow-x-auto bg-white/40 dark:bg-slate-900/60 backdrop-blur-md border border-white/40 dark:border-white/10 shadow-xl rounded-b-2xl rounded-tr-2xl relative z-0"
+            class="w-full overflow-x-auto bg-white/40 dark:bg-gradient-to-b dark:from-slate-800/60 dark:to-slate-950/80 backdrop-blur-xl border border-white/40 dark:border-white/20 shadow-xl rounded-b-2xl rounded-tr-2xl relative z-0"
           >
-            <table class="w-full text-left dark:text-white table-auto border-collapse">
+            <table class="w-full text-left dark:text-slate-200 table-auto border-collapse">
               <thead>
-                <tr class="bg-white/50 dark:bg-gray-800/80 backdrop-blur-md border-b border-white/20 dark:border-white/10">
-                  <th class="p-5 font-semibold text-gray-600 dark:text-gray-300 text-sm uppercase tracking-wider">ID</th>
-                  <th class="p-5 font-semibold text-gray-600 dark:text-gray-300 text-sm uppercase tracking-wider">Name</th>
-                  <th class="p-5 font-semibold text-gray-600 dark:text-gray-300 text-sm uppercase tracking-wider">Creator</th>
-                  <th class="p-5 font-semibold text-gray-600 dark:text-gray-300 text-sm uppercase tracking-wider">Updater</th>
-                  <th v-if="['other', 'pm', 'co'].includes(role)" class="p-5 text-center font-semibold text-gray-600 dark:text-gray-300 text-sm uppercase tracking-wider">Action</th>
+                <tr class="bg-white/50 dark:bg-slate-800/90 backdrop-blur-md border-b border-white/20 dark:border-white/10">
+                  <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">ID</th>
+                  <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Name</th>
+                  <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Creator</th>
+                  <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Updater</th>
+                  <th v-if="['other', 'pm', 'co'].includes(role)" class="p-5 text-center font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Action</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-white/20 dark:divide-white/5">
-                <tr v-for="owner in projectOwners.data" :key="owner.id" class="hover:bg-white/30 dark:hover:bg-white/5 transition duration-200">
-                  <td class="p-5 align-middle text-sm text-gray-500 dark:text-gray-400">
+                <tr v-for="owner in projectOwners.data" :key="owner.id" class="hover:bg-white/30 dark:hover:bg-indigo-500/10 transition duration-200">
+                  <td class="p-5 align-middle text-sm text-gray-500 dark:text-slate-400">
                     #{{ owner.id }}
                   </td>
                   <td class="p-5 align-middle">
@@ -154,7 +154,7 @@ const getNameUser = (id) => {
                   </td>
                   <td class="p-5 align-middle">
                      <div class="flex items-center gap-2">
-                        <div class="w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-[10px] font-bold text-slate-600 dark:text-slate-300">
+                        <div class="w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-[10px] font-bold text-slate-600 dark:text-slate-300 border border-transparent dark:border-white/5">
                              {{ getNameUser(owner.creator).charAt(0).toUpperCase() }}
                         </div>
                         <span class="text-sm text-gray-700 dark:text-gray-200">{{ getNameUser(owner.creator) }}</span>
@@ -162,7 +162,7 @@ const getNameUser = (id) => {
                   </td>
                   <td class="p-5 align-middle">
                      <div class="flex items-center gap-2">
-                         <div class="w-6 h-6 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-[10px] font-bold text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700">
+                         <div class="w-6 h-6 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-[10px] font-bold text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-white/5">
                              {{ getNameUser(owner.updater).charAt(0).toUpperCase() }}
                         </div>
                         <span class="text-sm text-gray-500 dark:text-gray-400">{{ getNameUser(owner.updater) }}</span>
@@ -172,13 +172,13 @@ const getNameUser = (id) => {
                     <div class="flex gap-3 justify-center items-center">
                       <button
                         @click.prevent="handleEdit(owner.id)"
-                        class="p-1.5 rounded-lg text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 transition tooltip-trigger" title="Edit"
+                        class="p-1.5 rounded-lg text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition tooltip-trigger" title="Edit"
                       >
                         <Pen class="w-4 h-4" />
                       </button>
                       <button
                         @click.prevent="handleDelete(owner.id)"
-                        class="p-1.5 rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 transition tooltip-trigger" title="Delete"
+                        class="p-1.5 rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition tooltip-trigger" title="Delete"
                       >
                         <Trash class="w-4 h-4" />
                       </button>
@@ -199,3 +199,21 @@ const getNameUser = (id) => {
     </div>
   </AuthenticatedLayout>
 </template>
+
+<style scoped>
+/* Scrollbar halus untuk Dark Mode */
+::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent; 
+}
+::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+</style>

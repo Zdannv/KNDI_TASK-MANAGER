@@ -91,22 +91,22 @@ watch(id, (newValue) => {
       <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-8">
         <div
           class="flex justify-between px-6 py-4 items-center text-gray-800 dark:text-gray-200 
-                 bg-white/40 dark:bg-slate-900/60 backdrop-blur-md border border-white/40 dark:border-white/10 
+                 bg-white/40 dark:bg-gradient-to-b dark:from-slate-700/30 dark:to-slate-900/60 backdrop-blur-xl border border-white/40 dark:border-white/20 
                  shadow-lg rounded-2xl transition-all duration-1000 ease-out"
           :class="{ 'translate-y-0 opacity-100': isLoaded, 'translate-y-8 opacity-0': !isLoaded }"
         >
           <div>
-            <h2 class="font-bold text-xl leading-tight text-gray-800 dark:text-white drop-shadow-sm">
+            <h2 class="font-bold text-xl leading-tight text-gray-800 dark:text-slate-100 drop-shadow-sm">
               Skills Matrix
             </h2>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Manage user technical skills.</p>
+            <p class="text-sm text-gray-500 dark:text-slate-400 mt-1">Manage user technical skills.</p>
           </div>
           
           <div class="flex gap-4 justify-end">
             <button
               v-if="['other', 'co'].includes(role)"
               @click="handleOpenOptions"
-              class="flex items-center gap-2 px-4 py-2 bg-white/50 dark:bg-gray-800/50 hover:bg-white dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-xl shadow-sm border border-white/40 dark:border-gray-600/50 backdrop-blur-sm transition-all"
+              class="flex items-center gap-2 px-4 py-2 bg-white/50 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-700/50 text-gray-700 dark:text-gray-200 rounded-xl shadow-sm border border-white/40 dark:border-white/10 backdrop-blur-sm transition-all"
             >
               <Gear class="w-4 h-4" />
               <span class="hidden sm:inline font-medium text-sm">Options</span>
@@ -136,7 +136,7 @@ watch(id, (newValue) => {
           v-show="showButtons"
           :key="button.action"
           @click="button.handler"
-          class="fixed right-6 border border-white/20 rounded-full p-3 text-gray-700 dark:text-white bg-white/90 dark:bg-gray-800/90 backdrop-blur-md shadow-lg"
+          class="fixed right-6 border border-white/20 rounded-full p-3 text-gray-700 dark:text-white bg-white/90 dark:bg-slate-800/90 backdrop-blur-md shadow-lg"
           :style="{ bottom: `${80 + (index) * 60}px` }"
         >
           <component :is="button.icon" class="w-5 h-5" />
@@ -151,8 +151,8 @@ watch(id, (newValue) => {
       <Plus />
     </button>
 
-    <div v-if="openForm" class="fixed inset-0 z-50 px-4 flex items-center justify-center bg-black/40 backdrop-blur-sm transition-opacity">
-      <div class="bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl border border-white/50 dark:border-gray-700/50 rounded-2xl shadow-2xl max-w-lg w-full p-6 relative animate-in fade-in zoom-in duration-300">
+    <div v-if="openForm" class="fixed inset-0 z-50 px-4 flex items-center justify-center bg-black/60 backdrop-blur-sm transition-opacity">
+      <div class="bg-white/90 dark:bg-gradient-to-b dark:from-slate-800/90 dark:to-slate-950 backdrop-blur-2xl border border-white/50 dark:border-white/10 rounded-2xl shadow-2xl max-w-lg w-full p-6 relative animate-in fade-in zoom-in duration-300">
         <SkillForm @close="handleCloseForm" />
       </div>
     </div>
@@ -164,11 +164,11 @@ watch(id, (newValue) => {
     >
       <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-8">
         <div class="flex flex-col py-6 px-6 text-gray-800 dark:text-gray-200 
-                    bg-white/40 dark:bg-slate-900/60 backdrop-blur-md border border-white/40 dark:border-white/10 
+                    bg-white/40 dark:bg-gradient-to-b dark:from-slate-700/30 dark:to-slate-900/60 backdrop-blur-xl border border-white/40 dark:border-white/10 
                     shadow-lg rounded-2xl font-medium">
-          <div class="flex flex-col sm:flex-row gap-4 pb-4 border-b border-gray-200/50 dark:border-gray-700/50 mb-4">
+          <div class="flex flex-col sm:flex-row gap-4 pb-4 border-b border-gray-200/50 dark:border-white/5 mb-4">
              <div class="w-full sm:w-1/2">
-                <label class="text-xs font-bold text-gray-500 dark:text-gray-400 mb-1 block uppercase">Filter User</label>
+                <label class="text-xs font-bold text-gray-500 dark:text-slate-400 mb-1 block uppercase">Filter User</label>
                 <SelectInput
                   id="user"
                   v-model="id"
@@ -184,14 +184,14 @@ watch(id, (newValue) => {
           <div class="hidden sm:flex justify-end gap-3">
             <button
               @click="exportSkill"
-              class="flex items-center gap-2 px-3 py-2 text-sm rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:hover:bg-indigo-900/50 dark:text-indigo-300 transition-colors border border-indigo-200 dark:border-indigo-800"
+              class="flex items-center gap-2 px-3 py-2 text-sm font-bold rounded-lg bg-indigo-50/50 hover:bg-indigo-100/50 text-indigo-700 dark:bg-indigo-900/30 dark:hover:bg-indigo-900/50 dark:text-indigo-300 transition-colors border border-indigo-200/50 dark:border-indigo-800/50"
             >
               <Download class="w-4 h-4" />
               <span>{{ id ? 'Export Data' : 'Export All' }}</span>
             </button>
             <button
               @click="() => router.get(route('skill.list'))"
-              class="flex items-center gap-2 px-3 py-2 text-sm rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-300 transition-colors"
+              class="flex items-center gap-2 px-3 py-2 text-sm font-bold rounded-lg bg-gray-100/50 hover:bg-gray-200/50 text-gray-600 dark:bg-slate-700/50 dark:hover:bg-slate-600/50 dark:text-slate-300 transition-colors border border-gray-200/50 dark:border-slate-600/50"
             >
               <Close class="w-4 h-4" />
               <span>Reset</span>
@@ -210,38 +210,38 @@ watch(id, (newValue) => {
         <div class="flex flex-col items-start">
             
             <div class="relative z-10 -mb-[1px]">
-                <div class="w-fit px-6 h-12 bg-white/40 dark:bg-slate-900/60 backdrop-blur-md border-t border-l border-r border-white/40 dark:border-white/10 rounded-t-2xl shadow-sm relative flex items-center gap-3">
+                <div class="w-fit px-6 h-12 bg-white/40 dark:bg-slate-700/50 dark:to-slate-800/60 backdrop-blur-xl border-t border-l border-r border-white/40 dark:border-white/20 rounded-t-2xl shadow-sm relative flex items-center gap-3">
                     <Book class="w-5 h-5 text-indigo-600 dark:text-indigo-400 drop-shadow-sm" />
-                    <span class="font-bold text-gray-800 dark:text-white text-sm tracking-wide shadow-black drop-shadow-sm">Skills List</span>
-                    <div class="absolute -bottom-[1px] left-0 right-0 h-[2px] bg-white/40 dark:bg-slate-900/60 z-20"></div>
+                    <span class="font-bold text-gray-800 dark:text-slate-100 text-sm tracking-wide shadow-black drop-shadow-sm">Skills List</span>
+                    <div class="absolute -bottom-[1px] left-0 right-0 h-[2px] bg-white/40 dark:bg-slate-800/80 z-20"></div>
                 </div>
             </div>
 
-            <div class="w-full overflow-x-auto bg-white/40 dark:bg-slate-900/60 backdrop-blur-md border border-white/40 dark:border-white/10 shadow-xl rounded-b-2xl rounded-tr-2xl relative z-0">
-            <table class="w-full text-left dark:text-white table-auto border-collapse">
-                <thead class="bg-white/50 dark:bg-gray-800/80 backdrop-blur-md border-b border-white/20 dark:border-white/10">
+            <div class="w-full overflow-x-auto bg-white/40 dark:bg-gradient-to-b dark:from-slate-800/60 dark:to-slate-950/80 backdrop-blur-xl border border-white/40 dark:border-white/20 shadow-xl rounded-b-2xl rounded-tr-2xl relative z-0">
+            <table class="w-full text-left dark:text-slate-200 table-auto border-collapse">
+                <thead class="sticky top-0 z-20 bg-white/50 dark:bg-slate-800/90 backdrop-blur-md border-b border-white/20 dark:border-white/10">
                 <tr>
-                    <th class="p-5 font-semibold text-gray-600 dark:text-gray-300 text-sm uppercase tracking-wider">
+                    <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">
                       Skill Name
                     </th>
-                    <th class="p-5 font-semibold text-gray-600 dark:text-gray-300 text-sm uppercase tracking-wider">
+                    <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">
                       Date Added
                     </th>
-                    <th class="p-5 text-center font-semibold text-gray-600 dark:text-gray-300 text-sm uppercase tracking-wider">
+                    <th class="p-5 text-center font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">
                       Action
                     </th>
                 </tr>
                 </thead>
                 <tbody class="divide-y divide-white/20 dark:divide-white/5">
-                <tr v-for="value in skills" :key="value.id" class="hover:bg-white/30 dark:hover:bg-white/5 transition duration-200">
+                <tr v-for="value in skills" :key="value.id" class="hover:bg-white/30 dark:hover:bg-indigo-500/10 transition duration-200">
                     <td class="p-5 align-middle">
                       <div class="flex items-center gap-2">
-                          <span class="px-2.5 py-1 rounded-full bg-indigo-100/50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 text-sm font-bold border border-indigo-200/50 dark:border-indigo-800/50">
+                          <span class="px-2.5 py-1 rounded-full bg-indigo-100/50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 text-sm font-bold border border-indigo-200/50 dark:border-indigo-700/30">
                              {{ value.skill }}
                           </span>
                       </div>
                     </td>
-                    <td class="p-5 align-middle text-sm text-gray-500 dark:text-gray-400 font-mono">
+                    <td class="p-5 align-middle text-sm text-gray-500 dark:text-slate-400 font-mono">
                         {{ formatDate(value.created_at) }}
                     </td>
                     <td class="p-5 align-middle text-center">
@@ -266,3 +266,21 @@ watch(id, (newValue) => {
     </div>
   </AuthenticatedLayout>
 </template>
+
+<style scoped>
+/* Scrollbar halus untuk Dark Mode */
+::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent; 
+}
+::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+</style>
