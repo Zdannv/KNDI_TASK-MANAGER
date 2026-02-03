@@ -61,7 +61,7 @@ const GAP = 8;
     <div class="relative flex flex-col gap-2">
         
         <div
-            class="absolute left-0 z-0 bg-gradient-to-r from-white/95 to-white/70 dark:from-indigo-500/80 dark:to-indigo-600/50 backdrop-blur-md border border-white/40 shadow-lg shadow-white/10 transition-all duration-500 cubic-bezier(0.34, 1.56, 0.64, 1)"
+            class="absolute left-0 z-0 bg-gradient-to-r from-white/95 to-white/70 dark:from-indigo-600/40 dark:to-transparent backdrop-blur-md border border-white/40 dark:border-white/10 shadow-lg transition-all duration-500 cubic-bezier(0.34, 1.56, 0.64, 1)"
             :class="[
                 'h-[50px]', 
                 activeIndex === -1 ? 'opacity-0 scale-90' : 'opacity-100 scale-100',
@@ -73,7 +73,7 @@ const GAP = 8;
                 transform: `translateY(${activeIndex * (ITEM_HEIGHT + GAP)}px)`
             }"
         >
-           </div>
+        </div>
 
         <template v-for="(item, index) in visibleMenuItems" :key="index">
             <Link
@@ -81,14 +81,14 @@ const GAP = 8;
                 class="group relative z-10 flex items-center h-[50px] font-medium no-underline transition-colors duration-300"
                 :class="[
                     (Array.isArray(item.pattern) ? item.pattern.some(p => isActive(p)) : isActive(item.pattern))
-                        ? 'text-[#0d1b3e] dark:text-white' 
-                        : 'text-slate-300 hover:text-white dark:text-slate-400 dark:hover:text-white' 
+                        ? 'text-[#0d1b3e] dark:text-indigo-300' 
+                        : 'text-slate-400 hover:text-white dark:text-slate-500 dark:hover:text-indigo-200' 
                 ]"
             >
                 <div 
                     class="flex items-center justify-center shrink-0 transition-transform duration-300"
                     :class="[
-                        (Array.isArray(item.pattern) ? item.pattern.some(p => isActive(p)) : isActive(item.pattern)) ? 'scale-110' : 'group-hover:scale-110',
+                        (Array.isArray(item.pattern) ? item.pattern.some(p => isActive(p)) : isActive(item.pattern)) ? 'scale-110 text-indigo-600 dark:text-indigo-400' : 'group-hover:scale-110',
                         sidebarOpen ? 'ml-9 mr-3' : 'w-full'
                     ]"
                 >
@@ -105,10 +105,10 @@ const GAP = 8;
 
                 <div
                     v-if="!sidebarOpen"
-                    class="absolute left-[calc(100%+10px)] top-1/2 -translate-y-1/2 bg-[#0d1b3e]/90 backdrop-blur-md text-white text-xs font-bold px-3 py-1.5 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap shadow-xl z-50 border border-white/20"
+                    class="absolute left-[calc(100%+10px)] top-1/2 -translate-y-1/2 bg-[#0d1b3e]/90 dark:bg-slate-900/95 backdrop-blur-md text-white text-xs font-bold px-3 py-1.5 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap shadow-xl z-50 border border-white/20 dark:border-white/10"
                 >
                     {{ item.label }}
-                    <div class="absolute top-1/2 -left-1 -translate-y-1/2 border-4 border-transparent border-r-[#0d1b3e]/90"></div>
+                    <div class="absolute top-1/2 -left-1 -translate-y-1/2 border-4 border-transparent border-r-[#0d1b3e]/90 dark:border-r-slate-900/95"></div>
                 </div>
             </Link>
         </template>
