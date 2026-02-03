@@ -11,13 +11,18 @@ import { Head, router, usePage } from '@inertiajs/vue3';
 import { ref, computed, watch, onMounted } from 'vue';
 import moment from 'moment';
 import Datepicker from '@vuepic/vue-datepicker';
+// Pastikan mengimport CSS Datepicker jika belum ada di app.js
+import '@vuepic/vue-datepicker/dist/main.css';
 
 const isLoaded = ref(false);
 
 onMounted(() => {
-  setTimeout(() => {
-    isLoaded.value = true;
-  }, 100);
+  // Gunakan requestAnimationFrame agar browser siap sebelum menampilkan konten
+  requestAnimationFrame(() => {
+    setTimeout(() => {
+      isLoaded.value = true;
+    }, 50);
+  });
 });
 
 const page = usePage();
@@ -49,7 +54,6 @@ const props = defineProps({
   users: Array
 });
 
-// Grouping by Date
 const groupedAttendances = computed(() => {
   const grouped = {};
   if (props.attendances && props.attendances.data) {
@@ -73,7 +77,6 @@ const formatDate = (date) => {
   return moment(date).format('DD MMMM YYYY');
 };
 
-// Logic Filter
 watch(id, (newValue) => {
   const params = { user_id: newValue };
   if (dates.value.length === 2) {
@@ -118,8 +121,8 @@ const resetFilter = () => {
         <div
           class="flex justify-between px-6 py-4 items-center text-gray-800 dark:text-gray-200 
                  bg-white/40 dark:bg-gradient-to-b dark:from-slate-700/30 dark:to-slate-900/60 backdrop-blur-xl border border-white/40 dark:border-white/20 
-                 shadow-lg rounded-2xl transition-all duration-1000 ease-out"
-          :class="{ 'translate-y-0 opacity-100': isLoaded, 'translate-y-8 opacity-0': !isLoaded }"
+                 shadow-lg rounded-2xl transition-all duration-700 ease-out"
+          :class="{ 'translate-y-0 opacity-100': isLoaded, 'translate-y-4 opacity-0': !isLoaded }"
         >
           <div>
             <h2 class="font-bold text-xl leading-tight text-gray-800 dark:text-slate-100 drop-shadow-sm">
@@ -131,7 +134,7 @@ const resetFilter = () => {
           <div class="flex gap-4 justify-end">
             <button
               @click="handleOpenOptions"
-              class="flex items-center gap-2 px-4 py-2 bg-white/50 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-700/50 text-gray-700 dark:text-gray-200 rounded-xl shadow-sm border border-white/40 dark:border-white/10 backdrop-blur-sm transition-all"
+              class="flex items-center gap-2 px-4 py-2 bg-white/30 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-700/50 text-gray-700 dark:text-gray-200 rounded-xl shadow-sm border border-white/40 dark:border-white/10 backdrop-blur-sm transition-all"
             >
               <Gear class="w-4 h-4" />
               <span class="hidden sm:inline font-medium text-sm">Options</span>
@@ -143,8 +146,8 @@ const resetFilter = () => {
 
     <div
       v-if="options"
-      class="w-full pt-4 sm:pt-6 transition-all duration-500 ease-out"
-      :class="{ 'translate-y-0 opacity-100': isLoaded, 'translate-y-12 opacity-0': !isLoaded }"
+      class="w-full pt-4 sm:pt-6 transition-all duration-700 ease-out"
+      :class="{ 'translate-y-0 opacity-100': isLoaded, 'translate-y-4 opacity-0': !isLoaded }"
     >
       <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-8">
         <div class="flex flex-col py-6 px-6 text-gray-800 dark:text-gray-200 
@@ -156,6 +159,7 @@ const resetFilter = () => {
                  <Datepicker
                   v-model="dates"
                   range
+                  dark
                   placeholder="Select Range Dates"
                   :enable-time-picker="false"
                   @update:model-value="handleDateChange"
@@ -195,8 +199,8 @@ const resetFilter = () => {
     </div>
 
     <div
-      class="w-full py-6 sm:py-8 transition-all duration-700 ease-out delay-100"
-      :class="{ 'opacity-100': isLoaded, 'translate-y-12 opacity-0': !isLoaded }"
+      class="w-full py-6 sm:py-8 transition-all duration-700 ease-out delay-75"
+      :class="{ 'opacity-100': isLoaded, 'translate-y-4 opacity-0': !isLoaded }"
     >
       <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-8">
         
@@ -244,7 +248,7 @@ const resetFilter = () => {
                                 </div>
                                 <div>
                                     <div class="font-bold text-gray-800 dark:text-slate-200 text-sm">{{ item.user.name }}</div>
-                                    <div class="text-xs text-gray-500 dark:text-slate-400">{{ item.user.email }}</div>
+                                    <div class="text-xs text-gray-500 dark:text-gray-400">{{ item.user.email }}</div>
                                 </div>
                             </div>
                         </td>
@@ -286,7 +290,11 @@ const resetFilter = () => {
 </template>
 
 <style scoped>
-/* Custom style for Datepicker input to match glass theme */
+/* Force dark mode for datepicker to prevent white flash */
+:deep(.dp__main) {
+    --dp-background-color: transparent;
+}
+
 :deep(.dp__input) {
   background-color: rgba(255, 255, 255, 0.4);
   backdrop-filter: blur(8px);
@@ -295,16 +303,17 @@ const resetFilter = () => {
   height: 42px;
   font-size: 0.875rem;
   font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+:deep(.dark) .dp__input {
+  background-color: rgba(15, 23, 42, 0.5) !important; 
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  color: #f1f5f9 !important;
 }
 
 :deep(.dp__input):hover {
     border-color: #6366f1;
-}
-
-:deep(.dark .dp__input) {
-  background-color: rgba(15, 23, 42, 0.5); 
-  border-color: rgba(255, 255, 255, 0.1);
-  color: #f1f5f9;
 }
 
 :deep(.dp__menu) {
@@ -314,13 +323,15 @@ const resetFilter = () => {
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-:deep(.dark .dp__menu) {
-  background-color: rgba(30, 41, 59, 0.95);
-  border-color: rgba(255, 255, 255, 0.1);
+:deep(.dark) .dp__menu {
+  background-color: rgba(30, 41, 59, 0.95) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
 }
 
-:deep(.dark .dp__cell_inner), :deep(.dark .dp__month_year_select), :deep(.dark .dp__calendar_header_item) {
-    color: #e2e8f0;
+:deep(.dark) .dp__cell_inner, 
+:deep(.dark) .dp__month_year_select, 
+:deep(.dark) .dp__calendar_header_item {
+    color: #e2e8f0 !important;
 }
 
 ::-webkit-scrollbar {
@@ -333,8 +344,5 @@ const resetFilter = () => {
 ::-webkit-scrollbar-thumb {
   background-color: rgba(255, 255, 255, 0.1);
   border-radius: 10px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(255, 255, 255, 0.2);
 }
 </style>
