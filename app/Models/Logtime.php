@@ -12,6 +12,7 @@ class Logtime extends Model
         'user_id',
         'date',
         'time_used',
+        'description',
     ];
 
     public function user()
