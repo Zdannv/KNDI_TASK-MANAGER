@@ -1,8 +1,14 @@
+<script>
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+
+// Kunci utama: Daftarkan layout di sini supaya tidak di-render ulang
+export default { layout: AuthenticatedLayout };
+</script>
+
 <script setup>
 import Plus from '@/Components/Icon/Plus.vue';
 import User from '@/Components/Icon/User.vue';
 import Pagination from '@/Components/Pagination.vue';
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue'; 
@@ -112,10 +118,8 @@ const formatRole = (role) => {
 
 <template>
   <Head title="Users" />
-  <AuthenticatedLayout>
-    
-    <template #header>
-      <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-8">
+  
+  <div v-if="$slots.header || true" class="mx-auto max-w-[100rem] sm:px-6 lg:px-8 mt-8">
         <div
           class="flex justify-between px-6 py-4 items-center text-gray-800 dark:text-gray-200 
                  bg-white/40 dark:bg-gradient-to-b dark:from-slate-700/50 dark:to-slate-800/60 backdrop-blur-xl border border-white/40 dark:border-white/20 
@@ -136,8 +140,7 @@ const formatRole = (role) => {
             </button>
           </div>
         </div>
-      </div>
-    </template>
+    </div>
 
     <button
       @click="handleOpenForm"
@@ -147,7 +150,7 @@ const formatRole = (role) => {
       <Plus />
     </button>
 
-    <div v-if="openForm" class="fixed inset-0 z-50 px-4 flex items-center justify-center bg-black/60 backdrop-blur-sm transition-opacity">
+    <div v-if="openForm" class="fixed inset-0 z-[100] px-4 flex items-center justify-center bg-black/60 backdrop-blur-sm transition-opacity">
       <div class="bg-white/90 dark:bg-gradient-to-b dark:from-slate-800/90 dark:to-slate-950 backdrop-blur-2xl border border-white/50 dark:border-white/10 rounded-lg shadow-2xl max-w-lg w-full p-8 relative animate-in fade-in zoom-in duration-300">
         
         <div class="flex justify-between items-center mb-6">
@@ -305,8 +308,8 @@ const formatRole = (role) => {
 
       </div>
     </div>
-  </AuthenticatedLayout>
-</template>
+
+  </template>
 
 <style scoped>
 .custom-scrollbar {

@@ -130,12 +130,6 @@ const getInitials = (name) => {
                     </div>
                 </button>
             </div>
-
-            <div v-if="openMenus" class="bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-t border-white/20 dark:border-white/10 shadow-xl overflow-y-auto max-h-[80vh]">
-                <div class="flex flex-col p-4 space-y-4">
-                    <Menus :sidebarOpen="true" />
-                </div>
-            </div>
         </nav>
 
         <nav 

@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from "vue";
+import { computed, ref, watch } from "vue";
 import { Link, usePage } from "@inertiajs/vue3";
 
 // Import Icon
@@ -21,9 +21,6 @@ const props = defineProps({
 const page = usePage();
 const userRole = computed(() => page.props.auth.user.role);
 
-// Helper cek active route
-const isActive = (routePattern) => route().current(routePattern);
-
 // 1. Definisi Menu
 const rawMenuItems = computed(() => [
     { label: "Dashboard", route: "dashboard", icon: News, show: ["other", "pm"].includes(userRole.value), pattern: "dashboard" },
@@ -38,23 +35,40 @@ const rawMenuItems = computed(() => [
     { label: "Import", route: "import.index", icon: Cloud, show: ["other", "co"].includes(userRole.value), pattern: "import.index" },
 ]);
 
-// 2. Filter menu yang ditampilkan saja
+// Filter menu yang tampil
 const visibleMenuItems = computed(() => {
     return rawMenuItems.value.filter(item => item.show);
 });
 
-// 3. Cari Index Menu Aktif
+// Cari Index Menu Aktif berdasarkan Route saat ini
 const activeIndex = computed(() => {
     return visibleMenuItems.value.findIndex(item => {
+        // Menggunakan helper route().current() bawaan Ziggy/Inertia
         if (Array.isArray(item.pattern)) {
-            return item.pattern.some(p => isActive(p));
+            return item.pattern.some(p => route().current(p));
         }
-        return isActive(item.pattern);
+        return route().current(item.pattern);
     });
 });
 
+// --- Logic Animasi Stretch (Liquid Effect) ---
+const isMoving = ref(false);
+const moveDirection = ref('down'); 
 const ITEM_HEIGHT = 50; 
 const GAP = 8; 
+
+// Watcher untuk mendeteksi perpindahan menu
+watch(activeIndex, (newVal, oldVal) => {
+    if (newVal !== -1 && oldVal !== -1 && newVal !== oldVal) {
+        moveDirection.value = newVal > oldVal ? 'down' : 'up';
+        isMoving.value = true;
+        
+        // Durasi 400ms agar sinkron dengan durasi transisi CSS
+        setTimeout(() => {
+            isMoving.value = false;
+        }, 400); 
+    }
+});
 </script>
 
 <template>
@@ -64,10 +78,14 @@ const GAP = 8;
             class="absolute left-0 z-0 bg-gradient-to-r from-white/95 to-white/70 dark:from-indigo-600/40 dark:to-transparent backdrop-blur-md border border-white/40 dark:border-white/10 shadow-lg transition-all duration-500 cubic-bezier(0.34, 1.56, 0.64, 1)"
             :class="[
                 'h-[50px]', 
-                activeIndex === -1 ? 'opacity-0 scale-90' : 'opacity-100 scale-100',
+                activeIndex === -1 ? 'opacity-0 scale-95' : 'opacity-100 scale-100',
                 sidebarOpen 
-                    ? 'w-full ml-4 rounded-l-[30px] rounded-r-none mr-0' 
-                    : 'w-[calc(100%-24px)] mx-3 rounded-xl'
+                    ? 'w-full ml-4 rounded-l-full rounded-r-none' 
+                    : 'w-[calc(100%-24px)] mx-3 rounded-xl',
+                
+                // Logic memanjang (stretch)
+                isMoving ? 'scale-y-[1.4]' : 'scale-y-100',
+                moveDirection === 'down' ? 'origin-top' : 'origin-bottom'
             ]"
             :style="{
                 transform: `translateY(${activeIndex * (ITEM_HEIGHT + GAP)}px)`
@@ -80,15 +98,15 @@ const GAP = 8;
                 :href="route(item.route)"
                 class="group relative z-10 flex items-center h-[50px] font-medium no-underline transition-colors duration-300"
                 :class="[
-                    (Array.isArray(item.pattern) ? item.pattern.some(p => isActive(p)) : isActive(item.pattern))
+                    index === activeIndex
                         ? 'text-[#0d1b3e] dark:text-indigo-300' 
                         : 'text-slate-400 hover:text-white dark:text-slate-500 dark:hover:text-indigo-200' 
                 ]"
             >
                 <div 
-                    class="flex items-center justify-center shrink-0 transition-transform duration-300"
+                    class="flex items-center justify-center shrink-0 transition-all duration-500"
                     :class="[
-                        (Array.isArray(item.pattern) ? item.pattern.some(p => isActive(p)) : isActive(item.pattern)) ? 'scale-110 text-indigo-600 dark:text-indigo-400' : 'group-hover:scale-110',
+                        index === activeIndex ? 'scale-110 text-indigo-600 dark:text-indigo-400' : 'group-hover:scale-110',
                         sidebarOpen ? 'ml-9 mr-3' : 'w-full'
                     ]"
                 >
@@ -105,7 +123,7 @@ const GAP = 8;
 
                 <div
                     v-if="!sidebarOpen"
-                    class="absolute left-[calc(100%+10px)] top-1/2 -translate-y-1/2 bg-[#0d1b3e]/90 dark:bg-slate-900/95 backdrop-blur-md text-white text-xs font-bold px-3 py-1.5 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap shadow-xl z-50 border border-white/20 dark:border-white/10"
+                    class="absolute left-[calc(100%+10px)] top-1/2 -translate-y-1/2 bg-[#0d1b3e]/90 dark:bg-slate-900/95 backdrop-blur-md text-white text-xs font-bold px-3 py-1.5 rounded-none opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap shadow-xl z-50 border border-white/20 dark:border-white/10"
                 >
                     {{ item.label }}
                     <div class="absolute top-1/2 -left-1 -translate-y-1/2 border-4 border-transparent border-r-[#0d1b3e]/90 dark:border-r-slate-900/95"></div>
@@ -114,3 +132,15 @@ const GAP = 8;
         </template>
     </div>
 </template>
+
+<style scoped>
+.transition-all {
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Mencegah seleksi teks saat klik cepat */
+.relative {
+    user-select: none;
+}
+</style>
