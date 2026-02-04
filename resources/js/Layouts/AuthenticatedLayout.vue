@@ -112,26 +112,26 @@ const getInitials = (name) => {
     <div class="min-h-screen bg-gradient-to-b from-[#F2F5FA] to-[#e0e7ff] dark:from-[#1e293b] dark:via-[#0f172a] dark:to-[#020617] font-sans text-slate-600 dark:text-slate-300 relative selection:bg-indigo-500 selection:text-white overflow-x-hidden transition-colors duration-500">
         <Head :title="title" />
 
-        <nav class="md:hidden fixed top-0 left-0 w-full bg-white/10 dark:bg-slate-900/40 backdrop-blur-md border-b border-white/20 dark:border-white/10 z-50 shadow-sm transition-colors duration-300">
+        <nav class="md:hidden fixed top-0 left-0 w-full bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-white/10 z-50 shadow-sm">
             <div class="flex justify-between items-center px-4 h-16">
                 <div class="flex items-center gap-3">
-                    <button @click="openMenus = !openMenus" class="p-2 text-gray-600 dark:text-gray-300 rounded-md hover:bg-white/20 focus:outline-none transition">
+                    <button @click="openMenus = !openMenus" class="p-2 text-gray-600 dark:text-gray-300 rounded-none hover:bg-white/20 focus:outline-none transition">
                         <Hamburger :show="openMenus" />
                     </button>
                     <img src="/icon_kndi.svg" alt="Logo" class="w-8 h-8 drop-shadow-md" />
-                    <span class="font-bold text-lg text-gray-800 dark:text-white tracking-tight drop-shadow-sm">KNDI Task</span>
+                    <span class="font-bold text-lg text-gray-800 dark:text-white tracking-tight">KNDI Task</span>
                 </div>
                 <button @click="showProfilePanel = true" class="relative">
-                     <div v-if="user.avatar" class="w-8 h-8 rounded-full overflow-hidden border border-white/50 shadow-sm">
+                     <div v-if="user.avatar" class="w-8 h-8 rounded-none overflow-hidden border border-white/50 shadow-sm">
                         <img :src="user.avatar" alt="Avatar" class="w-full h-full object-cover">
                     </div>
-                    <div v-else class="w-8 h-8 rounded-full bg-indigo-100/50 flex items-center justify-center text-indigo-600 font-bold text-xs shadow-inner backdrop-blur-sm">
+                    <div v-else class="w-8 h-8 rounded-none bg-indigo-100/50 flex items-center justify-center text-indigo-600 font-bold text-xs shadow-inner">
                          {{ getInitials(user.name) }}
                     </div>
                 </button>
             </div>
 
-            <div v-if="openMenus" class="bg-white/60 dark:bg-slate-900/90 backdrop-blur-xl border-t border-white/20 dark:border-white/10 shadow-xl overflow-y-auto max-h-[80vh]">
+            <div v-if="openMenus" class="bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-t border-white/20 dark:border-white/10 shadow-xl overflow-y-auto max-h-[80vh]">
                 <div class="flex flex-col p-4 space-y-4">
                     <Menus :sidebarOpen="true" />
                 </div>
@@ -139,11 +139,11 @@ const getInitials = (name) => {
         </nav>
 
         <nav 
-            class="hidden md:flex fixed top-4 left-4 bottom-4 z-50 transition-all duration-500 cubic-bezier(0.4, 0, 0.2, 1) shadow-2xl flex-col rounded-[35px] overflow-hidden border border-white/20 dark:border-white/10" 
+            class="hidden md:flex fixed top-4 left-4 bottom-4 z-50 transition-all duration-500 cubic-bezier(0.4, 0, 0.2, 1) shadow-2xl flex-col rounded-none overflow-hidden border border-white/20 dark:border-white/10" 
             :class="[
                 openMenus ? 'w-72' : 'w-24',
                 showProfilePanel ? '-translate-x-[200%]' : 'translate-x-0',
-                'bg-gradient-to-b from-[#0d1b3e]/90 to-[#1e1b4b]/90 dark:from-slate-800/60 dark:to-slate-950/90 backdrop-blur-xl'
+                'bg-[#0d1b3e] dark:bg-slate-900/90 backdrop-blur-xl'
             ]"
         >
             <div 
@@ -151,15 +151,15 @@ const getInitials = (name) => {
                 :class="openMenus ? 'justify-between pl-8 pr-6' : 'justify-center px-0'" 
             >
                 <div v-if="openMenus" class="flex items-center gap-3 overflow-hidden whitespace-nowrap animate-fade-in">
-                    <div class="bg-white/20 p-1.5 rounded-lg shadow-lg backdrop-blur-sm border border-white/10">
+                    <div class="bg-white/10 p-1.5 rounded-none shadow-lg border border-white/10">
                         <img src="/icon_kndi.svg" alt="Logo" class="w-6 h-6 shrink-0" />
                     </div>
-                    <span class="text-white font-bold text-2xl tracking-wide drop-shadow-md">KNDI.</span>
+                    <span class="text-white font-bold text-2xl tracking-wide">KNDI.</span>
                 </div>
                 
                 <button 
                     @click="openMenus = !openMenus" 
-                    class="text-gray-300 hover:text-white transition focus:outline-none p-2 rounded-full hover:bg-white/10"
+                    class="text-gray-300 hover:text-white transition focus:outline-none p-2 rounded-none hover:bg-white/10"
                 >
                     <Hamburger :show="openMenus" />
                 </button>
@@ -174,15 +174,15 @@ const getInitials = (name) => {
         <div 
             class="flex-1 flex flex-col min-h-screen transition-all duration-500 ease-out pt-16 md:pt-0" 
             :class="{
-                'md:pl-[20rem] md:pr-0': openMenus && !showProfilePanel, 
-                'md:pl-[8rem] md:pr-0': !openMenus && !showProfilePanel,
+                'md:pl-[20rem] md:pr-4': openMenus && !showProfilePanel, 
+                'md:pl-[8rem] md:pr-4': !openMenus && !showProfilePanel,
                 'md:pl-6 md:pr-[22rem]': showProfilePanel
             }"
         >
-            <header class="hidden md:flex h-24 items-center justify-between px-8 sticky top-0 z-40 transition-colors duration-300
+            <header class="hidden md:flex h-24 items-center justify-between px-4 sticky top-0 z-40 transition-colors duration-300
                 bg-transparent backdrop-blur-md border-b border-white/5 dark:border-white/5">
                 <div>
-                    <h1 class="text-3xl font-bold text-[#0d1b3e] dark:text-slate-100 tracking-tight drop-shadow-sm">
+                    <h1 class="text-3xl font-bold text-[#0d1b3e] dark:text-slate-100 tracking-tight">
                         Hello, {{ user.name.split(' ')[0] }}!
                     </h1>
                     <p class="text-sm text-slate-500 dark:text-slate-400 font-medium mt-1">Have a productive day.</p>
@@ -191,23 +191,23 @@ const getInitials = (name) => {
                 <div class="flex items-center gap-4">
                     <button 
                         @click="showProfilePanel = !showProfilePanel"
-                        class="flex items-center gap-3 p-1.5 pr-5 rounded-full bg-white/30 dark:bg-slate-800/40 shadow-sm hover:shadow-lg hover:bg-white/50 dark:hover:bg-slate-700/50 transition-all duration-300 group border border-white/30 dark:border-white/10 backdrop-blur-sm"
+                        class="flex items-center gap-3 p-1.5 pr-5 rounded-none bg-white dark:bg-slate-800 shadow-sm hover:shadow-lg transition-all duration-300 group border border-gray-200 dark:border-white/10"
                     >
-                        <div v-if="user.avatar" class="w-10 h-10 rounded-full overflow-hidden border-2 border-indigo-100 dark:border-indigo-500/50 group-hover:border-indigo-300 transition">
+                        <div v-if="user.avatar" class="w-10 h-10 rounded-none overflow-hidden border border-gray-100 dark:border-slate-700">
                              <img :src="user.avatar" alt="User Avatar" class="w-full h-full object-cover">
                         </div>
-                        <div v-else class="w-10 h-10 rounded-full bg-indigo-100/50 dark:bg-indigo-900/50 flex items-center justify-center text-indigo-600 dark:text-indigo-300 font-bold text-sm border-2 border-white/30 dark:border-white/10">
+                        <div v-else class="w-10 h-10 rounded-none bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center text-indigo-600 dark:text-indigo-300 font-bold text-sm">
                             {{ getInitials(user.name) }}
                         </div>
 
                         <div class="text-left hidden lg:block">
-                            <p class="text-sm font-bold text-slate-700 dark:text-slate-200 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition">{{ user.name }}</p>
+                            <p class="text-sm font-bold text-slate-700 dark:text-slate-200 group-hover:text-indigo-600 transition">{{ user.name }}</p>
                         </div>
                     </button>
                 </div>
             </header>
 
-            <main class="flex-1 px-4 md:px-8 pb-8">
+            <main class="flex-1 px-4 pb-8">
                 <div v-if="$slots.header" class="mb-6">
                     <slot name="header" />
                 </div>
@@ -218,54 +218,59 @@ const getInitials = (name) => {
 
         <aside 
             class="fixed top-0 right-0 h-screen w-80 shadow-2xl z-[70] transform transition-transform duration-500 cubic-bezier(0.4, 0, 0.2, 1) overflow-y-auto border-l border-white/20 dark:border-white/10
-            bg-gradient-to-b from-white/70 to-white/50 dark:from-slate-800/80 dark:to-slate-950/90 backdrop-blur-2xl"
+            bg-white dark:bg-slate-900 rounded-none"
             :class="showProfilePanel ? 'translate-x-0' : 'translate-x-full'"
         >
-            <div class="p-6 flex flex-col h-full relative">
-                
-                <button @click="showProfilePanel = false" class="absolute top-4 right-4 p-2 text-slate-400 hover:text-red-500 hover:bg-red-50/50 rounded-full transition">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+            <div class="sticky top-0 right-0 flex justify-end p-4 z-[80] bg-white dark:bg-slate-900">
+                <button 
+                    @click="showProfilePanel = false" 
+                    class="flex items-center justify-center w-10 h-10 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-none transition-all duration-200"
+                    title="Close profile"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
                     </svg>
                 </button>
+            </div>
 
-                <h2 class="text-lg font-bold text-[#0d1b3e] dark:text-white mb-8 mt-2">User Profile</h2>
+            <div class="px-6 pb-6 flex flex-col h-full relative">
+                <h2 class="text-lg font-bold text-[#0d1b3e] dark:text-white mb-8 mt-2 uppercase tracking-widest text-xs opacity-50">User Profile</h2>
 
                 <div class="flex flex-col items-center mb-8 w-full">
                     <div class="relative group cursor-pointer mb-6" @click="openAvatarModal">
-                        <div class="w-24 h-24 rounded-full bg-indigo-50/30 border-[5px] border-white/40 dark:border-white/10 shadow-xl flex items-center justify-center text-3xl font-bold text-indigo-600 relative overflow-hidden backdrop-blur-sm">
+                        <div class="w-24 h-24 rounded-none bg-indigo-50 dark:bg-slate-800 border-4 border-gray-100 dark:border-slate-700 shadow-xl flex items-center justify-center text-3xl font-bold text-indigo-600 relative overflow-hidden">
                             <img v-if="user.avatar" :src="user.avatar" class="w-full h-full object-cover" alt="Profile">
                             <span v-else>{{ getInitials(user.name) }}</span>
-                            <div class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[2px]">
-                                <Pen class="text-white w-6 h-6" />
+                            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                <span class="text-white font-bold text-xs">CHANGE</span>
                             </div>
                         </div>
                     </div>
 
                     <div class="w-full text-center">
                         <div v-if="!isEditingName" class="flex items-center justify-center gap-2 group">
-                            <h2 class="text-xl font-bold text-slate-800 dark:text-slate-100 shadow-sm">{{ user.name }}</h2>
+                            <h2 class="text-xl font-bold text-slate-800 dark:text-slate-100">{{ user.name }}</h2>
                             <button @click="startEditingName" class="p-1 text-slate-400 group-hover:text-indigo-500 transition">
                                 <Pen class="w-3.5 h-3.5" />
                             </button>
                         </div>
                         <div v-else class="flex items-center justify-center gap-2 animate-fade-in">
-                            <TextInput v-model="nameForm.name" class="py-1 px-2 text-center text-sm font-bold w-40 bg-white/40 dark:bg-slate-800/40 backdrop-blur-sm border-white/50 dark:border-white/10" @keyup.enter="saveName" />
-                            <button @click="saveName" class="p-1.5 bg-indigo-600 text-white rounded hover:bg-indigo-700 shadow-md">✓</button>
-                            <button @click="cancelEditingName" class="p-1.5 bg-gray-200/80 text-gray-600 rounded hover:bg-gray-300">✕</button>
+                            <TextInput v-model="nameForm.name" class="py-1 px-2 text-center text-sm font-bold w-40 bg-gray-50 dark:bg-slate-800 border-gray-200 rounded-none" @keyup.enter="saveName" />
+                            <button @click="saveName" class="p-1.5 bg-indigo-600 text-white rounded-none hover:bg-indigo-700">✓</button>
+                            <button @click="cancelEditingName" class="p-1.5 bg-gray-200 text-gray-600 rounded-none hover:bg-gray-300">✕</button>
                         </div>
                         <p class="text-slate-500 dark:text-slate-400 text-xs mt-1">{{ user.email }}</p>
                     </div>
                 </div>
 
                 <div class="flex-1">
-                    <div class="bg-white/30 dark:bg-slate-800/40 rounded-xl p-5 mb-6 backdrop-blur-md border border-white/30 dark:border-white/10 shadow-sm">
+                    <div class="bg-gray-50 dark:bg-slate-800/50 rounded-none p-5 mb-6 border border-gray-100 dark:border-white/5">
                         <div class="flex justify-between items-center mb-3">
-                            <h3 class="font-bold text-sm text-slate-700 dark:text-slate-200">Skills</h3>
+                            <h3 class="font-bold text-xs uppercase tracking-widest text-slate-400">Skills</h3>
                         </div>
                         <div class="flex flex-wrap gap-2">
                              <template v-if="user.skills && user.skills.length">
-                                <span v-for="(skillItem, index) in user.skills.slice(0, 5)" :key="index" class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-white/60 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-300 border border-indigo-100/50 dark:border-indigo-500/30 shadow-sm backdrop-blur-sm">
+                                <span v-for="(skillItem, index) in user.skills.slice(0, 5)" :key="index" class="px-2.5 py-1 rounded-none text-[10px] font-bold bg-white dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-300 border border-indigo-100 dark:border-indigo-500/30">
                                     {{ skillItem.skill }}
                                 </span>
                             </template>
@@ -273,10 +278,10 @@ const getInitials = (name) => {
                         </div>
                     </div>
 
-                    <div class="mt-auto pt-6 border-t border-gray-200/20 dark:border-white/10 space-y-2">
+                    <div class="mt-auto pt-6 border-t border-gray-100 dark:border-white/10 space-y-2">
                         <button 
                             @click="openPasswordModal"
-                            class="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 bg-white/40 dark:bg-slate-800/40 hover:bg-indigo-50/50 dark:hover:bg-indigo-500/10 hover:text-indigo-600 dark:hover:text-indigo-400 rounded-lg transition-colors border border-white/40 dark:border-white/10 backdrop-blur-sm"
+                            class="w-full flex items-center justify-center gap-2 px-4 py-3 text-sm font-bold text-slate-600 dark:text-slate-300 bg-gray-50 dark:bg-slate-800/50 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 hover:text-indigo-600 rounded-none transition-all border border-transparent hover:border-indigo-100"
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
@@ -286,7 +291,7 @@ const getInitials = (name) => {
 
                         <button 
                             @click="logout" 
-                            class="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-red-500 bg-red-50/30 dark:bg-red-500/10 hover:bg-red-100/50 hover:text-red-600 rounded-lg transition-colors backdrop-blur-sm border border-transparent hover:border-red-100 dark:hover:border-red-500/30"
+                            class="w-full flex items-center justify-center gap-2 px-4 py-3 text-sm font-bold text-red-500 bg-red-50 dark:bg-red-500/10 hover:bg-red-100 hover:text-red-600 rounded-none transition-all border border-transparent hover:border-red-100"
                         >
                             <Logout class="w-4 h-4" />
                             <span>Sign Out</span>
@@ -297,47 +302,27 @@ const getInitials = (name) => {
         </aside>
 
         <Modal :show="showAvatarModal" @close="showAvatarModal = false">
-            <div class="p-6 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md">
+            <div class="p-6 bg-white dark:bg-slate-900">
                 <h2 class="text-lg font-bold text-gray-900 dark:text-slate-100 mb-6 text-center">Choose Your Avatar</h2>
                 
                 <div class="flex flex-col items-center gap-6 mb-8">
-                    <div class="relative group">
-                        <div class="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-blue-500 rounded-full blur opacity-40 animate-pulse"></div>
-                        <img 
-                            :src="selectedAvatarTemp" 
-                            alt="Selected Preview" 
-                            class="relative w-32 h-32 rounded-full object-cover border-4 border-white dark:border-slate-800 shadow-xl"
-                        />
-                        <div class="absolute bottom-0 right-0 bg-green-500 text-white rounded-full p-1 border-2 border-white dark:border-gray-800">
-                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
-                                <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd" />
-                            </svg>
-                        </div>
-                    </div>
-
-                    <div class="w-full px-2">
-                        <div class="grid grid-cols-4 gap-3 sm:gap-4 justify-items-center">
-                            <button 
-                                v-for="(asset, index) in avatarAssets" 
-                                :key="index" 
-                                type="button"
-                                @click="selectAvatar(asset)" 
-                                class="relative rounded-full transition-all duration-200 focus:outline-none"
-                                :class="[
-                                    selectedAvatarTemp === asset 
-                                        ? 'ring-2 ring-offset-2 ring-indigo-500 scale-110 opacity-100 z-10' 
-                                        : 'opacity-60 hover:opacity-100 hover:scale-105 grayscale hover:grayscale-0'
-                                ]"
-                            >
-                                <img :src="asset" class="w-12 h-12 sm:w-14 sm:h-14 rounded-full object-cover shadow-sm" />
-                            </button>
-                        </div>
+                    <img :src="selectedAvatarTemp" alt="Selected Preview" class="w-32 h-32 rounded-none object-cover border-4 border-indigo-500 shadow-xl" />
+                    <div class="grid grid-cols-4 gap-3">
+                        <button 
+                            v-for="(asset, index) in avatarAssets" 
+                            :key="index" 
+                            @click="selectAvatar(asset)" 
+                            class="relative rounded-none transition-all duration-200"
+                            :class="[selectedAvatarTemp === asset ? 'ring-4 ring-indigo-500 scale-105 opacity-100' : 'opacity-60 hover:opacity-100']"
+                        >
+                            <img :src="asset" class="w-14 h-14 rounded-none object-cover shadow-sm" />
+                        </button>
                     </div>
                 </div>
 
-                <div class="flex justify-end gap-3 pt-4 border-t border-gray-200/20 dark:border-white/10">
-                    <SecondaryButton @click="showAvatarModal = false">Cancel</SecondaryButton>
-                    <PrimaryButton @click="saveAvatar" :disabled="avatarForm.processing" class="w-24 justify-center">
+                <div class="flex justify-end gap-3 pt-4 border-t border-gray-100 dark:border-white/10">
+                    <SecondaryButton @click="showAvatarModal = false" class="rounded-none">Cancel</SecondaryButton>
+                    <PrimaryButton @click="saveAvatar" :disabled="avatarForm.processing" class="rounded-none">
                         Save
                     </PrimaryButton>
                 </div>
@@ -345,21 +330,12 @@ const getInitials = (name) => {
         </Modal>
 
         <Modal :show="showPasswordModal" @close="closePasswordModal">
-            <div class="p-6 bg-white/90 dark:bg-slate-900/95 backdrop-blur-md">
+            <div class="p-6 bg-white dark:bg-slate-900">
                 <div class="flex items-center justify-between mb-4">
-                    <h2 class="text-lg font-bold text-gray-900 dark:text-slate-100">
-                        Change Password
-                    </h2>
-                    <button @click="closePasswordModal" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
+                    <h2 class="text-lg font-bold text-gray-900 dark:text-slate-100">Change Password</h2>
+                    <button @click="closePasswordModal" class="text-gray-400 hover:text-gray-600"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg></button>
                 </div>
-                
-                <div class="mt-4">
-                    <UpdatePasswordForm @close="closePasswordModal" />
-                </div>
+                <UpdatePasswordForm @close="closePasswordModal" />
             </div>
         </Modal>
 
@@ -368,11 +344,6 @@ const getInitials = (name) => {
 </template>
 
 <style scoped>
-.no-scrollbar::-webkit-scrollbar {
-    display: none;
-}
-.no-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-}
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 </style>
