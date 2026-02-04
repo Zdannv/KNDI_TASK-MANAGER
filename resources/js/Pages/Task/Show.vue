@@ -217,13 +217,13 @@ const visibleButtons = computed(() => {
         <div
           class="flex flex-col md:flex-row justify-between px-6 py-4 items-start md:items-center gap-4 text-gray-800 dark:text-gray-200 
                  bg-white/40 dark:bg-gradient-to-b dark:from-slate-700/30 dark:to-slate-900/60 backdrop-blur-xl border border-white/40 dark:border-white/20 
-                 shadow-lg rounded-2xl transition-all duration-700 ease-out"
+                 shadow-lg rounded-lg transition-all duration-700 ease-out"
           :class="{ 'opacity-100': isLoaded, 'translate-y-8 opacity-0': !isLoaded }"
         >
           <div class="flex items-center gap-4">
             <button 
               @click="handleBack"
-              class="p-2 rounded-xl bg-white/50 dark:bg-gray-800/50 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 text-gray-600 dark:text-gray-300 border border-white/40 dark:border-gray-600/30 transition-all shadow-sm group"
+              class="p-2 rounded-lg bg-white/50 dark:bg-gray-800/50 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 text-gray-600 dark:text-gray-300 border border-white/40 dark:border-gray-600/30 transition-all shadow-sm group"
               title="Back"
             >
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 group-hover:-translate-x-1 transition-transform">
@@ -250,7 +250,7 @@ const visibleButtons = computed(() => {
               v-for="button in visibleButtons"
               :key="button.action"
               @click="button.handler"
-              class="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-xl bg-white/50 dark:bg-slate-800/40 hover:bg-white dark:hover:bg-slate-700/50 text-gray-700 dark:text-gray-200 border border-white/40 dark:border-white/10 shadow-sm backdrop-blur-sm transition-all hover:scale-105 active:scale-95"
+              class="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg bg-white/50 dark:bg-slate-800/40 hover:bg-white dark:hover:bg-slate-700/50 text-gray-700 dark:text-gray-200 border border-white/40 dark:border-white/10 shadow-sm backdrop-blur-sm transition-all hover:scale-105 active:scale-95"
             >
               <component :is="button.icon" class="w-4 h-4" />
               <span class="hidden lg:inline">{{ button.text }}</span>
@@ -260,7 +260,7 @@ const visibleButtons = computed(() => {
       </div>
     </template>
 
-    <div class="fixed sm:hidden right-6 bottom-6 z-50">
+    <div v-if="['other', 'co'].includes(role)" class="fixed sm:hidden right-6 bottom-6 z-50">
       <div
         class="shrink-0 inline-flex items-center justify-center p-3 rounded-full text-white bg-indigo-600 shadow-xl z-40 transition-all duration-500 hover:scale-110 active:scale-95"
         @click="showButtons = !showButtons"
@@ -282,31 +282,31 @@ const visibleButtons = computed(() => {
     </div>
 
     <div v-if="openCreateEditForm" class="fixed inset-0 z-[100] px-4 flex items-center justify-center bg-black/60 backdrop-blur-sm transition-opacity">
-      <div class="bg-white/90 dark:bg-gradient-to-b dark:from-slate-800 dark:to-slate-950 backdrop-blur-2xl border border-white/50 dark:border-white/10 rounded-2xl shadow-2xl max-w-5xl w-full p-6 relative animate-in fade-in zoom-in duration-300 overflow-y-auto max-h-[90vh]">
+      <div class="bg-white/90 dark:bg-gradient-to-b dark:from-slate-800 dark:to-slate-950 backdrop-blur-2xl border border-white/50 dark:border-white/10 rounded-lg shadow-2xl max-w-5xl w-full p-6 relative animate-in fade-in zoom-in duration-300 overflow-y-auto max-h-[90vh]">
         <TaskCreateEditForm :task="selectedTask" :projects="projects" :isEditMode="isEditMode" @close="handleCloseForm" />
       </div>
     </div>
 
     <div v-if="openAssignForm" class="fixed inset-0 z-[100] px-4 flex items-center justify-center bg-black/60 backdrop-blur-sm transition-opacity">
-      <div class="bg-white/90 dark:bg-gradient-to-b dark:from-slate-800 dark:to-slate-950 backdrop-blur-2xl border border-white/50 dark:border-white/10 rounded-2xl shadow-2xl max-w-lg w-full p-6 relative animate-in fade-in zoom-in duration-200">
+      <div class="bg-white/90 dark:bg-gradient-to-b dark:from-slate-800 dark:to-slate-950 backdrop-blur-2xl border border-white/50 dark:border-white/10 rounded-lg shadow-2xl max-w-lg w-full p-6 relative animate-in fade-in zoom-in duration-200">
         <TaskAssignForm :task="selectedTask" :pl="users" :co="communicator" :pg="programmer" :ds="designer" @close="handleCloseForm" />
       </div>
     </div>
 
     <div v-if="openPrForm" class="fixed inset-0 z-[100] px-4 flex items-center justify-center bg-black/60 backdrop-blur-sm transition-opacity">
-      <div class="bg-white/90 dark:bg-gradient-to-b dark:from-slate-800 dark:to-slate-950 backdrop-blur-2xl border border-white/50 dark:border-white/10 rounded-2xl shadow-2xl max-w-lg w-full p-6 relative animate-in fade-in zoom-in duration-200">
+      <div class="bg-white/90 dark:bg-gradient-to-b dark:from-slate-800 dark:to-slate-950 backdrop-blur-2xl border border-white/50 dark:border-white/10 rounded-lg shadow-2xl max-w-lg w-full p-6 relative animate-in fade-in zoom-in duration-200">
         <TaskPrForm :task="selectedTask" :pg="programmer" @close="handleCloseForm" />
       </div>
     </div>
 
     <div v-if="openCommentForm" class="fixed inset-0 z-[100] px-4 flex items-center justify-center bg-black/60 backdrop-blur-sm transition-opacity">
-      <div class="bg-white/90 dark:bg-gradient-to-b dark:from-slate-800 dark:to-slate-950 backdrop-blur-2xl border border-white/50 dark:border-white/10 rounded-2xl shadow-2xl max-w-lg w-full p-6 relative animate-in fade-in zoom-in duration-200">
+      <div class="bg-white/90 dark:bg-gradient-to-b dark:from-slate-800 dark:to-slate-950 backdrop-blur-2xl border border-white/50 dark:border-white/10 rounded-lg shadow-2xl max-w-lg w-full p-6 relative animate-in fade-in zoom-in duration-200">
         <TaskCommentForm :task="selectedTask" @close="handleCloseForm" />
       </div>
     </div>
 
     <div v-if="openReplyForm" class="fixed inset-0 z-[100] px-4 flex items-center justify-center bg-black/60 backdrop-blur-sm transition-opacity">
-      <div class="bg-white/90 dark:bg-gradient-to-b dark:from-slate-800 dark:to-slate-950 backdrop-blur-2xl border border-white/50 dark:border-white/10 rounded-2xl shadow-2xl max-w-lg w-full p-6 relative animate-in fade-in zoom-in duration-200">
+      <div class="bg-white/90 dark:bg-gradient-to-b dark:from-slate-800 dark:to-slate-950 backdrop-blur-2xl border border-white/50 dark:border-white/10 rounded-lg shadow-2xl max-w-lg w-full p-6 relative animate-in fade-in zoom-in duration-200">
         <TaskReplyForm :comment="selectedComment" @close="handleCloseForm" />
       </div>
     </div>
@@ -317,7 +317,7 @@ const visibleButtons = computed(() => {
     >
       <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-8">
         
-        <div class="bg-white/40 dark:bg-gradient-to-b dark:from-slate-800/60 dark:to-slate-950/80 backdrop-blur-xl border border-white/40 dark:border-white/20 shadow-2xl rounded-2xl overflow-hidden flex flex-col">
+        <div class="bg-white/40 dark:bg-gradient-to-b dark:from-slate-800/60 dark:to-slate-950/80 backdrop-blur-xl border border-white/40 dark:border-white/20 shadow-2xl rounded-lg overflow-hidden flex flex-col">
 
           <div class="p-8 border-b border-white/20 dark:border-white/5">
             <h3 class="text-lg font-bold text-gray-800 dark:text-slate-100 mb-6 flex items-center gap-2">
@@ -395,7 +395,7 @@ const visibleButtons = computed(() => {
                 <div class="lg:col-span-2 space-y-6">
                     <div>
                         <label class="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wide block mb-2">Description</label>
-                        <div class="p-4 rounded-xl bg-white/50 dark:bg-slate-800/40 border border-white/40 dark:border-white/10 text-gray-700 dark:text-slate-300 text-sm whitespace-pre-wrap leading-relaxed shadow-inner">
+                        <div class="p-4 rounded-lg bg-white/50 dark:bg-slate-800/40 border border-white/40 dark:border-white/10 text-gray-700 dark:text-slate-300 text-sm whitespace-pre-wrap leading-relaxed shadow-inner">
                             {{ task.description || 'No description provided.' }}
                         </div>
                     </div>
@@ -422,7 +422,7 @@ const visibleButtons = computed(() => {
 
                 <div>
                     <label class="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wide block mb-2">Time Allocation</label>
-                    <div v-if="logtimeSegments.length > 0" class="p-5 rounded-xl bg-white/50 dark:bg-slate-800/40 border border-white/40 dark:border-white/10 shadow-sm flex flex-col items-center">
+                    <div v-if="logtimeSegments.length > 0" class="p-5 rounded-lg bg-white/50 dark:bg-slate-800/40 border border-white/40 dark:border-white/10 shadow-sm flex flex-col items-center">
                         <div class="relative w-40 h-40 mb-6">
                            <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
                               <circle cx="50" cy="50" r="40" fill="transparent" stroke-width="12" class="stroke-gray-200/50 dark:stroke-slate-700/50" />
@@ -456,7 +456,7 @@ const visibleButtons = computed(() => {
                             </div>
                         </div>
                     </div>
-                    <div v-else class="p-6 rounded-xl bg-gray-50/50 dark:bg-slate-800/40 border border-dashed border-gray-300 dark:border-slate-700 text-center">
+                    <div v-else class="p-6 rounded-lg bg-gray-50/50 dark:bg-slate-800/40 border border-dashed border-gray-300 dark:border-slate-700 text-center">
                         <p class="text-sm text-gray-400">No time logged yet.</p>
                     </div>
                 </div>
@@ -473,7 +473,7 @@ const visibleButtons = computed(() => {
                 <div v-for="pr in prs" :key="pr.id" class="relative pl-6 border-l-2 border-indigo-200 dark:border-indigo-900/50">
                     <div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-indigo-500 ring-4 ring-white dark:ring-slate-900"></div>
                     
-                    <div class="bg-white/60 dark:bg-slate-800/60 backdrop-blur-md border border-white/50 dark:border-white/10 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="bg-white/60 dark:bg-slate-800/60 backdrop-blur-md border border-white/50 dark:border-white/10 rounded-lg p-5 shadow-sm hover:shadow-md transition-shadow">
                         <div class="flex justify-between items-start mb-3">
                             <div class="flex items-center gap-2">
                                 <span class="font-bold text-sm text-gray-900 dark:text-slate-100">{{ getNameUser(pr.from) }}</span>
