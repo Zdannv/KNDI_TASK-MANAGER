@@ -100,7 +100,7 @@ const handleSearch = () => {
         <div
           class="flex flex-col md:flex-row justify-between px-6 py-4 items-center gap-4 text-gray-800 dark:text-gray-200 
                  bg-white/40 dark:bg-gradient-to-b dark:from-slate-700/30 dark:to-slate-900/60 backdrop-blur-xl border border-white/40 dark:border-white/20 
-                 shadow-lg rounded-2xl transition-all duration-1000 ease-out"
+                 shadow-lg rounded-lg transition-all duration-1000 ease-out"
           :class="{ 'translate-y-0 opacity-100': isLoaded, 'translate-y-8 opacity-0': !isLoaded }"
         >
           <div>
@@ -116,7 +116,7 @@ const handleSearch = () => {
                 <TextInput
                   id="search"
                   type="text"
-                  class="pl-10 w-full bg-white/50 dark:bg-slate-900/50 border-white/40 dark:border-white/10 backdrop-blur-sm focus:bg-white/80 dark:focus:bg-slate-800/80 transition-all shadow-sm rounded-xl dark:text-white"
+                  class="pl-10 w-full bg-white/50 dark:bg-slate-900/50 border-white/40 dark:border-white/10 backdrop-blur-sm focus:bg-white/80 dark:focus:bg-slate-800/80 transition-all shadow-sm rounded-lg dark:text-white"
                   v-model="search"
                   placeholder="Search issue or ticket..."
                   @keydown.enter="handleSearch"
@@ -126,7 +126,7 @@ const handleSearch = () => {
             <button
               v-if="['other', 'pm', 'co'].includes(role)" 
               @click="handleOpenCreateEditForm"
-              class="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow-md hover:shadow-indigo-500/30 transition-all duration-300 transform hover:scale-105 whitespace-nowrap"
+              class="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow-md hover:shadow-indigo-500/30 transition-all duration-300 transform hover:scale-105 whitespace-nowrap"
             >
               <Plus class="w-5 h-5" />
               <span class="hidden sm:inline font-bold text-sm">New Task</span>
@@ -146,7 +146,7 @@ const handleSearch = () => {
     </button>
 
     <div v-if="openCreateEditForm" class="fixed inset-0 z-[100] px-4 flex items-center justify-center bg-black/60 backdrop-blur-sm transition-opacity">
-      <div class="bg-white/90 dark:bg-gradient-to-b dark:from-slate-800 dark:to-slate-950 backdrop-blur-2xl border border-white/50 dark:border-white/10 rounded-2xl shadow-2xl max-w-5xl w-full p-6 relative animate-in fade-in zoom-in duration-300 overflow-y-auto max-h-[90vh]">
+      <div class="bg-white/90 dark:bg-gradient-to-b dark:from-slate-800 dark:to-slate-950 backdrop-blur-2xl border border-white/50 dark:border-white/10 rounded-lg shadow-2xl max-w-5xl w-full p-6 relative animate-in fade-in zoom-in duration-300 overflow-y-auto max-h-[90vh]">
         <TaskCreateEditForm 
             :task="selectedTask" 
             :projects="projects" 
@@ -158,7 +158,7 @@ const handleSearch = () => {
     </div>
 
     <div v-if="openAssignForm" class="fixed inset-0 z-[100] px-4 flex items-center justify-center bg-black/60 backdrop-blur-sm transition-opacity">
-      <div class="bg-white/90 dark:bg-gradient-to-b dark:from-slate-800 dark:to-slate-950 backdrop-blur-2xl border border-white/50 dark:border-white/10 rounded-2xl shadow-2xl max-w-lg w-full p-6 relative animate-in fade-in zoom-in duration-200">
+      <div class="bg-white/90 dark:bg-gradient-to-b dark:from-slate-800 dark:to-slate-950 backdrop-blur-2xl border border-white/50 dark:border-white/10 rounded-lg shadow-2xl max-w-lg w-full p-6 relative animate-in fade-in zoom-in duration-200">
         <TaskAssignForm :task="selectedTask" :pl="users" :co="communicator" :pg="programmer" :ds="designer" @close="handleCloseForm" />
       </div>
     </div>
@@ -172,7 +172,7 @@ const handleSearch = () => {
         >
 
           <div class="relative z-10 -mb-[1px]">
-             <div class="w-fit px-6 h-12 bg-white/40 dark:bg-slate-700/50 dark:to-slate-800/60 backdrop-blur-xl border-t border-l border-r border-white/40 dark:border-white/20 rounded-t-2xl shadow-sm relative flex items-center gap-3">
+             <div class="w-fit px-6 h-12 bg-white/40 dark:bg-slate-700/50 dark:to-slate-800/60 backdrop-blur-xl border-t border-l border-r border-white/40 dark:border-white/20 rounded-t-lg shadow-sm relative flex items-center gap-3">
                 <Document class="w-5 h-5 text-indigo-600 dark:text-indigo-400 drop-shadow-sm" />
                 <span class="font-bold text-gray-800 dark:text-slate-100 text-sm tracking-wide shadow-black drop-shadow-sm">Task Data</span>
                 <div class="absolute -bottom-[1px] left-0 right-0 h-[2px] bg-white/40 dark:bg-slate-800/80 z-20"></div>
@@ -180,7 +180,7 @@ const handleSearch = () => {
           </div>
 
           <div
-            class="w-full bg-white/40 dark:bg-gradient-to-b dark:from-slate-800/60 dark:to-slate-950/80 backdrop-blur-xl border border-white/40 dark:border-white/20 shadow-xl rounded-b-2xl rounded-tr-2xl relative z-0 flex flex-col overflow-hidden"
+            class="w-full bg-white/40 dark:bg-gradient-to-b dark:from-slate-800/60 dark:to-slate-950/80 backdrop-blur-xl border border-white/40 dark:border-white/20 shadow-xl rounded-b-lg rounded-tr-lg relative z-0 flex flex-col overflow-hidden"
           >
             <div class="overflow-x-auto custom-scrollbar">
               <table class="w-full text-left dark:text-slate-200 table-auto min-w-[1100px] border-collapse">
