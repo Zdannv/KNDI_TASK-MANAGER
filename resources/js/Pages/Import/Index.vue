@@ -83,14 +83,14 @@ const downloadTemplate = () => {
         <div class="flex flex-col items-start">
             
             <div class="relative z-10 -mb-[1px]">
-                <div class="w-fit px-6 h-12 bg-white/40 dark:bg-slate-700/50 dark:to-slate-800/60 backdrop-blur-xl border-t border-l border-r border-white/40 dark:border-white/20 rounded-t-2xl shadow-sm relative flex items-center gap-3">
+                <div class="w-fit px-6 h-12 bg-white/40 dark:bg-slate-700/50 dark:to-slate-800/60 backdrop-blur-xl border-t border-l border-r border-white/40 dark:border-white/20 rounded-t-lg shadow-sm relative flex items-center gap-3">
                     <Cloud class="w-5 h-5 text-indigo-600 dark:text-indigo-400 drop-shadow-sm" />
                     <span class="font-bold text-gray-800 dark:text-slate-100 text-sm tracking-wide shadow-black drop-shadow-sm">Import Data</span>
                     <div class="absolute -bottom-[1px] left-0 right-0 h-[2px] bg-white/40 dark:bg-slate-800/80 z-20"></div>
                 </div>
             </div>
 
-            <div class="w-full bg-white/40 dark:bg-gradient-to-b dark:from-slate-800/60 dark:to-slate-950/80 backdrop-blur-xl border border-white/40 dark:border-white/20 shadow-2xl rounded-b-2xl rounded-tr-2xl relative z-0 p-8 space-y-8">
+            <div class="w-full bg-white/40 dark:bg-gradient-to-b dark:from-slate-800/60 dark:to-slate-950/80 backdrop-blur-xl border border-white/40 dark:border-white/20 shadow-2xl rounded-b-lg rounded-tr-lg relative z-0 p-8 space-y-8">
             
                 <div class="text-center">
                     <h2 class="text-2xl font-bold text-gray-800 dark:text-slate-100 drop-shadow-sm">
@@ -107,7 +107,7 @@ const downloadTemplate = () => {
                     @dragleave="handleDragLeave"
                     @click="triggerFileInput"
                     :class="[
-                    'relative border-2 border-dashed rounded-xl p-10 text-center cursor-pointer transition-all duration-300 group',
+                    'relative border-2 border-dashed rounded-lg p-10 text-center cursor-pointer transition-all duration-300 group',
                     isDragging
                         ? 'border-indigo-500 bg-indigo-50/50 dark:bg-indigo-900/30 scale-[1.02]'
                         : 'border-gray-300 dark:border-white/10 hover:border-indigo-400 dark:hover:border-indigo-500 bg-white/30 dark:bg-slate-800/40'
@@ -142,7 +142,7 @@ const downloadTemplate = () => {
                     <button
                         @click.prevent="downloadTemplate"
                         type="button"
-                        class="flex-1 inline-flex justify-center items-center px-4 py-2.5 border border-gray-300 dark:border-white/10 rounded-xl shadow-sm text-sm font-medium text-gray-700 dark:text-slate-200 bg-white/50 dark:bg-slate-800/40 hover:bg-white dark:hover:bg-slate-700/50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all backdrop-blur-sm"
+                        class="flex-1 inline-flex justify-center items-center px-4 py-2.5 border border-gray-300 dark:border-white/10 rounded-lg shadow-sm text-sm font-medium text-gray-700 dark:text-slate-200 bg-white/50 dark:bg-slate-800/40 hover:bg-white dark:hover:bg-slate-700/50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all backdrop-blur-sm"
                     >
                         <svg class="w-4 h-4 mr-2 text-gray-500 dark:text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2-8H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2z" />
@@ -155,7 +155,7 @@ const downloadTemplate = () => {
                         type="button"
                         :disabled="!form.file"
                         :class="[
-                            'flex-1 inline-flex justify-center items-center px-4 py-2.5 rounded-xl shadow-lg text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 transition-all transform active:scale-95',
+                            'flex-1 inline-flex justify-center items-center px-4 py-2.5 rounded-lg shadow-lg text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 transition-all transform active:scale-95',
                             form.file
                             ? 'bg-indigo-600 hover:bg-indigo-700 hover:shadow-indigo-500/30'
                             : 'bg-gray-400 dark:bg-slate-700 dark:text-slate-500 cursor-not-allowed opacity-70'
