@@ -15,10 +15,10 @@ const props = defineProps({
 const form = useForm({
     date: moment().format('YYYY-MM-DD'),
     task_id: '',
-    time_used: ''
+    time_used: '',
+    description: '',
 });
 
-// --- PERBAIKAN DI SINI: Function Validasi ---
 const validateTime = () => {
     if (form.time_used < 0) {
         form.time_used = 1;
@@ -64,7 +64,7 @@ const cancel = () => {
                     :options="tasks"
                     label="issue"
                     valueKey="id"
-                    class="mt-1 block w-full"
+                    class="mt-1 block w-full text-black"
                     placeholder="Search or select a task..."
                     :required="true"
                 />
@@ -86,6 +86,16 @@ const cancel = () => {
                     @change="validateTime" 
                 />
                 <InputError class="mt-2" :message="form.errors.time_used" />
+            </div>
+
+            <div>
+                <InputLabel for="description" value="Description" />
+                <TextInput
+                    id="description"
+                    type="text"
+                    class="mt-1 block w-full"
+                    v-model="form.description"
+                />
             </div>
 
             <div class="flex justify-end gap-4">
