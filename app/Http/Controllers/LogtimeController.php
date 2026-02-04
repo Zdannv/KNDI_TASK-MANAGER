@@ -37,9 +37,6 @@ class LogtimeController extends Controller
             $logtimesQuery->whereBetween('date', [$from, $to]);
         }
         
-        // --- PERUBAHAN DISINI ---
-        // Ganti ->get() menjadi ->paginate(10)->withQueryString()
-        // Agar format data cocok dengan komponen Pagination di frontend
         $logtimes = $logtimesQuery->paginate(10)->withQueryString(); 
 
         $tasksQuery = Task::query()->with('project');
@@ -68,7 +65,8 @@ class LogtimeController extends Controller
         $validated = $request->validate([
             'date' => 'required|string',
             'task_id' => 'required',
-            'time_used' => 'required|numeric'
+            'time_used' => 'required|numeric',
+            'description' => 'nullable|string',
         ]);
 
         $timeUsed = $request->time_used < 0 ? 1 : $request->time_used;
@@ -76,7 +74,8 @@ class LogtimeController extends Controller
         $logtime = $task->logtimes()->create([
             'user_id' => Auth::id(),
             'date' => Carbon::parse($request->date),
-            'time_used' => $timeUsed
+            'time_used' => $timeUsed,
+            'description' => $request->description,
         ]);
 
         Auth::user()->logs()->create([
