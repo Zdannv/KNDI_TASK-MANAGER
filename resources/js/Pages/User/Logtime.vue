@@ -5,8 +5,7 @@ import Gear from '@/Components/Icon/Gear.vue';
 import Download from '@/Components/Icon/Download.vue';
 import Hamburger from '@/Components/Icon/Hamburger.vue';
 import Clock from '@/Components/Icon/Clock.vue';
-import Trash from '@/Components/Icon/Trash.vue'; 
-import Pagination from '@/Components/Pagination.vue'; 
+import Pagination from '@/Components/Pagination.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import LogtimeForm from '@/Components/Form/Logtime.vue';
 import SelectInput from '@/Components/SelectInput.vue';
@@ -15,10 +14,15 @@ import { ref, computed, watch, onMounted } from 'vue';
 import moment from 'moment';
 import Datepicker from '@vuepic/vue-datepicker';
 import Download2 from '@/Components/Icon/Download2.vue';
+import Modal from '@/Components/Modal.vue';
+import Trash from '@/Components/Icon/Trash.vue';
+import Detail from '@/Components/Icon/Detail.vue';
 
 const showButtons = ref(false);
 const openForm = ref(false);
 const isLoaded = ref(false);
+const selectedLogtime = ref(null);
+const showDetailLogtime = ref(false);
 
 onMounted(() => {
   setTimeout(() => {
@@ -65,7 +69,7 @@ const handleDelete = (id) => {
 };
 
 const props = defineProps({
-  logtimes: Object, 
+  logtimes: Object,
   tasks: {},
   users: {}
 });
@@ -127,6 +131,16 @@ const visibleButtons = computed(() => {
     { action: 'reset', icon: Close, handler: () => router.get(route('logtime.list')), text: 'Reset' }
   ];
 });
+
+const openDetailLogtime = (item) => {
+  selectedLogtime.value = item;
+  showDetailLogtime.value = true;
+}
+
+const closeDetailLogtime = () => {
+  showDetailLogtime.value = false;
+  selectedLogtime.value = null;
+}
 </script>
 
 <template>
@@ -138,7 +152,7 @@ const visibleButtons = computed(() => {
         <div
           class="flex justify-between px-6 py-4 items-center text-gray-800 dark:text-gray-200 
                  bg-white/40 dark:bg-gradient-to-b dark:from-slate-700/30 dark:to-slate-900/60 backdrop-blur-xl border border-white/40 dark:border-white/20 
-                 shadow-lg rounded-2xl transition-all duration-1000 ease-out"
+                 shadow-lg rounded-lg transition-all duration-1000 ease-out"
           :class="{ 'translate-y-0 opacity-100': isLoaded, 'translate-y-8 opacity-0': !isLoaded }"
         >
           <div>
@@ -150,14 +164,14 @@ const visibleButtons = computed(() => {
             <button
               v-if="['other', 'co'].includes(role)"
               @click="handleOpenOptions"
-              class="flex items-center gap-2 px-4 py-2 bg-white/50 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-700/50 text-gray-700 dark:text-gray-200 rounded-xl shadow-sm border border-white/40 dark:border-white/10 backdrop-blur-sm transition-all"
+              class="flex items-center gap-2 px-4 py-2 bg-white/50 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-700/50 text-gray-700 dark:text-gray-200 rounded-lg shadow-sm border border-white/40 dark:border-white/10 backdrop-blur-sm transition-all"
             >
               <Gear class="w-4 h-4" />
               <span class="hidden sm:inline font-medium text-sm">Options</span>
             </button>
             <button
               @click="handleOpenForm"
-              class="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow-md hover:shadow-indigo-500/30 transition-all duration-300 transform hover:scale-105"
+              class="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow-md hover:shadow-indigo-500/30 transition-all duration-300 transform hover:scale-105"
             >
               <Plus class="w-5 h-5" />
               <span class="hidden sm:inline font-bold text-sm">Log Time</span>
@@ -190,7 +204,7 @@ const visibleButtons = computed(() => {
     </div>
 
     <div v-if="openForm" class="fixed inset-0 z-50 px-4 flex items-center justify-center bg-black/60 backdrop-blur-sm transition-opacity">
-      <div class="bg-white/90 dark:bg-gradient-to-b dark:from-slate-800/90 dark:to-slate-950 backdrop-blur-2xl border border-white/50 dark:border-white/10 rounded-2xl shadow-2xl max-w-lg w-full p-6 relative animate-in fade-in zoom-in duration-300">
+      <div class="bg-white/90 dark:bg-gradient-to-b dark:from-slate-800/90 dark:to-slate-950 backdrop-blur-2xl border border-white/50 dark:border-white/10 rounded-lg shadow-2xl max-w-lg w-full p-6 relative animate-in fade-in zoom-in duration-300">
         <LogtimeForm :tasks="tasks" @close="handleCloseForm" />
       </div>
     </div>
@@ -203,7 +217,7 @@ const visibleButtons = computed(() => {
       <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-8">
         <div class="flex flex-col py-6 px-6 text-gray-800 dark:text-gray-200 
                     bg-white/40 dark:bg-gradient-to-b dark:from-slate-700/30 dark:to-slate-900/60 backdrop-blur-xl border border-white/40 dark:border-white/10 
-                    shadow-lg rounded-2xl font-medium">
+                    shadow-lg rounded-lg font-medium">
           <div class="flex flex-col sm:flex-row gap-4 pb-4 border-b border-gray-200/50 dark:border-white/5 mb-4">
             <div class="w-full sm:w-1/3">
                  <label class="text-xs font-bold text-gray-500 dark:text-slate-400 mb-1 block uppercase">Date Range</label>
@@ -257,7 +271,7 @@ const visibleButtons = computed(() => {
         <div class="flex flex-col items-start">
             
             <div class="relative z-10 -mb-[1px]">
-                <div class="w-fit px-6 h-12 bg-white/40 dark:bg-slate-700/50 dark:to-slate-800/60 backdrop-blur-xl border-t border-l border-r border-white/40 dark:border-white/20 rounded-t-2xl shadow-sm relative flex items-center gap-3">
+                <div class="w-fit px-6 h-12 bg-white/40 dark:bg-slate-700/50 dark:to-slate-800/60 backdrop-blur-xl border-t border-l border-r border-white/40 dark:border-white/20 rounded-t-lg shadow-sm relative flex items-center gap-3">
                     <Clock class="w-5 h-5 text-indigo-600 dark:text-indigo-400 drop-shadow-sm" />
                     <span class="font-bold text-gray-800 dark:text-slate-100 text-sm tracking-wide shadow-black drop-shadow-sm">Time Logs</span>
                     <div class="absolute -bottom-[1px] left-0 right-0 h-[2px] bg-white/40 dark:bg-slate-800/80 z-20"></div>
@@ -266,36 +280,33 @@ const visibleButtons = computed(() => {
 
             <div
             :class="{ 'sm:max-h-[39rem]': options, 'max-h-[49rem]': !options }"
-            class="w-full overflow-x-auto bg-white/40 dark:bg-gradient-to-b dark:from-slate-800/60 dark:to-slate-950/80 backdrop-blur-xl border border-white/40 dark:border-white/20 shadow-xl rounded-b-2xl rounded-tr-2xl relative z-0 flex flex-col"
+            class="w-full overflow-x-auto bg-white/40 dark:bg-gradient-to-b dark:from-slate-800/60 dark:to-slate-950/80 backdrop-blur-xl border border-white/40 dark:border-white/20 shadow-xl rounded-b-lg rounded-tr-lg relative z-0 flex flex-col"
             >
-            <table class="w-full min-w-[40rem] text-left dark:text-slate-200 table-auto border-collapse">
-                <thead class="sticky top-0 z-20 bg-white/50 dark:bg-slate-800/90 backdrop-blur-md border-b border-white/20 dark:border-white/10">
-                <tr>
-                    <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Date</th>
-                    <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Issue</th>
-                    <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Ticket</th>
-                    <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Time used</th>
-                    <th v-if="['other', 'co'].includes(role)" class="p-5 text-center font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Action</th>
+            <table class="w-full min-w-[40rem] text-left dark:text-white table-auto">
+                <thead class="bg-gray-200 dark:bg-gray-700 border-b-2 border-gray-300">
+                <tr class="bg-indigo-100 dark:bg-gray-700">
+                    <th class="p-4 rounded-tl-none"><p class="text-sm opacity-70">Date</p></th>
+                    <th class="p-4"><p class="text-sm opacity-70">Issue</p></th>
+                    <th class="p-4"><p class="text-sm opacity-70">Ticket</p></th>
+                    <th class="p-4"><p class="text-sm opacity-70">Description</p></th>
+                    <th class="p-4"><p class="text-sm opacity-70">Time used</p></th>
+                    <th v-if="['other', 'co'].includes(role)" class="p-4 text-center rounded-tr-lg"><p class="text-sm opacity-70 uppercase tracking-widest">Action</p></th>
                 </tr>
                 </thead>
                 <tbody class="divide-y divide-white/20 dark:divide-white/5">
                 <template v-for="(group, date) in groupedLogtimes" :key="date">
-                    <tr class="bg-indigo-50/50 dark:bg-indigo-500/5 backdrop-blur-sm border-t border-white/30 dark:border-white/5">
-                        <td class="py-3 px-5" colspan="3">
-                            <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-100/50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 text-xs font-bold border border-indigo-200/50 dark:border-indigo-700/30">
-                                {{ date }}
-                            </span>
-                        </td>
-                        <td class="py-3 px-5">
-                            <span class="font-bold text-gray-700 dark:text-slate-200 text-sm">{{ group.totalTime }} h</span>
-                        </td>
-                        <td v-if="['other', 'co'].includes(role)" class="py-3 px-5"></td>
+                    <tr class="bg-indigo-50 dark:bg-slate-800 border-t border-gray-300">
+                    <td class="py-2 px-4 italic font-bold text-indigo-700 dark:text-indigo-400" colspan="3">{{ date }}</td>
+                    <td></td>
+                    <td class="py-2 px-4">
+                        <p class="font-bold text-blue-gray-900">{{ group.totalTime }} h</p>
+                    </td>
+                    <td v-if="['other', 'co'].includes(role)" class="py-2 px-4"></td>
                     </tr>
-
-                    <tr v-for="value in group.items" :key="value.id" class="hover:bg-white/30 dark:hover:bg-indigo-500/10 transition duration-200">
-                    <td class="p-5 text-sm text-gray-500 dark:text-slate-400">{{ formatDate(value.date) }}</td>
-                    <td class="p-5">
-                        <a :href="route('task.show', value.task.id)" class="text-sm font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 hover:underline decoration-indigo-300 underline-offset-2 transition">
+                    <tr v-for="value in group.items" :key="value.id" class="border-t border-gray-200 hover:bg-white/50 dark:hover:bg-slate-800/50 transition-colors">
+                    <td class="p-4 text-sm">{{ formatDate(value.date) }}</td>
+                    <td class="p-4">
+                        <a :href="route('task.show', value.task.id)" class="text-sm font-bold text-indigo-600 dark:text-indigo-400 hover:underline">
                         {{ value.task.issue }}
                         </a>
                     </td>
@@ -304,15 +315,24 @@ const visibleButtons = computed(() => {
                         {{ value.task.ticket_link }}
                         </a>
                     </td>
-                    <td class="p-5 text-sm font-medium text-gray-700 dark:text-slate-300">{{ value.time_used }} h</td>
-                    <td v-if="['other', 'co'].includes(role)" class="p-5 text-center">
+                    <td class="p-4 max-w-[200px]">
+                      <div class="truncate" :title="value.description">
+                        {{ value.description || '-' }}
+                      </div>
+                    </td>
+                    <td class="p-4 text-sm">{{ value.time_used }} h</td>
+                    <td v-if="['other', 'co'].includes(role)" class="p-4">
+                      <div class="flex justify-center gap-8">
                         <button
-                          @click.prevent="handleDelete(value.id)"
-                          class="p-1.5 rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 transition tooltip-trigger inline-flex" 
-                          title="Delete"
+                          @click="openDetailLogtime(value)"
+                          class="text-indigo-600 dark:text-indigo-400 font-medium hover:underline text-sm"
                         >
-                            <Trash class="w-4 h-4" />
+                          <Detail class="w-6 h-6" />
                         </button>
+                        <button @click.prevent="handleDelete(value.id)" class="text-red-600 dark:text-red-400 font-medium hover:underline text-sm">
+                          <Trash class="w-6 h-6" />
+                        </button>
+                      </div>
                     </td>
                     </tr>
                 </template>
@@ -332,6 +352,53 @@ const visibleButtons = computed(() => {
       </div>
     </div>
   </AuthenticatedLayout>
+
+  <Modal :show="showDetailLogtime" @close="closeDetailLogtime" max-width="2xl">
+    <div class="p-6 bg-white dark:bg-slate-800"> 
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                Logtime Details
+            </h2>
+        </div>
+
+        <div class="space-y-4">
+            <div class="border-b pb-2 dark:border-gray-700">
+                <label class="block text-sm font-bold uppercase text-gray-500 dark:text-white">Date</label>
+                <p class="text-gray-800 dark:text-white">{{ formatDate(selectedLogtime?.date) }}</p>
+            </div>
+            
+            <div class="border-b pb-2 dark:border-gray-700">
+                <label class="block text-sm font-bold uppercase text-gray-500 dark:text-white">Ticket Link</label>
+                <a :href="'//' + selectedLogtime?.task.ticket_link" target="_blank" class="text-indigo-600 dark:text-indigo-400 hover:underline break-all">
+                    {{ selectedLogtime?.task.ticket_link }}
+                </a>
+            </div>
+            
+            <div class="border-b pb-2 dark:border-gray-700">
+                <label class="block text-sm font-bold uppercase text-gray-500 dark:text-white">Time Used</label>
+                <p class="text-gray-800 dark:text-gray-200">{{ selectedLogtime?.time_used }} h</p>
+            </div>
+
+            <div>
+                <label class="block text-sm font-bold uppercase text-gray-500 dark:text-white">Description</label>
+                <div class="max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+                  <p class="text-gray-800 dark:text-gray-200 whitespace-pre-wrap leading-relaxed">
+                    {{ selectedLogtime?.description || '-' }}
+                  </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-8 flex justify-end">
+            <button 
+                @click="closeDetailLogtime"
+                class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition shadow-sm"
+            >
+                Close
+            </button>
+        </div>
+    </div>
+  </Modal>
 </template>
 
 <style scoped>
@@ -339,7 +406,7 @@ const visibleButtons = computed(() => {
   background-color: rgba(255, 255, 255, 0.4);
   backdrop-filter: blur(8px);
   border-color: rgba(255, 255, 255, 0.3);
-  border-radius: 0.75rem;
+  border-radius: 0.5rem;
   height: 42px;
   font-size: 0.875rem;
   font-weight: 500;
