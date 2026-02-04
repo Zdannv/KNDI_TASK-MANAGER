@@ -42,14 +42,14 @@ const formatDate = (date) => {
             :class="{ 'translate-y-0 opacity-100': isLoaded, 'translate-y-10 opacity-0': !isLoaded }"
           >
             <div class="relative z-10 -mb-[1px] shrink-0">
-               <div class="w-fit px-6 h-12 bg-white/40 dark:bg-gradient-to-b dark:from-slate-700/50 dark:to-slate-800/60 backdrop-blur-xl border-t border-l border-r border-white/40 dark:border-white/20 rounded-t-2xl shadow-sm relative flex items-center gap-3">
+               <div class="w-fit px-6 h-12 bg-white/40 dark:bg-gradient-to-b dark:from-slate-700/50 dark:to-slate-800/60 backdrop-blur-xl border-t border-l border-r border-white/40 dark:border-white/20 rounded-t-lg shadow-sm relative flex items-center gap-3">
                   <Document class="w-5 h-5 text-indigo-600 dark:text-indigo-400 drop-shadow-sm" />
                   <span class="font-bold text-gray-800 dark:text-slate-100 text-sm tracking-wide shadow-black drop-shadow-sm">Task Active</span>
                   <div class="absolute -bottom-[1px] left-0 right-0 h-[2px] bg-white/40 dark:bg-slate-800/80 z-20"></div>
                </div>
             </div>
 
-            <div class="bg-white/40 dark:bg-gradient-to-b dark:from-slate-800/60 dark:to-slate-950/80 backdrop-blur-xl border border-white/40 dark:border-white/20 shadow-2xl rounded-b-2xl rounded-tr-2xl relative z-0 flex flex-col overflow-hidden"> 
+            <div class="bg-white/40 dark:bg-gradient-to-b dark:from-slate-800/60 dark:to-slate-950/80 backdrop-blur-xl border border-white/40 dark:border-white/20 shadow-2xl rounded-b-lg rounded-tr-lg relative z-0 flex flex-col overflow-hidden"> 
               <div class="overflow-x-auto w-full"> 
                 <div class="max-h-[700px] overflow-y-auto custom-scrollbar">
                   <table class="w-full text-left dark:text-slate-200 table-auto border-collapse">
@@ -119,14 +119,14 @@ const formatDate = (date) => {
               :class="{ 'translate-y-0 opacity-100': isLoaded, 'translate-y-10 opacity-0': !isLoaded }"
             >
               <div class="relative z-10 -mb-[1px] shrink-0">
-                 <div class="w-fit px-6 h-12 bg-white/40 dark:bg-gradient-to-b dark:from-slate-700/50 dark:to-slate-800/60 backdrop-blur-xl border-t border-l border-r border-white/40 dark:border-white/20 rounded-t-2xl shadow-sm relative flex items-center gap-3">
+                 <div class="w-fit px-6 h-12 bg-white/40 dark:bg-gradient-to-b dark:from-slate-700/50 dark:to-slate-800/60 backdrop-blur-xl border-t border-l border-r border-white/40 dark:border-white/20 rounded-t-lg shadow-sm relative flex items-center gap-3">
                     <Folder class="w-5 h-5 text-indigo-600 dark:text-indigo-400 drop-shadow-sm" />
                     <span class="font-bold text-gray-800 dark:text-slate-100 text-sm tracking-wide">Project Active</span>
                     <div class="absolute -bottom-[1px] left-0 right-0 h-[2px] bg-white/40 dark:bg-slate-800/80 z-20"></div>
                  </div>
               </div>
 
-              <div class="bg-white/40 dark:bg-gradient-to-b dark:from-slate-800/60 dark:to-slate-950/80 backdrop-blur-xl border border-white/40 dark:border-white/20 shadow-2xl rounded-b-2xl rounded-tr-2xl relative z-0 flex flex-col overflow-hidden">
+              <div class="bg-white/40 dark:bg-gradient-to-b dark:from-slate-800/60 dark:to-slate-950/80 backdrop-blur-xl border border-white/40 dark:border-white/20 shadow-2xl rounded-b-lg rounded-tr-lg relative z-0 flex flex-col overflow-hidden">
                 <div class="overflow-x-auto w-full">
                   <div class="max-h-[300px] overflow-y-auto custom-scrollbar">
                     <table class="w-full text-left dark:text-slate-200 table-auto">
@@ -160,14 +160,14 @@ const formatDate = (date) => {
               :class="{ 'translate-y-0 opacity-100': isLoaded, 'translate-y-10 opacity-0': !isLoaded }"
             >
               <div class="relative z-10 -mb-[1px] shrink-0">
-                 <div class="w-fit px-6 h-12 bg-white/40 dark:bg-gradient-to-b dark:from-slate-700/50 dark:to-slate-800/60 backdrop-blur-xl border-t border-l border-r border-white/40 dark:border-white/20 rounded-t-2xl shadow-sm relative flex items-center gap-3">
+                 <div class="w-fit px-6 h-12 bg-white/40 dark:bg-gradient-to-b dark:from-slate-700/50 dark:to-slate-800/60 backdrop-blur-xl border-t border-l border-r border-white/40 dark:border-white/20 rounded-t-lg shadow-sm relative flex items-center gap-3">
                     <User class="w-5 h-5 text-indigo-600 dark:text-indigo-400 drop-shadow-sm" />
                     <span class="font-bold text-gray-800 dark:text-slate-100 text-sm tracking-wide">User Active</span>
                     <div class="absolute -bottom-[1px] left-0 right-0 h-[2px] bg-white/40 dark:bg-slate-800/80 z-20"></div>
                  </div>
               </div>
 
-              <div class="bg-white/40 dark:bg-gradient-to-b dark:from-slate-800/60 dark:to-slate-950/80 backdrop-blur-xl border border-white/40 dark:border-white/20 shadow-2xl rounded-b-2xl rounded-tr-2xl relative z-0 flex flex-col overflow-hidden">
+              <div class="bg-white/40 dark:bg-gradient-to-b dark:from-slate-800/60 dark:to-slate-950/80 backdrop-blur-xl border border-white/40 dark:border-white/20 shadow-2xl rounded-b-lg rounded-tr-lg relative z-0 flex flex-col overflow-hidden">
                 <div class="overflow-x-auto w-full">
                   <div class="max-h-[300px] overflow-y-auto custom-scrollbar">
                     <table class="w-full text-left dark:text-slate-200 table-auto">
