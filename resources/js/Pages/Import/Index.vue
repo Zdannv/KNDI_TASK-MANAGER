@@ -1,6 +1,12 @@
+<script>
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+
+// 1. Layout Persistent
+export default { layout: AuthenticatedLayout };
+</script>
+
 <script setup>
 import Cloud from '@/Components/Icon/Cloud.vue'; 
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, useForm } from '@inertiajs/vue3';
 import { ref, onMounted } from 'vue';
 
@@ -74,7 +80,9 @@ const downloadTemplate = () => {
 
 <template>
   <Head title="Import Data" />
-  <AuthenticatedLayout>
+  
+  <div class="w-full">
+    
     <div
       class="min-h-[80vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 transition-all duration-700 ease-out"
       :class="{ 'opacity-100': isLoaded, 'translate-y-12 opacity-0': !isLoaded }"
@@ -173,5 +181,5 @@ const downloadTemplate = () => {
 
       </div>
     </div>
-  </AuthenticatedLayout>
+  </div>
 </template>
