@@ -1,10 +1,16 @@
+<script>
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+
+// 1. Layout Persistent
+export default { layout: AuthenticatedLayout };
+</script>
+
 <script setup>
 import Plus from '@/Components/Icon/Plus.vue';
 import Folder from '@/Components/Icon/Folder.vue'; 
-import Pen from '@/Components/Icon/Pen.vue';     // Import Icon Edit
-import Trash from '@/Components/Icon/Trash.vue'; // Import Icon Delete
+import Pen from '@/Components/Icon/Pen.vue';     
+import Trash from '@/Components/Icon/Trash.vue'; 
 import Pagination from '@/Components/Pagination.vue';
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ProjectForm from '@/Components/Form/Project.vue';
 import { Head, router, usePage } from '@inertiajs/vue3';
 import { ref, computed, onMounted } from 'vue';
@@ -47,7 +53,6 @@ const handleDelete = (id) => {
 };
 
 const handleEdit = (id) => {
-  // Cari di projects.data karena pagination
   const project = props.projects.data.find(p => p.id === id);
   if (project) {
     isEditMode.value = true;
@@ -57,7 +62,7 @@ const handleEdit = (id) => {
 };
 
 const props = defineProps({
-  projects: {}, // Object Pagination
+  projects: {}, 
   projectOwners: {},
   users: {}
 });
@@ -70,10 +75,10 @@ const getNameUser = (id) => {
 
 <template>
   <Head title="Projects" />
-  <AuthenticatedLayout>
+  
+  <div class="w-full">
     
-    <template #header>
-      <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-8">
+    <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-8 mt-8">
         <div
           class="flex justify-between px-6 py-4 items-center text-gray-800 dark:text-gray-200 
                  bg-white/40 dark:bg-gradient-to-b dark:from-slate-700/30 dark:to-slate-900/60 backdrop-blur-xl border border-white/40 dark:border-white/20 
@@ -97,8 +102,7 @@ const getNameUser = (id) => {
             </button>
           </div>
         </div>
-      </div>
-    </template>
+    </div>
 
     <button
       v-if="['other', 'pm', 'co'].includes(role)"
@@ -221,7 +225,7 @@ const getNameUser = (id) => {
 
       </div>
     </div>
-  </AuthenticatedLayout>
+  </div>
 </template>
 
 <style scoped>
