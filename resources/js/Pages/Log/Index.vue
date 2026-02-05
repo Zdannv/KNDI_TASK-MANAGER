@@ -1,7 +1,13 @@
-<script setup>
+<script>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+
+// 1. Layout Persistent
+export default { layout: AuthenticatedLayout };
+</script>
+
+<script setup>
 import Warning from '@/Components/Icon/Warning.vue';
-import Pagination from '@/Components/Pagination.vue'; // Import Pagination
+import Pagination from '@/Components/Pagination.vue';
 import { Head } from '@inertiajs/vue3';
 import moment from 'moment';
 import { ref, onMounted } from 'vue';
@@ -26,20 +32,27 @@ const formatDate = (date) => {
 
 <template>
   <Head title="Logs" />
-  <AuthenticatedLayout>
-    <template #header>
+  
+  <div class="w-full">
+    
+    <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-8 mt-8">
       <div
-        class="flex justify-between px-5 py-3 items-center text-gray-800 dark:text-gray-200 bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm border border-slate-200 dark:border-slate-800 shadow-lg dark:shadow-sm shadow-indigo-500 dark:shadow-indigo-800 rounded-lg transition-all duration-1000 ease-out"
+        class="flex justify-between px-6 py-4 items-center text-gray-800 dark:text-gray-200 
+               bg-white/40 dark:bg-gradient-to-b dark:from-slate-700/30 dark:to-slate-900/60 backdrop-blur-xl border border-white/40 dark:border-white/20 
+               shadow-lg rounded-lg transition-all duration-1000 ease-out"
         :class="{ 'translate-y-0 opacity-100': isLoaded, 'translate-y-8 opacity-0': !isLoaded }"
       >
-        <h2 class="lg:col-span-2 font-semibold text-xl leading-tight">
-          Logs
-        </h2>
+        <div>
+            <h2 class="font-bold text-xl leading-tight text-gray-800 dark:text-slate-100 drop-shadow-sm">
+              System Logs
+            </h2>
+            <p class="text-sm text-gray-500 dark:text-slate-400 mt-1">Track system activities and events.</p>
+        </div>
       </div>
-    </template>
+    </div>
 
     <div
-      class="w-screen md:w-full py-8 px-3 transition-all duration-700 ease-out delay-100"
+      class="w-full py-8 transition-all duration-700 ease-out delay-100"
       :class="{ 'opacity-100': isLoaded, 'translate-y-12 opacity-0': !isLoaded }"
     >
       <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-8">
@@ -47,66 +60,56 @@ const formatDate = (date) => {
         <div class="flex flex-col items-start">
             
             <div class="relative z-10 -mb-[1px]">
-                <div class="w-40 h-10 bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm border-t border-l border-r border-slate-200 dark:border-slate-800 rounded-t-xl shadow-[0_-2px_5px_rgba(0,0,0,0.02)] relative flex items-center px-4">
-                    <Warning class="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
-                    <div class="absolute -bottom-[1px] left-0 right-0 h-[2px] bg-white/70 dark:bg-slate-900/70 z-20"></div>
+                <div class="w-fit px-6 h-12 bg-white/40 dark:bg-slate-700/50 dark:to-slate-800/60 backdrop-blur-xl border-t border-l border-r border-white/40 dark:border-white/20 rounded-t-lg shadow-sm relative flex items-center gap-3">
+                    <Warning class="w-5 h-5 text-indigo-600 dark:text-indigo-400 drop-shadow-sm" />
+                    <span class="font-bold text-gray-800 dark:text-slate-100 text-sm tracking-wide shadow-black drop-shadow-sm">Activity Logs</span>
+                    <div class="absolute -bottom-[1px] left-0 right-0 h-[2px] bg-white/40 dark:bg-slate-800/80 z-20"></div>
                 </div>
             </div>
 
-            <div class="w-full overflow-x-auto bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 shadow-lg dark:shadow-sm shadow-indigo-500 dark:shadow-indigo-800 rounded-b-lg rounded-tr-lg rounded-tl-none relative z-0">
-            <table class="w-full text-left dark:text-white table-auto">
-                <thead>
-                <tr class="bg-indigo-50 dark:bg-gray-700">
-                    <th class="p-4 rounded-tl-none">
-                    <p class="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
-                        Date
-                    </p>
-                    </th>
-                    <th class="p-4">
-                    <p class="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
-                        User
-                    </p>
-                    </th>
-                    <th class="p-4">
-                    <p class="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
-                        Target
-                    </p>
-                    </th>
-                    <th class="p-4 rounded-tr-lg">
-                    <p class="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
-                        Description
-                    </p>
-                    </th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr v-for="log in logs.data" :key="log.id" class="border-t border-blue-gray-50 hover:bg-white/40 dark:hover:bg-slate-800/40 transition-colors">
-                    <td class="p-4 align-middle">
-                    <p class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-                        {{ formatDate(log.created_at) }}
-                    </p>
-                    </td>
-                    <td class="p-4 min-w-[250px] align-middle">
-                    <p class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-                        {{ log.user?.name || '-' }}
-                    </p>
-                    </td>
-                    <td class="p-4 min-w-[250px] align-middle">
-                    <p class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-                        {{ log.target || '-' }}
-                    </p>
-                    </td>
-                    <td class="p-4 align-middle">
-                    <p class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-                        {{ log.description || '-' }}
-                    </p>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+            <div class="w-full overflow-x-auto bg-white/40 dark:bg-gradient-to-b dark:from-slate-800/60 dark:to-slate-950/80 backdrop-blur-xl border border-white/40 dark:border-white/20 shadow-xl rounded-b-lg rounded-tr-lg relative z-0">
+                <table class="w-full text-left dark:text-slate-200 table-auto border-collapse">
+                    <thead class="bg-white/50 dark:bg-slate-800/90 backdrop-blur-md border-b border-white/20 dark:border-white/10">
+                    <tr>
+                        <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">
+                            Date
+                        </th>
+                        <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">
+                            User
+                        </th>
+                        <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">
+                            Target
+                        </th>
+                        <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">
+                            Description
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody class="divide-y divide-white/20 dark:divide-white/5">
+                    <tr v-for="log in logs.data" :key="log.id" class="hover:bg-white/30 dark:hover:bg-indigo-500/10 transition duration-200">
+                        <td class="p-5 align-middle text-sm text-gray-500 dark:text-slate-400 font-mono">
+                            {{ formatDate(log.created_at) }}
+                        </td>
+                        <td class="p-5 align-middle min-w-[200px]">
+                            <span class="font-medium text-gray-700 dark:text-slate-200">{{ log.user?.name || '-' }}</span>
+                        </td>
+                        <td class="p-5 align-middle min-w-[200px]">
+                            <span class="inline-block px-2 py-1 rounded text-xs font-bold bg-slate-100/50 dark:bg-slate-800/50 border border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-300">
+                                {{ log.target || '-' }}
+                            </span>
+                        </td>
+                        <td class="p-5 align-middle text-sm text-gray-600 dark:text-slate-400">
+                            {{ log.description || '-' }}
+                        </td>
+                    </tr>
+                    <tr v-if="logs.data.length === 0">
+                        <td colspan="4" class="p-8 text-center text-gray-400 dark:text-gray-500 italic">No logs available.</td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
 
-            <div class="mt-4 flex justify-end w-full">
+            <div class="mt-6 flex justify-end w-full">
                <Pagination :links="logs.links" />
             </div>
 
@@ -114,5 +117,23 @@ const formatDate = (date) => {
 
       </div>
     </div>
-  </AuthenticatedLayout>
+  </div>
 </template>
+
+<style scoped>
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent; 
+}
+::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+</style>
