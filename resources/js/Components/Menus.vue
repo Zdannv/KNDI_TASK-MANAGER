@@ -2,7 +2,7 @@
 import { computed, ref, watch } from "vue";
 import { Link, usePage } from "@inertiajs/vue3";
 
-// Import Icon
+// Import Icons
 import User from "@/Components/Icon/User.vue";
 import Build from "@/Components/Icon/Build.vue";
 import Folder from "@/Components/Icon/Folder.vue";
@@ -35,15 +35,12 @@ const rawMenuItems = computed(() => [
     { label: "Import", route: "import.index", icon: Cloud, show: ["other", "co"].includes(userRole.value), pattern: "import.index" },
 ]);
 
-// Filter menu yang tampil
-const visibleMenuItems = computed(() => {
-    return rawMenuItems.value.filter(item => item.show);
-});
+const visibleMenuItems = computed(() => rawMenuItems.value.filter(item => item.show));
 
-// Cari Index Menu Aktif berdasarkan Route saat ini
+// 2. Logic Active Index (Reactive)
 const activeIndex = computed(() => {
+    const url = page.url; 
     return visibleMenuItems.value.findIndex(item => {
-        // Menggunakan helper route().current() bawaan Ziggy/Inertia
         if (Array.isArray(item.pattern)) {
             return item.pattern.some(p => route().current(p));
         }
@@ -51,22 +48,22 @@ const activeIndex = computed(() => {
     });
 });
 
-// --- Logic Animasi Stretch (Liquid Effect) ---
+// 3. Logic Animasi "Flying Dot"
 const isMoving = ref(false);
 const moveDirection = ref('down'); 
 const ITEM_HEIGHT = 50; 
 const GAP = 8; 
 
-// Watcher untuk mendeteksi perpindahan menu
 watch(activeIndex, (newVal, oldVal) => {
     if (newVal !== -1 && oldVal !== -1 && newVal !== oldVal) {
         moveDirection.value = newVal > oldVal ? 'down' : 'up';
         isMoving.value = true;
         
-        // Durasi 400ms agar sinkron dengan durasi transisi CSS
+        // Timer disamakan dengan durasi animasi (300ms)
+        // Agar dia baru 'mengembang' lagi setelah sampai di tujuan
         setTimeout(() => {
             isMoving.value = false;
-        }, 400); 
+        }, 300); 
     }
 });
 </script>
@@ -75,19 +72,26 @@ watch(activeIndex, (newVal, oldVal) => {
     <div class="relative flex flex-col gap-2">
         
         <div
-            class="absolute left-0 z-0 bg-gradient-to-r from-white/95 to-white/70 dark:from-indigo-600/40 dark:to-transparent backdrop-blur-md border border-white/40 dark:border-white/10 shadow-lg transition-all duration-500 cubic-bezier(0.34, 1.56, 0.64, 1)"
+            class="absolute left-0 z-0 bg-gradient-to-r from-white/95 to-white/70 dark:from-indigo-600/40 dark:to-transparent backdrop-blur-md border border-white/40 dark:border-white/10 shadow-lg"
             :class="[
-                'h-[50px]', 
-                activeIndex === -1 ? 'opacity-0 scale-95' : 'opacity-100 scale-100',
-                sidebarOpen 
-                    ? 'w-full ml-4 rounded-l-full rounded-r-none' 
-                    : 'w-[calc(100%-24px)] mx-3 rounded-xl',
+                // Base classes
+                'h-[50px] transform-gpu transition-all',
                 
-                // Logic memanjang (stretch)
-                isMoving ? 'scale-y-[1.4]' : 'scale-y-100',
-                moveDirection === 'down' ? 'origin-top' : 'origin-bottom'
+                // DURASI DIPERCEPAT: duration-300 biar ngebut
+                // EASING DIUBAH: ease-in-out biar smooth saat berubah bentuk (jangan pake bezier mantul buat scale)
+                'duration-300 ease-in-out', 
+
+                activeIndex === -1 ? 'opacity-0 scale-90' : 'opacity-100',
+                sidebarOpen ? 'w-full ml-4' : 'w-[calc(100%-24px)] mx-3',
+                
+                // --- STATE ANIMASI ---
+                isMoving 
+                    ? 'scale-y-[0.4] scale-x-[0.4] rounded-full opacity-80'  // Pas jalan: Kecil, bulet, agak transparan
+                    : 'scale-y-100 scale-x-100 rounded-l-full rounded-r-none opacity-100', // Pas diem: Normal
             ]"
             :style="{
+                // Kita pindahkan 'origin' logic ke style/class agar lebih responsif
+                transformOrigin: 'center', 
                 transform: `translateY(${activeIndex * (ITEM_HEIGHT + GAP)}px)`
             }"
         >
@@ -96,15 +100,15 @@ watch(activeIndex, (newVal, oldVal) => {
         <template v-for="(item, index) in visibleMenuItems" :key="index">
             <Link
                 :href="route(item.route)"
-                class="group relative z-10 flex items-center h-[50px] font-medium no-underline transition-colors duration-300"
+                class="group relative z-10 flex items-center h-[50px] font-medium no-underline transition-colors duration-200"
                 :class="[
                     index === activeIndex
-                        ? 'text-[#0d1b3e] dark:text-indigo-300' 
+                        ? 'text-[#0d1b3e] dark:text-indigo-300 font-bold' 
                         : 'text-slate-400 hover:text-white dark:text-slate-500 dark:hover:text-indigo-200' 
                 ]"
             >
                 <div 
-                    class="flex items-center justify-center shrink-0 transition-all duration-500"
+                    class="flex items-center justify-center shrink-0 transition-all duration-300"
                     :class="[
                         index === activeIndex ? 'scale-110 text-indigo-600 dark:text-indigo-400' : 'group-hover:scale-110',
                         sidebarOpen ? 'ml-9 mr-3' : 'w-full'
@@ -134,12 +138,6 @@ watch(activeIndex, (newVal, oldVal) => {
 </template>
 
 <style scoped>
-.transition-all {
-    transition-property: all;
-    transition-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-/* Mencegah seleksi teks saat klik cepat */
 .relative {
     user-select: none;
 }

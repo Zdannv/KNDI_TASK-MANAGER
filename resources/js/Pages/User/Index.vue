@@ -1,7 +1,5 @@
 <script>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-
-// Kunci utama: Daftarkan layout di sini supaya tidak di-render ulang
 export default { layout: AuthenticatedLayout };
 </script>
 

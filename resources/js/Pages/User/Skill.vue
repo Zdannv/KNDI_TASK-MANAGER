@@ -1,11 +1,17 @@
+<script>
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+
+// 1. Layout sudah didaftarkan di sini (Persistent)
+export default { layout: AuthenticatedLayout };
+</script>
+
 <script setup>
 import Plus from '@/Components/Icon/Plus.vue';
 import Gear from '@/Components/Icon/Gear.vue';
 import Download from '@/Components/Icon/Download.vue';
 import Hamburger from '@/Components/Icon/Hamburger.vue';
 import Book from '@/Components/Icon/Book.vue'; 
-import Trash from '@/Components/Icon/Trash.vue'; // Import Icon Trash
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import Trash from '@/Components/Icon/Trash.vue'; 
 import SkillForm from '@/Components/Form/Skill.vue';
 import SelectInput from '@/Components/SelectInput.vue';
 import { Head, router, usePage } from '@inertiajs/vue3';
@@ -53,7 +59,7 @@ const handleDelete = (id) => {
 };
 
 const props = defineProps({
-  skills: {}, // Array
+  skills: {}, 
   users: {}
 });
 
@@ -68,13 +74,11 @@ const exportSkill = () => {
 };
 
 const visibleButtons = computed(() => {
-  const buttons = [
+  return [
     { action: 'add', icon: Plus, handler: handleOpenForm, text: 'New' },
     { action: 'export', icon: Download, handler: () => exportSkill(), text: 'Export' },
     { action: 'reset', icon: Close, handler: () => router.get(route('skill.list')), text: 'Reset' }
   ];
-
-  return buttons;
 });
 
 watch(id, (newValue) => {
@@ -85,10 +89,10 @@ watch(id, (newValue) => {
 
 <template>
   <Head title="Skills" />
-  <AuthenticatedLayout>
+  
+  <div class="w-full py-8">
     
-    <template #header>
-      <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-8">
+    <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-8">
         <div
           class="flex justify-between px-6 py-4 items-center text-gray-800 dark:text-gray-200 
                  bg-white/40 dark:bg-gradient-to-b dark:from-slate-700/30 dark:to-slate-900/60 backdrop-blur-xl border border-white/40 dark:border-white/20 
@@ -120,8 +124,7 @@ watch(id, (newValue) => {
             </button>
           </div>
         </div>
-      </div>
-    </template>
+    </div>
 
     <div v-if="['other', 'co'].includes(role)" class="fixed sm:hidden right-6 bottom-6 z-50">
       <div
@@ -264,7 +267,7 @@ watch(id, (newValue) => {
 
       </div>
     </div>
-  </AuthenticatedLayout>
+  </div>
 </template>
 
 <style scoped>

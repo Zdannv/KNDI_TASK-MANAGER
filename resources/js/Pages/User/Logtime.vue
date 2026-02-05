@@ -1,3 +1,10 @@
+<script>
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+
+// 1. Layout didaftarkan di sini agar persistent (tidak reload saat navigasi)
+export default { layout: AuthenticatedLayout };
+</script>
+
 <script setup>
 import Plus from '@/Components/Icon/Plus.vue';
 import Close from '@/Components/Icon/Close.vue';
@@ -6,7 +13,6 @@ import Download from '@/Components/Icon/Download.vue';
 import Hamburger from '@/Components/Icon/Hamburger.vue';
 import Clock from '@/Components/Icon/Clock.vue';
 import Pagination from '@/Components/Pagination.vue';
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import LogtimeForm from '@/Components/Form/Logtime.vue';
 import SelectInput from '@/Components/SelectInput.vue';
 import { Head, router, usePage } from '@inertiajs/vue3';
@@ -145,10 +151,8 @@ const closeDetailLogtime = () => {
 
 <template>
   <Head title="Logtimes" />
-  <AuthenticatedLayout>
-    
-    <template #header>
-      <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-8">
+  
+  <div class="w-full"> <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-8 mt-8">
         <div
           class="flex justify-between px-6 py-4 items-center text-gray-800 dark:text-gray-200 
                  bg-white/40 dark:bg-gradient-to-b dark:from-slate-700/30 dark:to-slate-900/60 backdrop-blur-xl border border-white/40 dark:border-white/20 
@@ -179,8 +183,7 @@ const closeDetailLogtime = () => {
             </button>
           </div>
         </div>
-      </div>
-    </template>
+    </div>
 
     <div v-if="['other', 'co'].includes(role)" class="fixed sm:hidden right-6 bottom-6 z-50">
       <div
@@ -351,7 +354,6 @@ const closeDetailLogtime = () => {
 
       </div>
     </div>
-  </AuthenticatedLayout>
 
   <Modal :show="showDetailLogtime" @close="closeDetailLogtime" max-width="2xl">
     <div class="p-6 bg-white dark:bg-slate-800"> 
@@ -399,7 +401,7 @@ const closeDetailLogtime = () => {
         </div>
     </div>
   </Modal>
-</template>
+  </div> </template>
 
 <style scoped>
 :deep(.dp__input) {
