@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch, computed } from 'vue';
+import { ref, watch, computed, onUnmounted } from 'vue'; // Tambahkan onUnmounted
 import { Head, router, usePage, useForm } from '@inertiajs/vue3';
 import Menus from "@/Components/Menus.vue";
 import Hamburger from '@/Components/Icon/Hamburger.vue';
@@ -91,11 +91,24 @@ const getInitialSidebarState = () => {
 const openMenus = ref(getInitialSidebarState());
 watch(openMenus, (newValue) => { localStorage.setItem('sidebarOpen', newValue); });
 
-// Mutual Exclusivity
+// Mutual Exclusivity & Body Scroll Lock
 watch(openMenus, (isOpen) => { if (isOpen) showProfilePanel.value = false; });
+
 watch(showProfilePanel, (isOpen) => {
-    if (isOpen) openMenus.value = false;
-    else { if (window.innerWidth >= 1024) openMenus.value = true; }
+    if (isOpen) {
+        openMenus.value = false;
+        // Kunci scroll body saat sidebar profil terbuka
+        document.body.style.overflow = 'hidden';
+    } else {
+        if (window.innerWidth >= 1024) openMenus.value = true;
+        // Lepas kunci scroll body
+        document.body.style.overflow = '';
+    }
+});
+
+// Pastikan scroll dilepas saat komponen di-unmount (pindah halaman full reload)
+onUnmounted(() => {
+    document.body.style.overflow = '';
 });
 
 const logout = () => { router.post(route('logout')); };
@@ -109,7 +122,7 @@ const getInitials = (name) => {
 </script>
 
 <template>
-    <div class="min-h-screen bg-gradient-to-b from-[#F2F5FA] to-[#e0e7ff] dark:from-[#1e293b] dark:via-[#0f172a] dark:to-[#020617] font-sans text-slate-600 dark:text-slate-300 relative selection:bg-indigo-500 selection:text-white overflow-x-hidden transition-colors duration-500">
+    <div class="min-h-screen bg-gradient-to-b from-[#F2F5FA] to-[#e0e7ff] dark:from-[#1e293b] dark:via-[#0f172a] dark:to-[#020617] font-sans text-slate-600 dark:text-slate-300 relative selection:bg-indigo-500 selection:text-white transition-colors duration-500">
         <Head :title="title" />
 
         <nav class="md:hidden fixed top-0 left-0 w-full bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-white/10 z-50 shadow-sm">
@@ -129,6 +142,12 @@ const getInitials = (name) => {
                          {{ getInitials(user.name) }}
                     </div>
                 </button>
+            </div>
+
+            <div v-if="openMenus" class="bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-t border-white/20 dark:border-white/10 shadow-xl overflow-y-auto max-h-[80vh]">
+                <div class="flex flex-col p-4 space-y-4">
+                    <Menus :sidebarOpen="true" />
+                </div>
             </div>
         </nav>
 
@@ -202,9 +221,6 @@ const getInitials = (name) => {
             </header>
 
             <main class="flex-1 px-4 pb-8">
-                <div v-if="$slots.header" class="mb-6">
-                    <slot name="header" />
-                </div>
                 <slot />
             </main>
         </div>
@@ -298,7 +314,6 @@ const getInitials = (name) => {
         <Modal :show="showAvatarModal" @close="showAvatarModal = false">
             <div class="p-6 bg-white dark:bg-slate-900">
                 <h2 class="text-lg font-bold text-gray-900 dark:text-slate-100 mb-6 text-center">Choose Your Avatar</h2>
-                
                 <div class="flex flex-col items-center gap-6 mb-8">
                     <img :src="selectedAvatarTemp" alt="Selected Preview" class="w-32 h-32 rounded-none object-cover border-4 border-indigo-500 shadow-xl" />
                     <div class="grid grid-cols-4 gap-3">
@@ -313,12 +328,9 @@ const getInitials = (name) => {
                         </button>
                     </div>
                 </div>
-
                 <div class="flex justify-end gap-3 pt-4 border-t border-gray-100 dark:border-white/10">
                     <SecondaryButton @click="showAvatarModal = false" class="rounded-none">Cancel</SecondaryButton>
-                    <PrimaryButton @click="saveAvatar" :disabled="avatarForm.processing" class="rounded-none">
-                        Save
-                    </PrimaryButton>
+                    <PrimaryButton @click="saveAvatar" :disabled="avatarForm.processing" class="rounded-none">Save</PrimaryButton>
                 </div>
             </div>
         </Modal>

@@ -1,7 +1,7 @@
 <script>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 
-// Ini kunci utamanya: Mendaftarkan layout secara persistent
+// 1. Layout Persistent
 export default { layout: AuthenticatedLayout };
 </script>
 
@@ -214,11 +214,7 @@ const formatDate = (date) => {
 </template>
 
 <style scoped>
-.custom-scrollbar {
-  scrollbar-gutter: stable;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
-}
+/* Scrollbar Default (Light Mode) */
 .custom-scrollbar::-webkit-scrollbar {
   height: 6px;
   width: 6px;
@@ -228,10 +224,18 @@ const formatDate = (date) => {
   background: transparent; 
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(156, 163, 175, 0.5); /* Abu-abu untuk Light Mode */
   border-radius: 10px;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(156, 163, 175, 0.8);
+}
+
+/* Scrollbar Dark Mode */
+:global(.dark) .custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.1); /* Putih transparan untuk Dark Mode */
+}
+:global(.dark) .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background-color: rgba(255, 255, 255, 0.2);
 }
 </style>

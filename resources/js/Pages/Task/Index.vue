@@ -1,7 +1,6 @@
 <script>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 
-// 1. Layout Persistent didaftarkan di sini
 export default { layout: AuthenticatedLayout };
 </script>
 
@@ -100,7 +99,9 @@ const handleSearch = () => {
 <template>
   <Head title="Tasks" />
   
-  <div class="w-full"> <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-8 mt-8">
+  <div class="w-full">
+    
+    <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-8 mt-8">
         <div
           class="flex flex-col md:flex-row justify-between px-6 py-4 items-center gap-4 text-gray-800 dark:text-gray-200 
                  bg-white/40 dark:bg-gradient-to-b dark:from-slate-700/30 dark:to-slate-900/60 backdrop-blur-xl border border-white/40 dark:border-white/20 
@@ -296,14 +297,10 @@ const handleSearch = () => {
 
       </div>
     </div>
-  </div> </template>
+  </div> 
+</template>
 
 <style scoped>
-.custom-scrollbar {
-  scrollbar-gutter: stable;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
-}
 .custom-scrollbar::-webkit-scrollbar {
   height: 8px;
   display: block;
@@ -312,10 +309,18 @@ const handleSearch = () => {
   background: transparent;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(156, 163, 175, 0.5);
   border-radius: 10px;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(156, 163, 175, 0.8);
+}
+
+
+:global(.dark) .custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.1); 
+}
+:global(.dark) .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background-color: rgba(255, 255, 255, 0.2);
 }
 </style>
