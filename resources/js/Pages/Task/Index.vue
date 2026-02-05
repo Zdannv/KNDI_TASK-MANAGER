@@ -1,10 +1,16 @@
+<script>
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+
+// 1. Layout Persistent didaftarkan di sini
+export default { layout: AuthenticatedLayout };
+</script>
+
 <script setup>
 import Plus from '@/Components/Icon/Plus.vue';
 import Pagination from '@/Components/Pagination.vue';
 import Pen from '@/Components/Icon/Pen.vue';
 import UserPlus from '@/Components/Icon/UserPlus.vue';
 import Document from '@/Components/Icon/Document.vue';
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import TaskCreateEditForm from '@/Components/Form/TaskCreateEdit.vue';
 import TaskAssignForm from '@/Components/Form/TaskAssign.vue';
 import { Head, router, usePage } from '@inertiajs/vue3';
@@ -93,10 +99,8 @@ const handleSearch = () => {
 
 <template>
   <Head title="Tasks" />
-  <AuthenticatedLayout>
-    
-    <template #header>
-      <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-8">
+  
+  <div class="w-full"> <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-8 mt-8">
         <div
           class="flex flex-col md:flex-row justify-between px-6 py-4 items-center gap-4 text-gray-800 dark:text-gray-200 
                  bg-white/40 dark:bg-gradient-to-b dark:from-slate-700/30 dark:to-slate-900/60 backdrop-blur-xl border border-white/40 dark:border-white/20 
@@ -133,8 +137,7 @@ const handleSearch = () => {
             </button>
           </div>
         </div>
-      </div>
-    </template>
+    </div>
 
     <button
       v-if="['other', 'pm', 'co'].includes(role)" 
@@ -293,8 +296,7 @@ const handleSearch = () => {
 
       </div>
     </div>
-  </AuthenticatedLayout>
-</template>
+  </div> </template>
 
 <style scoped>
 .custom-scrollbar {
