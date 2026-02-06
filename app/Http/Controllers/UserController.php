@@ -145,9 +145,15 @@ class UserController extends Controller
     private function getEmbeddingFromPhoto($file)
     {
         try {
+            $photo = fopen($file->getRealPath(), 'r');
+
             $response = Http::attach(
-                'file', file_get_contents($file), 'face.jpg'
+                'file', $photo, 'face.jpg'
             )->post('http://host.docker.internal:8000/registration');
+
+            if (is_resource($photo)) {
+                fclose($photo);
+            }
 
             if ($response->successful() && $response->json('success')) {
                 return $response->json('embedding');
