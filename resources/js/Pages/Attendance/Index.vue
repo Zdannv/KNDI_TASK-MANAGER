@@ -1,3 +1,10 @@
+<script>
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+
+// 1. Layout Persistent
+export default { layout: AuthenticatedLayout };
+</script>
+
 <script setup>
 import Close from '@/Components/Icon/Close.vue';
 import Gear from '@/Components/Icon/Gear.vue';
@@ -5,19 +12,16 @@ import Download from '@/Components/Icon/Download.vue';
 import Download2 from '@/Components/Icon/Download2.vue';
 import UserPlus from '@/Components/Icon/UserPlus.vue';
 import Pagination from '@/Components/Pagination.vue';
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import SelectInput from '@/Components/SelectInput.vue';
 import { Head, router, usePage } from '@inertiajs/vue3';
 import { ref, computed, watch, onMounted } from 'vue';
 import moment from 'moment';
 import Datepicker from '@vuepic/vue-datepicker';
-// Pastikan mengimport CSS Datepicker jika belum ada di app.js
 import '@vuepic/vue-datepicker/dist/main.css';
 
 const isLoaded = ref(false);
 
 onMounted(() => {
-  // Gunakan requestAnimationFrame agar browser siap sebelum menampilkan konten
   requestAnimationFrame(() => {
     setTimeout(() => {
       isLoaded.value = true;
@@ -114,10 +118,10 @@ const resetFilter = () => {
 
 <template>
   <Head title="Attendance List" />
-  <AuthenticatedLayout>
+  
+  <div class="w-full">
     
-    <template #header>
-      <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-8">
+    <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-8 mt-8">
         <div
           class="flex justify-between px-6 py-4 items-center text-gray-800 dark:text-gray-200 
                  bg-white/40 dark:bg-gradient-to-b dark:from-slate-700/30 dark:to-slate-900/60 backdrop-blur-xl border border-white/40 dark:border-white/20 
@@ -141,8 +145,7 @@ const resetFilter = () => {
             </button>
           </div>
         </div>
-      </div>
-    </template>
+    </div>
 
     <div
       v-if="options"
@@ -286,7 +289,7 @@ const resetFilter = () => {
 
       </div>
     </div>
-  </AuthenticatedLayout>
+  </div>
 </template>
 
 <style scoped>

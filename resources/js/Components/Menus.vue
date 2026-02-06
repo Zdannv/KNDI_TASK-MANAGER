@@ -1,8 +1,8 @@
 <script setup>
-import { computed } from "vue";
+import { computed, ref, watch } from "vue";
 import { Link, usePage } from "@inertiajs/vue3";
 
-// Import Icon
+// Import Icons
 import User from "@/Components/Icon/User.vue";
 import Build from "@/Components/Icon/Build.vue";
 import Folder from "@/Components/Icon/Folder.vue";
@@ -21,9 +21,6 @@ const props = defineProps({
 const page = usePage();
 const userRole = computed(() => page.props.auth.user.role);
 
-// Helper cek active route
-const isActive = (routePattern) => route().current(routePattern);
-
 // 1. Definisi Menu
 const rawMenuItems = computed(() => [
     { label: "Dashboard", route: "dashboard", icon: News, show: ["other", "pm"].includes(userRole.value), pattern: "dashboard" },
@@ -38,38 +35,63 @@ const rawMenuItems = computed(() => [
     { label: "Import", route: "import.index", icon: Cloud, show: ["other", "co"].includes(userRole.value), pattern: "import.index" },
 ]);
 
-// 2. Filter menu yang ditampilkan saja
-const visibleMenuItems = computed(() => {
-    return rawMenuItems.value.filter(item => item.show);
-});
+const visibleMenuItems = computed(() => rawMenuItems.value.filter(item => item.show));
 
-// 3. Cari Index Menu Aktif
+// 2. Logic Active Index (Reactive)
 const activeIndex = computed(() => {
+    const url = page.url; 
     return visibleMenuItems.value.findIndex(item => {
         if (Array.isArray(item.pattern)) {
-            return item.pattern.some(p => isActive(p));
+            return item.pattern.some(p => route().current(p));
         }
-        return isActive(item.pattern);
+        return route().current(item.pattern);
     });
 });
 
+// 3. Logic Animasi "Flying Dot"
+const isMoving = ref(false);
+const moveDirection = ref('down'); 
 const ITEM_HEIGHT = 50; 
 const GAP = 8; 
+
+watch(activeIndex, (newVal, oldVal) => {
+    if (newVal !== -1 && oldVal !== -1 && newVal !== oldVal) {
+        moveDirection.value = newVal > oldVal ? 'down' : 'up';
+        isMoving.value = true;
+        
+        // Timer disamakan dengan durasi animasi (300ms)
+        // Agar dia baru 'mengembang' lagi setelah sampai di tujuan
+        setTimeout(() => {
+            isMoving.value = false;
+        }, 300); 
+    }
+});
 </script>
 
 <template>
     <div class="relative flex flex-col gap-2">
         
         <div
-            class="absolute left-0 z-0 bg-gradient-to-r from-white/95 to-white/70 dark:from-indigo-600/40 dark:to-transparent backdrop-blur-md border border-white/40 dark:border-white/10 shadow-lg transition-all duration-500 cubic-bezier(0.34, 1.56, 0.64, 1)"
+            class="absolute left-0 z-0 bg-gradient-to-r from-white/95 to-white/70 dark:from-indigo-600/40 dark:to-transparent backdrop-blur-md border border-white/40 dark:border-white/10 shadow-lg"
             :class="[
-                'h-[50px]', 
-                activeIndex === -1 ? 'opacity-0 scale-90' : 'opacity-100 scale-100',
-                sidebarOpen 
-                    ? 'w-full ml-4 rounded-l-[30px] rounded-r-none mr-0' 
-                    : 'w-[calc(100%-24px)] mx-3 rounded-xl'
+                // Base classes
+                'h-[50px] transform-gpu transition-all',
+                
+                // DURASI DIPERCEPAT: duration-300 biar ngebut
+                // EASING DIUBAH: ease-in-out biar smooth saat berubah bentuk (jangan pake bezier mantul buat scale)
+                'duration-300 ease-in-out', 
+
+                activeIndex === -1 ? 'opacity-0 scale-90' : 'opacity-100',
+                sidebarOpen ? 'w-full ml-4' : 'w-[calc(100%-24px)] mx-3',
+                
+                // --- STATE ANIMASI ---
+                isMoving 
+                    ? 'scale-y-[0.4] scale-x-[0.4] rounded-full opacity-80'  // Pas jalan: Kecil, bulet, agak transparan
+                    : 'scale-y-100 scale-x-100 rounded-l-full rounded-r-none opacity-100', // Pas diem: Normal
             ]"
             :style="{
+                // Kita pindahkan 'origin' logic ke style/class agar lebih responsif
+                transformOrigin: 'center', 
                 transform: `translateY(${activeIndex * (ITEM_HEIGHT + GAP)}px)`
             }"
         >
@@ -78,17 +100,17 @@ const GAP = 8;
         <template v-for="(item, index) in visibleMenuItems" :key="index">
             <Link
                 :href="route(item.route)"
-                class="group relative z-10 flex items-center h-[50px] font-medium no-underline transition-colors duration-300"
+                class="group relative z-10 flex items-center h-[50px] font-medium no-underline transition-colors duration-200"
                 :class="[
-                    (Array.isArray(item.pattern) ? item.pattern.some(p => isActive(p)) : isActive(item.pattern))
-                        ? 'text-[#0d1b3e] dark:text-indigo-300' 
+                    index === activeIndex
+                        ? 'text-[#0d1b3e] dark:text-indigo-300 font-bold' 
                         : 'text-slate-400 hover:text-white dark:text-slate-500 dark:hover:text-indigo-200' 
                 ]"
             >
                 <div 
-                    class="flex items-center justify-center shrink-0 transition-transform duration-300"
+                    class="flex items-center justify-center shrink-0 transition-all duration-300"
                     :class="[
-                        (Array.isArray(item.pattern) ? item.pattern.some(p => isActive(p)) : isActive(item.pattern)) ? 'scale-110 text-indigo-600 dark:text-indigo-400' : 'group-hover:scale-110',
+                        index === activeIndex ? 'scale-110 text-indigo-600 dark:text-indigo-400' : 'group-hover:scale-110',
                         sidebarOpen ? 'ml-9 mr-3' : 'w-full'
                     ]"
                 >
@@ -105,7 +127,7 @@ const GAP = 8;
 
                 <div
                     v-if="!sidebarOpen"
-                    class="absolute left-[calc(100%+10px)] top-1/2 -translate-y-1/2 bg-[#0d1b3e]/90 dark:bg-slate-900/95 backdrop-blur-md text-white text-xs font-bold px-3 py-1.5 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap shadow-xl z-50 border border-white/20 dark:border-white/10"
+                    class="absolute left-[calc(100%+10px)] top-1/2 -translate-y-1/2 bg-[#0d1b3e]/90 dark:bg-slate-900/95 backdrop-blur-md text-white text-xs font-bold px-3 py-1.5 rounded-none opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap shadow-xl z-50 border border-white/20 dark:border-white/10"
                 >
                     {{ item.label }}
                     <div class="absolute top-1/2 -left-1 -translate-y-1/2 border-4 border-transparent border-r-[#0d1b3e]/90 dark:border-r-slate-900/95"></div>
@@ -114,3 +136,9 @@ const GAP = 8;
         </template>
     </div>
 </template>
+
+<style scoped>
+.relative {
+    user-select: none;
+}
+</style>
