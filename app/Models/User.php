@@ -25,7 +25,8 @@ class User extends Authenticatable
         'email',
         'role',
         'password',
-        'avatar', // <--- TAMBAHKAN INI
+        'avatar',
+        'face_embedding',
     ];
 
     /**
@@ -36,6 +37,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'face_embedding',
     ];
 
     /**
@@ -48,6 +50,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'face_embedding' => 'array',
         ];
     }
 
