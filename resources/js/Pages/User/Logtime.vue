@@ -13,6 +13,7 @@ import Download from '@/Components/Icon/Download.vue';
 import Hamburger from '@/Components/Icon/Hamburger.vue';
 import Clock from '@/Components/Icon/Clock.vue';
 import Pagination from '@/Components/Pagination.vue';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import LogtimeForm from '@/Components/Form/Logtime.vue';
 import SelectInput from '@/Components/SelectInput.vue';
 import { Head, router, usePage } from '@inertiajs/vue3';
@@ -354,6 +355,7 @@ const closeDetailLogtime = () => {
 
       </div>
     </div>
+  </AuthenticatedLayout>
 
   <Modal :show="showDetailLogtime" @close="closeDetailLogtime" max-width="2xl">
     <div class="p-6 bg-white dark:bg-slate-800"> 
@@ -401,7 +403,7 @@ const closeDetailLogtime = () => {
         </div>
     </div>
   </Modal>
-  </div> </template>
+</template>
 
 <style scoped>
 :deep(.dp__input) {
