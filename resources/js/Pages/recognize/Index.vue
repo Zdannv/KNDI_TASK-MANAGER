@@ -15,6 +15,20 @@ const currentDate = ref('');
 let timeInterval;
 let scanInterval;
 
+// --- Sound Effects ---
+// PERINGATAN: Pastikan file sudah dipindah ke folder public/assets/sounds/
+const soundPath = '/assets/sounds/jokowi-mati-matian.mp3';
+const attendanceSound = new Audio(soundPath);
+
+const playSound = () => {
+    // Reset durasi ke awal agar bisa dimainkan berulang kali dengan cepat
+    attendanceSound.currentTime = 0;
+    attendanceSound.play().catch(error => {
+        // Ini akan menangkap jika browser masih memblokir autoplay
+        console.warn("Autoplay diblokir atau file tidak ditemukan:", error);
+    });
+};
+
 // --- Jam & Tanggal ---
 const updateTime = () => {
     const now = new Date();
@@ -50,7 +64,6 @@ const stopCamera = () => {
         videoRef.value.srcObject = null;
     }
     isCameraActive.value = false;
-    // recognitionResult.value = null; // Biarkan hasil tetap tampil
 };
 
 // --- LOGIKA UTAMA (Resize + API) ---
@@ -62,7 +75,6 @@ const captureAndRecognize = async () => {
     try {
         const context = canvasRef.value.getContext('2d');
         
-        // Resize gambar biar ringan (Lebar 500px)
         const scaleWidth = 500;
         const scaleHeight = (videoRef.value.videoHeight / videoRef.value.videoWidth) * scaleWidth;
         
@@ -77,30 +89,31 @@ const captureAndRecognize = async () => {
             formData.append('file', blob, 'scan.jpg'); 
 
             try {
-                // 1. Kirim ke Python (Timeout 3 detik)
                 const pyResponse = await axios.post('http://localhost:8000/recognize', formData, { timeout: 3000 });
                 
                 const detectedName = pyResponse.data.name; 
                 const score = pyResponse.data.score || 0;
 
-                // 2. Validasi Akurasi (> 50%)
                 if (detectedName && detectedName !== 'unknown' && score > 0.50) {
                     
-                    // Cek duplikasi status agar tidak spam request ke Laravel
                     if (recognitionResult.value && 
                         recognitionResult.value.name === detectedName && 
                         recognitionResult.value.status === 'success' &&
                         recognitionResult.value.type === attendanceType.value) {
-                        return; // Skip jika orang & statusnya sama
+                        return; 
                     }
 
-                    // 3. Kirim ke Laravel
                     const laravelResponse = await axios.post('/api/attendance/store', {
                         name: detectedName,
                         type: attendanceType.value 
                     });
 
                     const res = laravelResponse.data;
+
+                    // TRIGGER SUARA: Diputar jika Laravel merespon (baik sukses maupun sudah absen)
+                    if (res.status === 'success' || res.status === 'error') {
+                        playSound();
+                    }
 
                     recognitionResult.value = {
                         status: res.status === 'success' ? 'success' : 'error',
@@ -110,7 +123,7 @@ const captureAndRecognize = async () => {
                     };
                 } 
             } catch (error) {
-                // Silent error
+                console.error("API Error:", error);
             } finally {
                 isProcessing.value = false;
             }
