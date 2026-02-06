@@ -11,19 +11,16 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { Head, router, useForm } from '@inertiajs/vue3';
 import { ref, onMounted, computed } from 'vue';
 
-// --- PROPS ---
 const props = defineProps({
   users: {}
 });
 
-// --- STATE UI ---
 const openForm = ref(false);
 const isEditMode = ref(false);
 const isLoaded = ref(false);
-const showPassword = ref(false);        
-const showConfirmPassword = ref(false); 
+const showPassword = ref(false);
+const showConfirmPassword = ref(false);
 
-// --- FORM STATE ---
 const form = useForm({
   id: null,
   name: '',
@@ -31,6 +28,7 @@ const form = useForm({
   role: 'pg',
   password: '',
   password_confirmation: '',
+  face_photo: '',
 });
 
 onMounted(() => {
@@ -39,12 +37,10 @@ onMounted(() => {
   }, 100);
 });
 
-// --- COMPUTED VALIDATION ---
 const isPasswordMismatch = computed(() => {
   return form.password && form.password_confirmation && form.password !== form.password_confirmation;
 });
 
-// --- HANDLERS ---
 const handleOpenForm = () => {
   isEditMode.value = false;
   form.reset(); 
@@ -59,6 +55,7 @@ const handleCloseForm = () => {
   isEditMode.value = false;
   form.reset();
   form.clearErrors();
+  document.getElementById('face_photo').value = '';
 };
 
 const handleEdit = (id) => {
@@ -88,14 +85,23 @@ const handleSubmit = () => {
   if (isPasswordMismatch.value) return;
 
   if (isEditMode.value) {
-    form.put(route('user.update', form.id), {
-      onSuccess: () => handleCloseForm(),
+    form.post(route('user.update', form.id), {
+      onSuccess: () => {
+        handleCloseForm()
+      },
+      onParams: (params) => {
+        params._method = 'put'
+      },
     });
   } else {
     form.post(route('user.store'), {
       onSuccess: () => handleCloseForm(),
     });
   }
+};
+
+const handleFileChange = (e) => {
+  form.face_photo = e.target.files[0]
 };
 
 const formatRole = (role) => {
@@ -186,6 +192,21 @@ const formatRole = (role) => {
                   <option value="other">Other</option>
                 </select>
             </div>
+          </div>
+
+          <div class="mt-4">
+            <InputLabel for="face_photo" value="Foto Data Wajah" />
+
+            <input
+              type="file"
+              id="face_photo"
+              class="mt-1 block w-full text-sm text-slate-500 file:mr-4 file:py-4 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+              @input="form.face_photo = $event.target.files[0]"
+              @change="handleFileChange"
+              accept="image/*"
+            />
+
+            <InputError :message="form.errors.face_photo" class="mt-2" />
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
