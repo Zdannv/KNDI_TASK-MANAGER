@@ -1,3 +1,10 @@
+<script>
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+
+// 1. Layout Persistent
+export default { layout: AuthenticatedLayout };
+</script>
+
 <script setup>
 import Pen from '@/Components/Icon/Pen.vue';
 import Trash from '@/Components/Icon/Trash.vue';
@@ -6,7 +13,6 @@ import Hamburger from '@/Components/Icon/Hamburger.vue';
 import User from '@/Components/Icon/User.vue';
 import UserPlus from '@/Components/Icon/UserPlus.vue';
 import Chat from '@/Components/Icon/Chat.vue';
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import TaskCreateEditForm from '@/Components/Form/TaskCreateEdit.vue';
 import TaskAssignForm from '@/Components/Form/TaskAssign.vue';
 import TaskPrForm from '@/Components/Form/TaskPr.vue';
@@ -152,7 +158,8 @@ const logtimeSegments = computed(() => {
     totalCalc += time;
   });
 
-  const colors = ['#6366f1', '#ec4899', '#10b981', '#f59e0b', '#8b5cf6', '#3b82f6', '#06b6d4', '#f43f5e'];
+  // Ganti warna hardcoded indigo (#6366f1) ke primary (#2876bc)
+  const colors = ['#2876bc', '#ec4899', '#10b981', '#f59e0b', '#8b5cf6', '#3b82f6', '#06b6d4', '#f43f5e'];
   const circumference = 2 * Math.PI * 40; 
   let currentOffset = 0;
 
@@ -210,10 +217,10 @@ const visibleButtons = computed(() => {
 
 <template>
   <Head title="Task Detail" />
-  <AuthenticatedLayout>
+  
+  <div class="w-full">
     
-    <template #header>
-      <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-8">
+    <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-8 mt-8">
         <div
           class="flex flex-col md:flex-row justify-between px-6 py-4 items-start md:items-center gap-4 text-gray-800 dark:text-gray-200 
                  bg-white/40 dark:bg-gradient-to-b dark:from-slate-700/30 dark:to-slate-900/60 backdrop-blur-xl border border-white/40 dark:border-white/20 
@@ -223,7 +230,7 @@ const visibleButtons = computed(() => {
           <div class="flex items-center gap-4">
             <button 
               @click="handleBack"
-              class="p-2 rounded-lg bg-white/50 dark:bg-gray-800/50 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 text-gray-600 dark:text-gray-300 border border-white/40 dark:border-gray-600/30 transition-all shadow-sm group"
+              class="p-2 rounded-lg bg-white/50 dark:bg-gray-800/50 hover:bg-primary-50 dark:hover:bg-primary-900/30 text-gray-600 dark:text-gray-300 border border-white/40 dark:border-gray-600/30 transition-all shadow-sm group"
               title="Back"
             >
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 group-hover:-translate-x-1 transition-transform">
@@ -236,7 +243,7 @@ const visibleButtons = computed(() => {
                 {{ task.issue }}
                 </h2>
                 <div class="flex items-center gap-2 mt-1 text-xs font-medium text-gray-500 dark:text-slate-400">
-                    <span class="px-2 py-0.5 rounded-md bg-indigo-50/50 dark:bg-indigo-900/30 border border-indigo-100/50 dark:border-indigo-800/30 text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">
+                    <span class="px-2 py-0.5 rounded-md bg-primary-50/50 dark:bg-primary-900/30 border border-primary-100/50 dark:border-primary-800/30 text-primary-600 dark:text-primary-400 uppercase tracking-wider">
                         {{ task.type }}
                     </span>
                     <span>&bull;</span>
@@ -257,12 +264,11 @@ const visibleButtons = computed(() => {
             </button>
           </div>
         </div>
-      </div>
-    </template>
+    </div>
 
     <div v-if="['other', 'co'].includes(role)" class="fixed sm:hidden right-6 bottom-6 z-50">
       <div
-        class="shrink-0 inline-flex items-center justify-center p-3 rounded-full text-white bg-indigo-600 shadow-xl z-40 transition-all duration-500 hover:scale-110 active:scale-95"
+        class="shrink-0 inline-flex items-center justify-center p-3 rounded-full text-white bg-primary-600 shadow-xl z-40 transition-all duration-500 hover:scale-110 active:scale-95"
         @click="showButtons = !showButtons"
       >
         <Hamburger v-model="showButtons" class="w-6 h-6" />
@@ -283,7 +289,7 @@ const visibleButtons = computed(() => {
 
     <div v-if="openCreateEditForm" class="fixed inset-0 z-[100] px-4 flex items-center justify-center bg-black/60 backdrop-blur-sm transition-opacity">
       <div class="bg-white/90 dark:bg-gradient-to-b dark:from-slate-800 dark:to-slate-950 backdrop-blur-2xl border border-white/50 dark:border-white/10 rounded-lg shadow-2xl max-w-5xl w-full p-6 relative animate-in fade-in zoom-in duration-300 overflow-y-auto max-h-[90vh]">
-        <TaskCreateEditForm :task="selectedTask" :projects="projects" :isEditMode="isEditMode" @close="handleCloseForm" />
+        <TaskCreateEditForm :task="selectedTask" :projects="projects" :projectId="task.project_id" :isEditMode="isEditMode" @close="handleCloseForm" />
       </div>
     </div>
 
@@ -321,7 +327,7 @@ const visibleButtons = computed(() => {
 
           <div class="p-8 border-b border-white/20 dark:border-white/5">
             <h3 class="text-lg font-bold text-gray-800 dark:text-slate-100 mb-6 flex items-center gap-2">
-                <span class="w-1 h-6 bg-indigo-500 rounded-full"></span>
+                <span class="w-1 h-6 bg-primary-500 rounded-full"></span>
                 Overview
             </h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -356,7 +362,7 @@ const visibleButtons = computed(() => {
             </div>
           </div>
 
-          <div class="p-8 border-b border-white/20 dark:border-white/5 bg-white/20 dark:bg-indigo-500/5">
+          <div class="p-8 border-b border-white/20 dark:border-white/5 bg-white/20 dark:bg-primary-500/5">
             <h3 class="text-lg font-bold text-gray-800 dark:text-slate-100 mb-6 flex items-center gap-2">
                 <span class="w-1 h-6 bg-emerald-500 rounded-full"></span>
                 Team Members
@@ -395,14 +401,14 @@ const visibleButtons = computed(() => {
                 <div class="lg:col-span-2 space-y-6">
                     <div>
                         <label class="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wide block mb-2">Description</label>
-                        <div class="p-4 rounded-lg bg-white/50 dark:bg-slate-800/40 border border-white/40 dark:border-white/10 text-gray-700 dark:text-slate-300 text-sm whitespace-pre-wrap leading-relaxed shadow-inner">
+                        <div class="p-4 rounded-lg bg-white/50 dark:bg-slate-800/40 border border-white/40 dark:border-white/10 text-gray-700 dark:text-slate-300 text-sm whitespace-pre-wrap leading-relaxed shadow-inner max-h-[300px] overflow-y-auto custom-scrollbar">
                             {{ task.description || 'No description provided.' }}
                         </div>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wide block mb-1">Ticket Link</label>
-                            <a :href="'//' + task.ticket_link" target="_blank" class="text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:underline break-all flex items-center gap-1">
+                            <a :href="'//' + task.ticket_link" target="_blank" class="text-sm font-medium text-primary-600 dark:text-primary-400 hover:underline break-all flex items-center gap-1">
                                 {{ task.ticket_link }} <span class="text-[10px]">↗</span>
                             </a>
                         </div>
@@ -410,7 +416,7 @@ const visibleButtons = computed(() => {
                             <label class="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wide block mb-1">Related Links</label>
                             <div v-if="task.related_links?.length > 0" class="space-y-1">
                                 <div v-for="link in task.related_links" :key="link">
-                                    <a :href="'//' + link" target="_blank" class="text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:underline break-all flex items-center gap-1">
+                                    <a :href="'//' + link" target="_blank" class="text-sm font-medium text-primary-600 dark:text-primary-400 hover:underline break-all flex items-center gap-1">
                                         {{ link }} <span class="text-[10px]">↗</span>
                                     </a>
                                 </div>
@@ -443,7 +449,7 @@ const visibleButtons = computed(() => {
                               <span class="text-[0.65rem] font-bold text-gray-400 uppercase tracking-widest">Hours</span>
                            </div>
                         </div>
-                        <div class="w-full space-y-2">
+                        <div class="w-full space-y-2 max-h-[150px] overflow-y-auto custom-scrollbar pr-2">
                             <div v-for="seg in logtimeSegments" :key="seg.id" class="flex justify-between items-center text-xs">
                                 <div class="flex items-center gap-2">
                                     <span class="w-2.5 h-2.5 rounded-full" :style="{ backgroundColor: seg.color }"></span>
@@ -470,8 +476,8 @@ const visibleButtons = computed(() => {
             </h3>
             
             <div v-if="prs.length > 0" class="space-y-6">
-                <div v-for="pr in prs" :key="pr.id" class="relative pl-6 border-l-2 border-indigo-200 dark:border-indigo-900/50">
-                    <div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-indigo-500 ring-4 ring-white dark:ring-slate-900"></div>
+                <div v-for="pr in prs" :key="pr.id" class="relative pl-6 border-l-2 border-primary-200 dark:border-primary-900/50">
+                    <div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-primary-500 ring-4 ring-white dark:ring-slate-900"></div>
                     
                     <div class="bg-white/60 dark:bg-slate-800/60 backdrop-blur-md border border-white/50 dark:border-white/10 rounded-lg p-5 shadow-sm hover:shadow-md transition-shadow">
                         <div class="flex justify-between items-start mb-3">
@@ -487,7 +493,7 @@ const visibleButtons = computed(() => {
                         </div>
 
                         <div v-if="pr.pr_links && pr.pr_links.length > 0" class="mb-4 flex flex-wrap gap-2">
-                           <a v-for="link in pr.pr_links" :key="link" :href="'//' + link" target="_blank" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 text-xs font-medium border border-indigo-100 dark:border-indigo-800 hover:bg-indigo-100 dark:hover:bg-indigo-900/40 transition">
+                           <a v-for="link in pr.pr_links" :key="link" :href="'//' + link" target="_blank" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400 text-xs font-medium border border-primary-100 dark:border-primary-800 hover:bg-primary-100 dark:hover:bg-primary-900/40 transition">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>
                                 PR Link
                            </a>
@@ -504,7 +510,7 @@ const visibleButtons = computed(() => {
                         </div>
 
                         <div class="mt-3 flex justify-end">
-                           <button @click="handleReply(pr.id)" class="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 hover:underline">
+                           <button @click="handleReply(pr.id)" class="text-xs font-semibold text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300 hover:underline">
                              Reply
                            </button>
                         </div>
@@ -522,7 +528,7 @@ const visibleButtons = computed(() => {
         </div>
       </div>
     </div>
-  </AuthenticatedLayout>
+  </div>
 </template>
 
 <style>
@@ -537,19 +543,27 @@ const visibleButtons = computed(() => {
   transform: translateY(20px);
 }
 
-/* Custom Scrollbar for Dark Mode */
-::-webkit-scrollbar {
-  height: 8px;
-  width: 8px;
+/* Scrollbar halus untuk Dark Mode & Light Mode */
+.custom-scrollbar::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+  display: block;
 }
-::-webkit-scrollbar-track {
-  background: transparent;
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent; 
 }
-::-webkit-scrollbar-thumb {
-  background-color: rgba(255, 255, 255, 0.1);
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(156, 163, 175, 0.5); /* Abu-abu untuk Light Mode */
   border-radius: 10px;
 }
-::-webkit-scrollbar-thumb:hover {
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(156, 163, 175, 0.8);
+}
+
+:global(.dark) .custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.1); /* Putih transparan untuk Dark Mode */
+}
+:global(.dark) .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background-color: rgba(255, 255, 255, 0.2);
 }
 </style>
