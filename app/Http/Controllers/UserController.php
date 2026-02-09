@@ -146,10 +146,12 @@ class UserController extends Controller
     {
         try {
             $photo = fopen($file->getRealPath(), 'r');
+            $host = env('PYTHON_SERVICE');
+            $port = env('PYTHON_SERVICE_PORT');
 
             $response = Http::attach(
                 'file', $photo, 'face.jpg'
-            )->post('http://face_recognize:8000/registration');
+            )->post("http://{$host}:{$port}/registration");
 
             if (is_resource($photo)) {
                 fclose($photo);
