@@ -30,7 +30,7 @@ const nameForm = useForm({ name: '', email: '', avatar: '' });
 
 const startEditingName = () => {
     nameForm.name = user.value.name;
-    nameForm.email = user.value.email; 
+    nameForm.email = user.value.email;
     nameForm.avatar = user.value.avatar;
     isEditingName.value = true;
 };
