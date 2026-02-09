@@ -1,7 +1,7 @@
 <script>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 
-// 1. Layout Persistent
+// 1. Daftarkan Layout agar Persistent
 export default { layout: AuthenticatedLayout };
 </script>
 
@@ -229,7 +229,7 @@ const getNameUser = (id) => {
 </template>
 
 <style scoped>
-/* Scrollbar halus untuk Dark Mode */
+/* Scrollbar halus untuk Dark Mode & Light Mode */
 ::-webkit-scrollbar {
   height: 6px;
   width: 6px;
@@ -238,10 +238,17 @@ const getNameUser = (id) => {
   background: transparent; 
 }
 ::-webkit-scrollbar-thumb {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(156, 163, 175, 0.5); /* Abu-abu untuk Light Mode */
   border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(156, 163, 175, 0.8);
+}
+
+:global(.dark) ::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.1); /* Putih transparan untuk Dark Mode */
+}
+:global(.dark) ::-webkit-scrollbar-thumb:hover {
   background-color: rgba(255, 255, 255, 0.2);
 }
 </style>
