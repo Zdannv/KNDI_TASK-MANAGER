@@ -23,6 +23,7 @@ services:
             - sail
         depends_on:
             - mysql
+            - face_recognize
     mysql:
         image: 'mysql/mysql-server:8.0'
         ports:
@@ -64,6 +65,17 @@ services:
             PMA_HOST: mysql
             PMA_USER: '${DB_USERNAME}'
             PMA_PASSWORD: '${DB_PASSWORD}'
+
+    face_recognize:
+        build: 
+            context: ./services/face_recognize
+            dockerfile: Dockerfile
+        volumes:
+            - ./services/face_recognize:/app
+        ports:
+            - "8001:8000"
+        networks:
+            - sail
 
 networks:
     sail:
