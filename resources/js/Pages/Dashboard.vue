@@ -48,7 +48,7 @@ const formatDate = (date) => {
         >
           <div class="relative z-10 -mb-[1px] shrink-0">
              <div class="w-fit px-6 h-12 bg-white/40 dark:bg-gradient-to-b dark:from-slate-700/50 dark:to-slate-800/60 backdrop-blur-xl border-t border-l border-r border-white/40 dark:border-white/20 rounded-t-lg shadow-sm relative flex items-center gap-3">
-                <Document class="w-5 h-5 text-indigo-600 dark:text-indigo-400 drop-shadow-sm" />
+                <Document class="w-5 h-5 text-primary-600 dark:text-primary-400 drop-shadow-sm" />
                 <span class="font-bold text-gray-800 dark:text-slate-100 text-sm tracking-wide shadow-black drop-shadow-sm">Task Active</span>
                 <div class="absolute -bottom-[1px] left-0 right-0 h-[2px] bg-white/40 dark:bg-slate-800/80 z-20"></div>
              </div>
@@ -76,7 +76,7 @@ const formatDate = (date) => {
                         <template v-if="task.programmer?.length || task.designer?.length || task.communicator?.length">
                           <div class="flex flex-wrap gap-1">
                               <span v-for="(id, i) in [...(task.programmer || []), ...(task.designer || []), ...(task.communicator || [])]" :key="id" 
-                                    class="inline-block px-2 py-0.5 rounded-md bg-indigo-50/50 dark:bg-indigo-500/10 border border-indigo-100/50 dark:border-indigo-500/20 text-xs text-indigo-700 dark:text-indigo-300">
+                                    class="inline-block px-2 py-0.5 rounded-md bg-primary-50/50 dark:bg-primary-500/10 border border-primary-100/50 dark:border-primary-500/20 text-xs text-primary-700 dark:text-primary-300">
                                 {{ members.find(m => m.id === id)?.name ?? id }}
                               </span>
                           </div>
@@ -86,7 +86,7 @@ const formatDate = (date) => {
                       <td class="p-4 align-middle text-sm font-medium text-gray-700 dark:text-slate-200">{{ task.project.name }}</td>
                       <td class="p-4 align-middle text-sm text-gray-600 dark:text-slate-400">{{ task.issue }}</td>
                       <td class="p-4 align-middle break-all text-sm">
-                        <a :href="task.ticket_link" target="_blank" class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 hover:underline decoration-indigo-300 underline-offset-2 transition">
+                        <a :href="task.ticket_link" target="_blank" class="text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300 hover:underline decoration-primary-300 underline-offset-2 transition">
                           {{ task.ticket_link || '-' }}
                         </a>
                       </td>
@@ -125,7 +125,7 @@ const formatDate = (date) => {
           >
             <div class="relative z-10 -mb-[1px] shrink-0">
                <div class="w-fit px-6 h-12 bg-white/40 dark:bg-gradient-to-b dark:from-slate-700/50 dark:to-slate-800/60 backdrop-blur-xl border-t border-l border-r border-white/40 dark:border-white/20 rounded-t-lg shadow-sm relative flex items-center gap-3">
-                  <Folder class="w-5 h-5 text-indigo-600 dark:text-indigo-400 drop-shadow-sm" />
+                  <Folder class="w-5 h-5 text-primary-600 dark:text-primary-400 drop-shadow-sm" />
                   <span class="font-bold text-gray-800 dark:text-slate-100 text-sm tracking-wide">Project Active</span>
                   <div class="absolute -bottom-[1px] left-0 right-0 h-[2px] bg-white/40 dark:bg-slate-800/80 z-20"></div>
                </div>
@@ -145,7 +145,7 @@ const formatDate = (date) => {
                       <tr v-for="project in projects" :key="project.id" class="hover:bg-white/30 dark:hover:bg-white/5 transition duration-200">
                         <td class="p-4 font-medium text-sm text-gray-700 dark:text-slate-200">{{ project.name }}</td>
                         <td class="p-4 text-center">
-                            <span class="inline-flex items-center justify-center min-w-[2rem] px-2 py-1 text-xs font-bold rounded-full bg-indigo-100/50 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-300 border border-indigo-200/50 dark:border-indigo-500/30">
+                            <span class="inline-flex items-center justify-center min-w-[2rem] px-2 py-1 text-xs font-bold rounded-full bg-primary-100/50 dark:bg-primary-500/20 text-primary-600 dark:text-primary-300 border border-primary-200/50 dark:border-primary-500/30">
                               {{ project.tasks.length }}
                             </span>
                         </td>
@@ -166,7 +166,7 @@ const formatDate = (date) => {
           >
             <div class="relative z-10 -mb-[1px] shrink-0">
                <div class="w-fit px-6 h-12 bg-white/40 dark:bg-gradient-to-b dark:from-slate-700/50 dark:to-slate-800/60 backdrop-blur-xl border-t border-l border-r border-white/40 dark:border-white/20 rounded-t-lg shadow-sm relative flex items-center gap-3">
-                  <User class="w-5 h-5 text-indigo-600 dark:text-indigo-400 drop-shadow-sm" />
+                  <User class="w-5 h-5 text-primary-600 dark:text-primary-400 drop-shadow-sm" />
                   <span class="font-bold text-gray-800 dark:text-slate-100 text-sm tracking-wide">User Active</span>
                   <div class="absolute -bottom-[1px] left-0 right-0 h-[2px] bg-white/40 dark:bg-slate-800/80 z-20"></div>
                </div>
@@ -185,7 +185,7 @@ const formatDate = (date) => {
                     <tbody class="divide-y divide-white/20 dark:divide-white/5">
                       <tr v-for="member in members" :key="member.id" class="hover:bg-white/30 dark:hover:bg-white/5 transition duration-200">
                         <td class="p-4 text-sm flex items-center gap-3">
-                          <div class="w-8 h-8 rounded-full bg-indigo-50/50 dark:bg-slate-700 flex items-center justify-center text-xs font-bold text-indigo-600 border border-indigo-100/50 dark:border-slate-600">
+                          <div class="w-8 h-8 rounded-full bg-primary-50/50 dark:bg-slate-700 flex items-center justify-center text-xs font-bold text-primary-600 border border-primary-100/50 dark:border-slate-600">
                               {{ member.name.charAt(0).toUpperCase() }}
                           </div>
                           <span class="font-medium text-gray-700 dark:text-slate-200">{{ member.name }}</span>
@@ -224,7 +224,7 @@ const formatDate = (date) => {
   background: transparent; 
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: rgba(156, 163, 175, 0.5); /* Abu-abu untuk Light Mode */
+  background-color: rgba(156, 163, 175, 0.5); 
   border-radius: 10px;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
@@ -233,7 +233,7 @@ const formatDate = (date) => {
 
 /* Scrollbar Dark Mode */
 :global(.dark) .custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: rgba(255, 255, 255, 0.1); /* Putih transparan untuk Dark Mode */
+  background-color: rgba(255, 255, 255, 0.1); 
 }
 :global(.dark) .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background-color: rgba(255, 255, 255, 0.2);

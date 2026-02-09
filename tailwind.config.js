@@ -15,6 +15,22 @@ export default {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
+            // MENAMBAHKAN WARNA CUSTOM DISINI
+            colors: {
+                primary: {
+                    50: '#f2f7fc',
+                    100: '#e1eff8',
+                    200: '#c5dff2',
+                    300: '#99c6ea',
+                    400: '#66a3de',
+                    500: '#3f83d1',
+                    600: '#2876bc', // <--- Warna Utama (RGB 40 118 188)
+                    700: '#215f9a',
+                    800: '#1e5180',
+                    900: '#1e4469',
+                    950: '#132b43',
+                }
+            }
         },
     },
 

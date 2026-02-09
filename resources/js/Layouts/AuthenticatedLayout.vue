@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch, computed, onUnmounted } from 'vue'; // Tambahkan onUnmounted
+import { ref, watch, computed, onUnmounted } from 'vue'; 
 import { Head, router, usePage, useForm } from '@inertiajs/vue3';
 import Menus from "@/Components/Menus.vue";
 import Hamburger from '@/Components/Icon/Hamburger.vue';
@@ -30,7 +30,7 @@ const nameForm = useForm({ name: '', email: '', avatar: '' });
 
 const startEditingName = () => {
     nameForm.name = user.value.name;
-    nameForm.email = user.value.email; 
+    nameForm.email = user.value.email;
     nameForm.avatar = user.value.avatar;
     isEditingName.value = true;
 };
@@ -122,7 +122,7 @@ const getInitials = (name) => {
 </script>
 
 <template>
-    <div class="min-h-screen bg-gradient-to-b from-[#F2F5FA] to-[#e0e7ff] dark:from-[#1e293b] dark:via-[#0f172a] dark:to-[#020617] font-sans text-slate-600 dark:text-slate-300 relative selection:bg-indigo-500 selection:text-white transition-colors duration-500">
+    <div class="min-h-screen bg-gradient-to-b from-[#F2F5FA] to-[#e0e7ff] dark:from-[#1e293b] dark:via-[#0f172a] dark:to-[#020617] font-sans text-slate-600 dark:text-slate-300 relative selection:bg-primary-500 selection:text-white transition-colors duration-500">
         <Head :title="title" />
 
         <nav class="md:hidden fixed top-0 left-0 w-full bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-white/10 z-50 shadow-sm">
@@ -138,7 +138,7 @@ const getInitials = (name) => {
                      <div v-if="user.avatar" class="w-8 h-8 rounded-none overflow-hidden border border-white/50 shadow-sm">
                         <img :src="user.avatar" alt="Avatar" class="w-full h-full object-cover">
                     </div>
-                    <div v-else class="w-8 h-8 rounded-none bg-indigo-100/50 flex items-center justify-center text-indigo-600 font-bold text-xs shadow-inner">
+                    <div v-else class="w-8 h-8 rounded-none bg-primary-100/50 flex items-center justify-center text-primary-600 font-bold text-xs shadow-inner">
                          {{ getInitials(user.name) }}
                     </div>
                 </button>
@@ -209,12 +209,12 @@ const getInitials = (name) => {
                         <div v-if="user.avatar" class="w-10 h-10 rounded-none overflow-hidden border border-gray-100 dark:border-slate-700">
                              <img :src="user.avatar" alt="User Avatar" class="w-full h-full object-cover">
                         </div>
-                        <div v-else class="w-10 h-10 rounded-none bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center text-indigo-600 dark:text-indigo-300 font-bold text-sm">
+                        <div v-else class="w-10 h-10 rounded-none bg-primary-100 dark:bg-primary-900/50 flex items-center justify-center text-primary-600 dark:text-primary-300 font-bold text-sm">
                             {{ getInitials(user.name) }}
                         </div>
 
                         <div class="text-left hidden lg:block">
-                            <p class="text-sm font-bold text-slate-700 dark:text-slate-200 group-hover:text-indigo-600 transition">{{ user.name }}</p>
+                            <p class="text-sm font-bold text-slate-700 dark:text-slate-200 group-hover:text-primary-600 transition">{{ user.name }}</p>
                         </div>
                     </button>
                 </div>
@@ -248,7 +248,7 @@ const getInitials = (name) => {
 
                 <div class="flex flex-col items-center mb-8 w-full">
                     <div class="relative group cursor-pointer mb-6" @click="openAvatarModal">
-                        <div class="w-24 h-24 rounded-none bg-indigo-50 dark:bg-slate-800 border-4 border-gray-100 dark:border-slate-700 shadow-xl flex items-center justify-center text-3xl font-bold text-indigo-600 relative overflow-hidden">
+                        <div class="w-24 h-24 rounded-none bg-primary-50 dark:bg-slate-800 border-4 border-gray-100 dark:border-slate-700 shadow-xl flex items-center justify-center text-3xl font-bold text-primary-600 relative overflow-hidden">
                             <img v-if="user.avatar" :src="user.avatar" class="w-full h-full object-cover" alt="Profile">
                             <span v-else>{{ getInitials(user.name) }}</span>
                             <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
@@ -260,13 +260,13 @@ const getInitials = (name) => {
                     <div class="w-full text-center">
                         <div v-if="!isEditingName" class="flex items-center justify-center gap-2 group">
                             <h2 class="text-xl font-bold text-slate-800 dark:text-slate-100">{{ user.name }}</h2>
-                            <button @click="startEditingName" class="p-1 text-slate-400 group-hover:text-indigo-500 transition">
+                            <button @click="startEditingName" class="p-1 text-slate-400 group-hover:text-primary-500 transition">
                                 <Pen class="w-3.5 h-3.5" />
                             </button>
                         </div>
                         <div v-else class="flex items-center justify-center gap-2 animate-fade-in">
                             <TextInput v-model="nameForm.name" class="py-1 px-2 text-center text-sm font-bold w-40 bg-gray-50 dark:bg-slate-800 border-gray-200 rounded-none" @keyup.enter="saveName" />
-                            <button @click="saveName" class="p-1.5 bg-indigo-600 text-white rounded-none hover:bg-indigo-700">✓</button>
+                            <button @click="saveName" class="p-1.5 bg-primary-600 text-white rounded-none hover:bg-primary-700">✓</button>
                             <button @click="cancelEditingName" class="p-1.5 bg-gray-200 text-gray-600 rounded-none hover:bg-gray-300">✕</button>
                         </div>
                         <p class="text-slate-500 dark:text-slate-400 text-xs mt-1">{{ user.email }}</p>
@@ -280,7 +280,7 @@ const getInitials = (name) => {
                         </div>
                         <div class="flex flex-wrap gap-2">
                              <template v-if="user.skills && user.skills.length">
-                                <span v-for="(skillItem, index) in user.skills.slice(0, 5)" :key="index" class="px-2.5 py-1 rounded-none text-[10px] font-bold bg-white dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-300 border border-indigo-100 dark:border-indigo-500/30">
+                                <span v-for="(skillItem, index) in user.skills.slice(0, 5)" :key="index" class="px-2.5 py-1 rounded-none text-[10px] font-bold bg-white dark:bg-primary-500/20 text-primary-600 dark:text-primary-300 border border-primary-100 dark:border-primary-500/30">
                                     {{ skillItem.skill }}
                                 </span>
                             </template>
@@ -291,7 +291,7 @@ const getInitials = (name) => {
                     <div class="mt-auto pt-6 border-t border-gray-100 dark:border-white/10 space-y-2">
                         <button 
                             @click="openPasswordModal"
-                            class="w-full flex items-center justify-center gap-2 px-4 py-3 text-sm font-bold text-slate-600 dark:text-slate-300 bg-gray-50 dark:bg-slate-800/50 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 hover:text-indigo-600 rounded-none transition-all border border-transparent hover:border-indigo-100"
+                            class="w-full flex items-center justify-center gap-2 px-4 py-3 text-sm font-bold text-slate-600 dark:text-slate-300 bg-gray-50 dark:bg-slate-800/50 hover:bg-primary-50 dark:hover:bg-primary-500/10 hover:text-primary-600 rounded-none transition-all border border-transparent hover:border-primary-100"
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
@@ -315,14 +315,14 @@ const getInitials = (name) => {
             <div class="p-6 bg-white dark:bg-slate-900">
                 <h2 class="text-lg font-bold text-gray-900 dark:text-slate-100 mb-6 text-center">Choose Your Avatar</h2>
                 <div class="flex flex-col items-center gap-6 mb-8">
-                    <img :src="selectedAvatarTemp" alt="Selected Preview" class="w-32 h-32 rounded-none object-cover border-4 border-indigo-500 shadow-xl" />
+                    <img :src="selectedAvatarTemp" alt="Selected Preview" class="w-32 h-32 rounded-none object-cover border-4 border-primary-500 shadow-xl" />
                     <div class="grid grid-cols-4 gap-3">
                         <button 
                             v-for="(asset, index) in avatarAssets" 
                             :key="index" 
                             @click="selectAvatar(asset)" 
                             class="relative rounded-none transition-all duration-200"
-                            :class="[selectedAvatarTemp === asset ? 'ring-4 ring-indigo-500 scale-105 opacity-100' : 'opacity-60 hover:opacity-100']"
+                            :class="[selectedAvatarTemp === asset ? 'ring-4 ring-primary-500 scale-105 opacity-100' : 'opacity-60 hover:opacity-100']"
                         >
                             <img :src="asset" class="w-14 h-14 rounded-none object-cover shadow-sm" />
                         </button>
