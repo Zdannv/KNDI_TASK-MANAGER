@@ -149,7 +149,7 @@ class UserController extends Controller
 
             $response = Http::attach(
                 'file', $photo, 'face.jpg'
-            )->post('http://host.docker.internal:8000/registration');
+            )->post('http://face_recognize:8000/registration');
 
             if (is_resource($photo)) {
                 fclose($photo);
