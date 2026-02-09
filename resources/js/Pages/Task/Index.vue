@@ -1,6 +1,7 @@
 <script>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-  
+
+// 1. Layout Persistent didaftarkan di sini
 export default { layout: AuthenticatedLayout };
 </script>
 
@@ -116,7 +117,7 @@ const handleSearch = () => {
           <div class="flex flex-col md:flex-row gap-3 justify-end items-center text-sm w-full md:w-auto">
             <div class="relative w-full md:w-80 group">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Search class="h-4 w-4 text-gray-400 group-focus-within:text-indigo-500 transition-colors" />
+                    <Search class="h-4 w-4 text-gray-400 group-focus-within:text-primary-500 transition-colors" />
                 </div>
                 <TextInput
                   id="search"
@@ -131,7 +132,7 @@ const handleSearch = () => {
             <button
               v-if="['other', 'pm', 'co'].includes(role)" 
               @click="handleOpenCreateEditForm"
-              class="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow-md hover:shadow-indigo-500/30 transition-all duration-300 transform hover:scale-105 whitespace-nowrap"
+              class="flex items-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg shadow-md hover:shadow-primary-500/30 transition-all duration-300 transform hover:scale-105 whitespace-nowrap"
             >
               <Plus class="w-5 h-5" />
               <span class="hidden sm:inline font-bold text-sm">New Task</span>
@@ -143,7 +144,7 @@ const handleSearch = () => {
     <button
       v-if="['other', 'pm', 'co'].includes(role)" 
       @click="handleOpenCreateEditForm"
-      class="fixed sm:hidden right-6 bottom-6 border border-white/20 rounded-full p-4 text-white bg-indigo-600 shadow-xl z-40 transition-all duration-500 ease-out hover:scale-110 active:scale-95"
+      class="fixed sm:hidden right-6 bottom-6 border border-white/20 rounded-full p-4 text-white bg-primary-600 shadow-xl z-40 transition-all duration-500 ease-out hover:scale-110 active:scale-95"
       :class="{ 'translate-y-0 opacity-100 scale-100': isLoaded, 'translate-y-12 opacity-0 scale-75': !isLoaded }"
     >
       <Plus />
@@ -177,7 +178,7 @@ const handleSearch = () => {
 
           <div class="relative z-10 -mb-[1px]">
              <div class="w-fit px-6 h-12 bg-white/40 dark:bg-slate-700/50 dark:to-slate-800/60 backdrop-blur-xl border-t border-l border-r border-white/40 dark:border-white/20 rounded-t-lg shadow-sm relative flex items-center gap-3">
-                <Document class="w-5 h-5 text-indigo-600 dark:text-indigo-400 drop-shadow-sm" />
+                <Document class="w-5 h-5 text-primary-600 dark:text-primary-400 drop-shadow-sm" />
                 <span class="font-bold text-gray-800 dark:text-slate-100 text-sm tracking-wide shadow-black drop-shadow-sm">Task Data</span>
                 <div class="absolute -bottom-[1px] left-0 right-0 h-[2px] bg-white/40 dark:bg-slate-800/80 z-20"></div>
              </div>
@@ -204,7 +205,7 @@ const handleSearch = () => {
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-white/20 dark:divide-white/5">
-                  <tr v-for="task in tasks.data" :key="task.id" class="hover:bg-white/30 dark:hover:bg-indigo-500/10 transition duration-200">
+                  <tr v-for="task in tasks.data" :key="task.id" class="hover:bg-white/30 dark:hover:bg-primary-500/10 transition duration-200">
                     <td class="p-5 align-middle text-sm font-medium">{{ task.type }}</td>
                     <td class="p-5 align-middle min-w-[200px] text-sm">
                       <div class="flex flex-wrap gap-1">
@@ -221,7 +222,7 @@ const handleSearch = () => {
                     <td class="p-5 min-w-[250px] align-middle">
                       <div class="flex flex-col gap-1.5 items-start">
                         <a :href="route('task.show', task.id)" 
-                          class="flex items-center gap-1 text-sm font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 hover:underline decoration-indigo-300 underline-offset-2 transition"
+                          class="flex items-center gap-1 text-sm font-bold text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300 hover:underline decoration-primary-300 underline-offset-2 transition"
                         >
                           {{ task.issue }}
                           <externalLink class="w-3 h-3 opacity-50" />
@@ -240,7 +241,7 @@ const handleSearch = () => {
 
                     <td class="p-5 align-middle text-sm text-gray-700 dark:text-slate-200">{{ task.project?.name || '-' }}</td>
                     <td class="p-5 align-middle">
-                      <a :href="'//' + task.ticket_link" target="_blank" class="text-sm text-indigo-600 dark:text-indigo-400 hover:underline truncate block max-w-[200px]">
+                      <a :href="'//' + task.ticket_link" target="_blank" class="text-sm text-primary-600 dark:text-primary-400 hover:underline truncate block max-w-[200px]">
                         {{ task.ticket_link }}
                       </a>
                     </td>
@@ -301,6 +302,7 @@ const handleSearch = () => {
 </template>
 
 <style scoped>
+/* Scrollbar Default (Light Mode) */
 .custom-scrollbar::-webkit-scrollbar {
   height: 8px;
   display: block;
@@ -309,14 +311,14 @@ const handleSearch = () => {
   background: transparent;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: rgba(156, 163, 175, 0.5);
+  background-color: rgba(156, 163, 175, 0.5); /* Abu-abu untuk Light Mode */
   border-radius: 10px;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background-color: rgba(156, 163, 175, 0.8);
 }
 
-
+/* Scrollbar Dark Mode */
 :global(.dark) .custom-scrollbar::-webkit-scrollbar-thumb {
   background-color: rgba(255, 255, 255, 0.1); 
 }

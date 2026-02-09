@@ -117,7 +117,7 @@ watch(id, (newValue) => {
             </button>
             <button
               @click="handleOpenForm"
-              class="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow-md hover:shadow-indigo-500/30 transition-all duration-300 transform hover:scale-105"
+              class="flex items-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg shadow-md hover:shadow-primary-500/30 transition-all duration-300 transform hover:scale-105"
             >
               <Plus class="w-5 h-5" />
               <span class="hidden sm:inline font-bold text-sm">Add Skill</span>
@@ -128,7 +128,7 @@ watch(id, (newValue) => {
 
     <div v-if="['other', 'co'].includes(role)" class="fixed sm:hidden right-6 bottom-6 z-50">
       <div
-        class="shrink-0 inline-flex items-center justify-center p-3 rounded-full text-white bg-indigo-600 shadow-xl z-40 transition-all duration-500 hover:scale-110 active:scale-95"
+        class="shrink-0 inline-flex items-center justify-center p-3 rounded-full text-white bg-primary-600 shadow-xl z-40 transition-all duration-500 hover:scale-110 active:scale-95"
         @click="showButtons = !showButtons"
       >
         <Hamburger v-model="showButtons" class="w-6 h-6" />
@@ -148,7 +148,7 @@ watch(id, (newValue) => {
     </div>
     <button v-else
       @click="handleOpenForm"
-      class="fixed sm:hidden right-6 bottom-6 border border-white/20 rounded-full p-4 text-white bg-indigo-600 shadow-xl z-40 transition-all duration-500 ease-out hover:scale-110 active:scale-95"
+      class="fixed sm:hidden right-6 bottom-6 border border-white/20 rounded-full p-4 text-white bg-primary-600 shadow-xl z-40 transition-all duration-500 ease-out hover:scale-110 active:scale-95"
       :class="{ 'translate-y-0 opacity-100 scale-100': isLoaded, 'translate-y-12 opacity-0 scale-75': !isLoaded }"
     >
       <Plus />
@@ -187,7 +187,7 @@ watch(id, (newValue) => {
           <div class="hidden sm:flex justify-end gap-3">
             <button
               @click="exportSkill"
-              class="flex items-center gap-2 px-3 py-2 text-sm font-bold rounded-lg bg-indigo-50/50 hover:bg-indigo-100/50 text-indigo-700 dark:bg-indigo-900/30 dark:hover:bg-indigo-900/50 dark:text-indigo-300 transition-colors border border-indigo-200/50 dark:border-indigo-800/50"
+              class="flex items-center gap-2 px-3 py-2 text-sm font-bold rounded-lg bg-primary-50/50 hover:bg-primary-100/50 text-primary-700 dark:bg-primary-900/30 dark:hover:bg-primary-900/50 dark:text-primary-300 transition-colors border border-primary-200/50 dark:border-primary-800/50"
             >
               <Download class="w-4 h-4" />
               <span>{{ id ? 'Export Data' : 'Export All' }}</span>
@@ -214,7 +214,7 @@ watch(id, (newValue) => {
             
             <div class="relative z-10 -mb-[1px]">
                 <div class="w-fit px-6 h-12 bg-white/40 dark:bg-slate-700/50 dark:to-slate-800/60 backdrop-blur-xl border-t border-l border-r border-white/40 dark:border-white/20 rounded-t-lg shadow-sm relative flex items-center gap-3">
-                    <Book class="w-5 h-5 text-indigo-600 dark:text-indigo-400 drop-shadow-sm" />
+                    <Book class="w-5 h-5 text-primary-600 dark:text-primary-400 drop-shadow-sm" />
                     <span class="font-bold text-gray-800 dark:text-slate-100 text-sm tracking-wide shadow-black drop-shadow-sm">Skills List</span>
                     <div class="absolute -bottom-[1px] left-0 right-0 h-[2px] bg-white/40 dark:bg-slate-800/80 z-20"></div>
                 </div>
@@ -236,10 +236,10 @@ watch(id, (newValue) => {
                 </tr>
                 </thead>
                 <tbody class="divide-y divide-white/20 dark:divide-white/5">
-                <tr v-for="value in skills" :key="value.id" class="hover:bg-white/30 dark:hover:bg-indigo-500/10 transition duration-200">
+                <tr v-for="value in skills" :key="value.id" class="hover:bg-white/30 dark:hover:bg-primary-500/10 transition duration-200">
                     <td class="p-5 align-middle">
                       <div class="flex items-center gap-2">
-                          <span class="px-2.5 py-1 rounded-full bg-indigo-100/50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 text-sm font-bold border border-indigo-200/50 dark:border-indigo-700/30">
+                          <span class="px-2.5 py-1 rounded-full bg-primary-100/50 dark:bg-primary-900/40 text-primary-700 dark:text-primary-300 text-sm font-bold border border-primary-200/50 dark:border-primary-700/30">
                              {{ value.skill }}
                           </span>
                       </div>
@@ -271,7 +271,7 @@ watch(id, (newValue) => {
 </template>
 
 <style scoped>
-/* Scrollbar halus untuk Dark Mode */
+/* Scrollbar Default (Light Mode) */
 ::-webkit-scrollbar {
   height: 6px;
   width: 6px;
@@ -280,10 +280,18 @@ watch(id, (newValue) => {
   background: transparent; 
 }
 ::-webkit-scrollbar-thumb {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(156, 163, 175, 0.5); /* Abu-abu untuk Light Mode */
   border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(156, 163, 175, 0.8);
+}
+
+/* Scrollbar Dark Mode */
+:global(.dark) ::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.1); /* Putih transparan untuk Dark Mode */
+}
+:global(.dark) ::-webkit-scrollbar-thumb:hover {
   background-color: rgba(255, 255, 255, 0.2);
 }
 </style>
