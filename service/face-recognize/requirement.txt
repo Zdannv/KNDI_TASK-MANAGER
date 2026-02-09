@@ -1,6 +1,0 @@
-FastApi
-opencv-python
-insightface
-uvicorn
-onnxruntime
-python-multipart
