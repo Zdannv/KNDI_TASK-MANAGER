@@ -72,7 +72,7 @@ watch(activeIndex, (newVal, oldVal) => {
     <div class="relative flex flex-col gap-2">
         
         <div
-            class="absolute left-0 z-0 bg-gradient-to-r from-white/95 to-white/70 dark:from-indigo-600/40 dark:to-transparent backdrop-blur-md border border-white/40 dark:border-white/10 shadow-lg"
+            class="absolute left-0 z-0 bg-gradient-to-r from-white/95 to-white/70 dark:from-primary-600/40 dark:to-transparent backdrop-blur-md border border-white/40 dark:border-white/10 shadow-lg"
             :class="[
                 // Base classes
                 'h-[50px] transform-gpu transition-all',
@@ -103,14 +103,14 @@ watch(activeIndex, (newVal, oldVal) => {
                 class="group relative z-10 flex items-center h-[50px] font-medium no-underline transition-colors duration-200"
                 :class="[
                     index === activeIndex
-                        ? 'text-[#0d1b3e] dark:text-indigo-300 font-bold' 
-                        : 'text-slate-400 hover:text-white dark:text-slate-500 dark:hover:text-indigo-200' 
+                        ? 'text-[#0d1b3e] dark:text-primary-300 font-bold' 
+                        : 'text-slate-400 hover:text-white dark:text-slate-500 dark:hover:text-primary-200' 
                 ]"
             >
                 <div 
                     class="flex items-center justify-center shrink-0 transition-all duration-300"
                     :class="[
-                        index === activeIndex ? 'scale-110 text-indigo-600 dark:text-indigo-400' : 'group-hover:scale-110',
+                        index === activeIndex ? 'scale-110 text-primary-600 dark:text-primary-400' : 'group-hover:scale-110',
                         sidebarOpen ? 'ml-9 mr-3' : 'w-full'
                     ]"
                 >
