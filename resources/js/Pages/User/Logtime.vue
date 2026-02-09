@@ -1,7 +1,5 @@
 <script>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-
-// 1. Layout didaftarkan di sini agar persistent (tidak reload saat navigasi)
 export default { layout: AuthenticatedLayout };
 </script>
 
@@ -152,7 +150,8 @@ const closeDetailLogtime = () => {
 <template>
   <Head title="Logtimes" />
   
-  <div class="w-full"> <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-8 mt-8">
+  <div class="w-full"> 
+    <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-8 mt-8">
         <div
           class="flex justify-between px-6 py-4 items-center text-gray-800 dark:text-gray-200 
                  bg-white/40 dark:bg-gradient-to-b dark:from-slate-700/30 dark:to-slate-900/60 backdrop-blur-xl border border-white/40 dark:border-white/20 
@@ -175,7 +174,7 @@ const closeDetailLogtime = () => {
             </button>
             <button
               @click="handleOpenForm"
-              class="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow-md hover:shadow-indigo-500/30 transition-all duration-300 transform hover:scale-105"
+              class="flex items-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg shadow-md hover:shadow-primary-500/30 transition-all duration-300 transform hover:scale-105"
             >
               <Plus class="w-5 h-5" />
               <span class="hidden sm:inline font-bold text-sm">Log Time</span>
@@ -187,7 +186,7 @@ const closeDetailLogtime = () => {
 
     <div v-if="['other', 'co'].includes(role)" class="fixed sm:hidden right-6 bottom-6 z-50">
       <div
-        class="shrink-0 inline-flex items-center justify-center p-3 rounded-full text-white bg-indigo-600 shadow-xl z-40 transition-all duration-500 hover:scale-110 active:scale-95"
+        class="shrink-0 inline-flex items-center justify-center p-3 rounded-full text-white bg-primary-600 shadow-xl z-40 transition-all duration-500 hover:scale-110 active:scale-95"
         @click="showButtons = !showButtons"
       >
         <Hamburger v-model="showButtons" class="w-6 h-6" />
@@ -248,7 +247,7 @@ const closeDetailLogtime = () => {
             </div>
           </div>
           <div class="hidden sm:flex justify-end gap-3">
-            <button @click="exportLogtime(false)" class="flex items-center gap-2 px-3 py-2 text-sm font-bold rounded-lg bg-indigo-50/50 hover:bg-indigo-100/50 text-indigo-700 dark:bg-indigo-900/30 dark:hover:bg-indigo-900/50 dark:text-indigo-300 transition-colors border border-indigo-200/50 dark:border-indigo-800/50">
+            <button @click="exportLogtime(false)" class="flex items-center gap-2 px-3 py-2 text-sm font-bold rounded-lg bg-primary-50/50 hover:bg-primary-100/50 text-primary-700 dark:bg-primary-900/30 dark:hover:bg-primary-900/50 dark:text-primary-300 transition-colors border border-primary-200/50 dark:border-primary-800/50">
               <Download class="w-4 h-4" />
               <span>{{ (id || dates.length > 0) ? 'Export Data' : 'Export All' }}</span>
             </button>
@@ -275,7 +274,7 @@ const closeDetailLogtime = () => {
             
             <div class="relative z-10 -mb-[1px]">
                 <div class="w-fit px-6 h-12 bg-white/40 dark:bg-slate-700/50 dark:to-slate-800/60 backdrop-blur-xl border-t border-l border-r border-white/40 dark:border-white/20 rounded-t-lg shadow-sm relative flex items-center gap-3">
-                    <Clock class="w-5 h-5 text-indigo-600 dark:text-indigo-400 drop-shadow-sm" />
+                    <Clock class="w-5 h-5 text-primary-600 dark:text-primary-400 drop-shadow-sm" />
                     <span class="font-bold text-gray-800 dark:text-slate-100 text-sm tracking-wide shadow-black drop-shadow-sm">Time Logs</span>
                     <div class="absolute -bottom-[1px] left-0 right-0 h-[2px] bg-white/40 dark:bg-slate-800/80 z-20"></div>
                 </div>
@@ -287,7 +286,7 @@ const closeDetailLogtime = () => {
             >
             <table class="w-full min-w-[40rem] text-left dark:text-white table-auto">
                 <thead class="bg-gray-200 dark:bg-gray-700 border-b-2 border-gray-300">
-                <tr class="bg-indigo-100 dark:bg-gray-700">
+                <tr class="bg-primary-100 dark:bg-gray-700">
                     <th class="p-4 rounded-tl-none"><p class="text-sm opacity-70">Date</p></th>
                     <th class="p-4"><p class="text-sm opacity-70">Issue</p></th>
                     <th class="p-4"><p class="text-sm opacity-70">Ticket</p></th>
@@ -298,8 +297,8 @@ const closeDetailLogtime = () => {
                 </thead>
                 <tbody class="divide-y divide-white/20 dark:divide-white/5">
                 <template v-for="(group, date) in groupedLogtimes" :key="date">
-                    <tr class="bg-indigo-50 dark:bg-slate-800 border-t border-gray-300">
-                    <td class="py-2 px-4 italic font-bold text-indigo-700 dark:text-indigo-400" colspan="3">{{ date }}</td>
+                    <tr class="bg-primary-50 dark:bg-slate-800 border-t border-gray-300">
+                    <td class="py-2 px-4 italic font-bold text-primary-700 dark:text-primary-400" colspan="3">{{ date }}</td>
                     <td></td>
                     <td class="py-2 px-4">
                         <p class="font-bold text-blue-gray-900">{{ group.totalTime }} h</p>
@@ -309,12 +308,12 @@ const closeDetailLogtime = () => {
                     <tr v-for="value in group.items" :key="value.id" class="border-t border-gray-200 hover:bg-white/50 dark:hover:bg-slate-800/50 transition-colors">
                     <td class="p-4 text-sm">{{ formatDate(value.date) }}</td>
                     <td class="p-4">
-                        <a :href="route('task.show', value.task.id)" class="text-sm font-bold text-indigo-600 dark:text-indigo-400 hover:underline">
+                        <a :href="route('task.show', value.task.id)" class="text-sm font-bold text-primary-600 dark:text-primary-400 hover:underline">
                         {{ value.task.issue }}
                         </a>
                     </td>
                     <td class="p-5">
-                        <a :href="'//' + value.task.ticket_link" target="_blank" class="text-sm font-mono text-indigo-600 dark:text-indigo-400 hover:underline">
+                        <a :href="'//' + value.task.ticket_link" target="_blank" class="text-sm font-mono text-primary-600 dark:text-primary-400 hover:underline">
                         {{ value.task.ticket_link }}
                         </a>
                     </td>
@@ -328,7 +327,7 @@ const closeDetailLogtime = () => {
                       <div class="flex justify-center gap-8">
                         <button
                           @click="openDetailLogtime(value)"
-                          class="text-indigo-600 dark:text-indigo-400 font-medium hover:underline text-sm"
+                          class="text-primary-600 dark:text-primary-400 font-medium hover:underline text-sm"
                         >
                           <Detail class="w-6 h-6" />
                         </button>
@@ -371,7 +370,7 @@ const closeDetailLogtime = () => {
             
             <div class="border-b pb-2 dark:border-gray-700">
                 <label class="block text-sm font-bold uppercase text-gray-500 dark:text-white">Ticket Link</label>
-                <a :href="'//' + selectedLogtime?.task.ticket_link" target="_blank" class="text-indigo-600 dark:text-indigo-400 hover:underline break-all">
+                <a :href="'//' + selectedLogtime?.task.ticket_link" target="_blank" class="text-primary-600 dark:text-primary-400 hover:underline break-all">
                     {{ selectedLogtime?.task.ticket_link }}
                 </a>
             </div>
@@ -401,7 +400,8 @@ const closeDetailLogtime = () => {
         </div>
     </div>
   </Modal>
-  </div> </template>
+  </div> 
+</template>
 
 <style scoped>
 :deep(.dp__input) {
@@ -414,8 +414,9 @@ const closeDetailLogtime = () => {
   font-weight: 500;
 }
 
+/* Ganti Border Color saat hover ke warna primary (#2876bc) */
 :deep(.dp__input):hover {
-    border-color: #6366f1;
+    border-color: #2876bc;
 }
 
 :deep(.dark .dp__input) {
@@ -440,17 +441,33 @@ const closeDetailLogtime = () => {
     color: #e2e8f0;
 }
 
+/* Perbaikan Scrollbar: Visible di Light Mode */
 .custom-scrollbar {
   scrollbar-gutter: stable;
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+  /* Hapus scrollbar-color yang lama agar mengikuti pseudo element di bawah */
 }
 .custom-scrollbar::-webkit-scrollbar {
   height: 6px;
   width: 6px;
+  display: block;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent; 
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(156, 163, 175, 0.5); /* Abu-abu di Light Mode */
   border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(156, 163, 175, 0.8);
+}
+
+/* Dark Mode scrollbar */
+:global(.dark) .custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+:global(.dark) .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.2);
 }
 </style>

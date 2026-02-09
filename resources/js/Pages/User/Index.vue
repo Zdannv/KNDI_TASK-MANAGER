@@ -1,5 +1,7 @@
 <script>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+
+// 1. Layout Persistent
 export default { layout: AuthenticatedLayout };
 </script>
 
@@ -117,7 +119,9 @@ const formatRole = (role) => {
 <template>
   <Head title="Users" />
   
-  <div v-if="$slots.header || true" class="mx-auto max-w-[100rem] sm:px-6 lg:px-8 mt-8">
+  <div class="w-full">
+    
+    <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-8 mt-8">
         <div
           class="flex justify-between px-6 py-4 items-center text-gray-800 dark:text-gray-200 
                  bg-white/40 dark:bg-gradient-to-b dark:from-slate-700/50 dark:to-slate-800/60 backdrop-blur-xl border border-white/40 dark:border-white/20 
@@ -131,7 +135,7 @@ const formatRole = (role) => {
           <div class="flex justify-end">
             <button
               @click="handleOpenForm"
-              class="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow-md hover:shadow-indigo-500/30 transition-all duration-300 transform hover:scale-105"
+              class="flex items-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg shadow-md hover:shadow-primary-500/30 transition-all duration-300 transform hover:scale-105"
             >
               <Plus class="w-5 h-5" />
               <span class="hidden sm:inline font-bold text-sm">Add New User</span>
@@ -142,7 +146,7 @@ const formatRole = (role) => {
 
     <button
       @click="handleOpenForm"
-      class="fixed sm:hidden right-6 bottom-6 border border-white/20 rounded-full p-4 text-white bg-indigo-600 shadow-xl z-40 transition-all duration-500 ease-out hover:scale-110 active:scale-95"
+      class="fixed sm:hidden right-6 bottom-6 border border-white/20 rounded-full p-4 text-white bg-primary-600 shadow-xl z-40 transition-all duration-500 ease-out hover:scale-110 active:scale-95"
       :class="{ 'translate-y-0 opacity-100 scale-100': isLoaded, 'translate-y-12 opacity-0 scale-75': !isLoaded }"
     >
       <Plus />
@@ -179,7 +183,7 @@ const formatRole = (role) => {
           <div>
             <InputLabel for="role" value="Role" />
             <div class="relative">
-                <select id="role" v-model="form.role" class="mt-1 block w-full border-gray-300 dark:border-white/10 bg-white/50 dark:bg-slate-900/50 dark:text-slate-200 focus:border-indigo-500 focus:ring-indigo-500 rounded-lg shadow-sm backdrop-blur-sm transition cursor-pointer py-2.5">
+                <select id="role" v-model="form.role" class="mt-1 block w-full border-gray-300 dark:border-white/10 bg-white/50 dark:bg-slate-900/50 dark:text-slate-200 focus:border-primary-500 focus:ring-primary-500 rounded-lg shadow-sm backdrop-blur-sm transition cursor-pointer py-2.5">
                   <option value="pm">Project Manager</option>
                   <option value="pg">Programmer</option>
                   <option value="ds">Designer</option>
@@ -194,7 +198,7 @@ const formatRole = (role) => {
               <InputLabel for="password" :value="isEditMode ? 'Password (Optional)' : 'Password'" />
               <div class="relative mt-1">
                 <TextInput id="password" :type="showPassword ? 'text' : 'password'" class="block w-full pr-10 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm dark:border-white/10 dark:text-white" v-model="form.password" :required="!isEditMode" placeholder="••••••••" />
-                <button type="button" @click="showPassword = !showPassword" class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-indigo-500 transition">
+                <button type="button" @click="showPassword = !showPassword" class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-primary-500 transition">
                   <svg v-if="!showPassword" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
                   <svg v-else class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" /></svg>
                 </button>
@@ -206,7 +210,7 @@ const formatRole = (role) => {
               <InputLabel for="password_confirmation" value="Confirm Password" />
               <div class="relative mt-1">
                 <TextInput id="password_confirmation" :type="showConfirmPassword ? 'text' : 'password'" class="block w-full pr-10 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm dark:border-white/10 dark:text-white" v-model="form.password_confirmation" :required="!isEditMode && form.password" placeholder="••••••••" />
-                <button type="button" @click="showConfirmPassword = !showConfirmPassword" class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-indigo-500 transition">
+                <button type="button" @click="showConfirmPassword = !showConfirmPassword" class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-primary-500 transition">
                   <svg v-if="!showConfirmPassword" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
                   <svg v-else class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" /></svg>
                 </button>
@@ -218,7 +222,7 @@ const formatRole = (role) => {
 
           <div class="flex justify-end gap-3 mt-8 pt-4 border-t border-gray-100 dark:border-white/10">
             <SecondaryButton @click="handleCloseForm" :disabled="form.processing">Cancel</SecondaryButton>
-            <PrimaryButton :disabled="form.processing || isPasswordMismatch" class="shadow-lg shadow-indigo-500/30">
+            <PrimaryButton :disabled="form.processing || isPasswordMismatch" class="shadow-lg shadow-primary-500/30">
                {{ form.processing ? 'Saving...' : (isEditMode ? 'Update User' : 'Create User') }}
             </PrimaryButton>
           </div>
@@ -236,7 +240,7 @@ const formatRole = (role) => {
 
           <div class="relative z-10 -mb-[1px]">
              <div class="w-fit px-6 h-12 bg-white/40 dark:bg-slate-700/50 dark:to-slate-800/60 backdrop-blur-xl border-t border-l border-r border-white/40 dark:border-white/20 rounded-t-lg shadow-sm relative flex items-center gap-3">
-                <User class="w-5 h-5 text-indigo-600 dark:text-indigo-400 drop-shadow-sm" />
+                <User class="w-5 h-5 text-primary-600 dark:text-primary-400 drop-shadow-sm" />
                 <span class="font-bold text-gray-800 dark:text-slate-100 text-sm tracking-wide shadow-black drop-shadow-sm">All Users Data</span>
                 <div class="absolute -bottom-[1px] left-0 right-0 h-[2px] bg-white/40 dark:bg-slate-800/80 z-20"></div>
              </div>
@@ -261,7 +265,7 @@ const formatRole = (role) => {
                   
                   <td class="p-5 align-middle">
                       <div class="flex items-center gap-3">
-                        <div class="w-8 h-8 rounded-full bg-indigo-100/50 dark:bg-slate-800 flex items-center justify-center text-indigo-600 dark:text-indigo-300 font-bold text-xs border border-indigo-100/50 dark:border-slate-700">
+                        <div class="w-8 h-8 rounded-full bg-primary-100/50 dark:bg-slate-800 flex items-center justify-center text-primary-600 dark:text-primary-300 font-bold text-xs border border-primary-100/50 dark:border-slate-700">
                             {{ user.name.charAt(0).toUpperCase() }}
                         </div>
                         <span class="font-bold text-gray-800 dark:text-slate-200">{{ user.name }}</span>
@@ -271,7 +275,7 @@ const formatRole = (role) => {
                   <td class="p-5 align-middle">
                      <span :class="{
                         'bg-purple-100/50 text-purple-700 border-purple-200/50 dark:bg-purple-900/30 dark:text-purple-400 dark:border-purple-800/30': user.role === 'pm',
-                        'bg-blue-100/50 text-blue-700 border-blue-200/50 dark:bg-indigo-900/30 dark:text-indigo-400 dark:border-indigo-800/30': user.role === 'pg',
+                        'bg-primary-100/50 text-primary-700 border-primary-200/50 dark:bg-primary-900/30 dark:text-primary-400 dark:border-primary-800/30': user.role === 'pg',
                         'bg-pink-100/50 text-pink-700 border-pink-200/50 dark:bg-pink-900/30 dark:text-pink-400 dark:border-pink-800/30': user.role === 'ds',
                         'bg-orange-100/50 text-orange-700 border-orange-200/50 dark:bg-orange-900/30 dark:text-orange-400 dark:border-orange-800/30': user.role === 'co',
                         'bg-gray-100/50 text-gray-700 border-gray-200/50 dark:bg-slate-800/30 dark:text-slate-300 dark:border-slate-700/30': user.role === 'other',
@@ -281,7 +285,7 @@ const formatRole = (role) => {
                   </td>
                   <td class="p-5 align-middle">
                     <div class="flex gap-3 justify-center items-center text-sm">
-                      <button @click="handleEdit(user.id)" class="p-1.5 rounded-lg text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 transition tooltip-trigger" title="Edit">
+                      <button @click="handleEdit(user.id)" class="p-1.5 rounded-lg text-primary-600 dark:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/30 transition tooltip-trigger" title="Edit">
                           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
                           </svg>
@@ -307,14 +311,11 @@ const formatRole = (role) => {
       </div>
     </div>
 
-  </template>
+  </div>
+</template>
 
 <style scoped>
-.custom-scrollbar {
-  scrollbar-gutter: stable;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
-}
+/* Scrollbar Default (Light Mode) */
 .custom-scrollbar::-webkit-scrollbar {
   height: 6px;
   width: 6px;
@@ -324,10 +325,18 @@ const formatRole = (role) => {
   background: transparent; 
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(156, 163, 175, 0.5); /* Abu-abu untuk Light Mode */
   border-radius: 10px;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(156, 163, 175, 0.8);
+}
+
+/* Scrollbar Dark Mode */
+:global(.dark) .custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.1); /* Putih transparan untuk Dark Mode */
+}
+:global(.dark) .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background-color: rgba(255, 255, 255, 0.2);
 }
 </style>
