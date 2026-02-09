@@ -184,7 +184,7 @@ const resetFilter = () => {
             </div>
           </div>
           <div class="hidden sm:flex justify-end gap-3">
-            <button @click="exportAttendance(false)" class="flex items-center gap-2 px-3 py-2 text-sm font-bold rounded-lg bg-indigo-50/50 hover:bg-indigo-100/50 text-indigo-700 dark:bg-indigo-900/30 dark:hover:bg-indigo-900/50 dark:text-indigo-300 transition-colors border border-indigo-200/50 dark:border-indigo-800/50">
+            <button @click="exportAttendance(false)" class="flex items-center gap-2 px-3 py-2 text-sm font-bold rounded-lg bg-primary-50/50 hover:bg-primary-100/50 text-primary-700 dark:bg-primary-900/30 dark:hover:bg-primary-900/50 dark:text-primary-300 transition-colors border border-primary-200/50 dark:border-primary-800/50">
               <Download class="w-4 h-4" />
               <span>Export All</span>
             </button>
@@ -211,7 +211,7 @@ const resetFilter = () => {
             
             <div class="relative z-10 -mb-[1px]">
                 <div class="w-fit px-6 h-12 bg-white/40 dark:bg-slate-700/50 dark:to-slate-800/60 backdrop-blur-xl border-t border-l border-r border-white/40 dark:border-white/20 rounded-t-lg shadow-sm relative flex items-center gap-3">
-                    <UserPlus class="w-5 h-5 text-indigo-600 dark:text-indigo-400 drop-shadow-sm" />
+                    <UserPlus class="w-5 h-5 text-primary-600 dark:text-primary-400 drop-shadow-sm" />
                     <span class="font-bold text-gray-800 dark:text-slate-100 text-sm tracking-wide shadow-black drop-shadow-sm">Attendance Data</span>
                     <div class="absolute -bottom-[1px] left-0 right-0 h-[2px] bg-white/40 dark:bg-slate-800/80 z-20"></div>
                 </div>
@@ -231,9 +231,9 @@ const resetFilter = () => {
                 </thead>
                 <tbody class="divide-y divide-white/20 dark:divide-white/5">
                 <template v-for="(group, date) in groupedAttendances" :key="date">
-                    <tr class="bg-indigo-50/50 dark:bg-indigo-500/5 backdrop-blur-sm border-t border-white/30 dark:border-white/5">
+                    <tr class="bg-primary-50/50 dark:bg-primary-500/5 backdrop-blur-sm border-t border-white/30 dark:border-white/5">
                         <td class="py-3 px-5" colspan="3">
-                            <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-100/50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 text-xs font-bold border border-indigo-200/50 dark:border-indigo-700/30">
+                            <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-100/50 dark:bg-primary-900/40 text-primary-700 dark:text-primary-300 text-xs font-bold border border-primary-200/50 dark:border-primary-700/30">
                                 {{ date }}
                             </span>
                         </td>
@@ -242,11 +242,11 @@ const resetFilter = () => {
                         </td>
                     </tr>
 
-                    <tr v-for="item in group.items" :key="item.id" class="hover:bg-white/30 dark:hover:bg-indigo-500/10 transition duration-200">
+                    <tr v-for="item in group.items" :key="item.id" class="hover:bg-white/30 dark:hover:bg-primary-500/10 transition duration-200">
                         <td class="p-5 text-sm text-gray-500 dark:text-slate-400">{{ formatDate(item.check_in_time) }}</td>
                         <td class="p-5">
                             <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-full bg-indigo-50 dark:bg-slate-800 flex items-center justify-center text-xs font-bold text-indigo-600 border border-indigo-100/50 dark:border-slate-700">
+                                <div class="w-8 h-8 rounded-full bg-primary-50 dark:bg-slate-800 flex items-center justify-center text-xs font-bold text-primary-600 border border-primary-100/50 dark:border-slate-700">
                                     {{ item.user.name.charAt(0).toUpperCase() }}
                                 </div>
                                 <div>
@@ -316,7 +316,7 @@ const resetFilter = () => {
 }
 
 :deep(.dp__input):hover {
-    border-color: #6366f1;
+    border-color: #2876bc; /* Ganti indigo -> primary */
 }
 
 :deep(.dp__menu) {
@@ -337,6 +337,7 @@ const resetFilter = () => {
     color: #e2e8f0 !important;
 }
 
+/* Scrollbar Fix */
 ::-webkit-scrollbar {
   height: 6px;
   width: 6px;
@@ -345,7 +346,18 @@ const resetFilter = () => {
   background: transparent; 
 }
 ::-webkit-scrollbar-thumb {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(156, 163, 175, 0.5); /* Abu-abu untuk Light Mode */
   border-radius: 10px;
 }
-</style>
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(156, 163, 175, 0.8);
+}
+
+/* Scrollbar Dark Mode */
+:global(.dark) ::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.1); 
+}
+:global(.dark) ::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+</style>  

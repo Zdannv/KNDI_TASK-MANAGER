@@ -92,7 +92,7 @@ const downloadTemplate = () => {
             
             <div class="relative z-10 -mb-[1px]">
                 <div class="w-fit px-6 h-12 bg-white/40 dark:bg-slate-700/50 dark:to-slate-800/60 backdrop-blur-xl border-t border-l border-r border-white/40 dark:border-white/20 rounded-t-lg shadow-sm relative flex items-center gap-3">
-                    <Cloud class="w-5 h-5 text-indigo-600 dark:text-indigo-400 drop-shadow-sm" />
+                    <Cloud class="w-5 h-5 text-primary-600 dark:text-primary-400 drop-shadow-sm" />
                     <span class="font-bold text-gray-800 dark:text-slate-100 text-sm tracking-wide shadow-black drop-shadow-sm">Import Data</span>
                     <div class="absolute -bottom-[1px] left-0 right-0 h-[2px] bg-white/40 dark:bg-slate-800/80 z-20"></div>
                 </div>
@@ -117,8 +117,8 @@ const downloadTemplate = () => {
                     :class="[
                     'relative border-2 border-dashed rounded-lg p-10 text-center cursor-pointer transition-all duration-300 group',
                     isDragging
-                        ? 'border-indigo-500 bg-indigo-50/50 dark:bg-indigo-900/30 scale-[1.02]'
-                        : 'border-gray-300 dark:border-white/10 hover:border-indigo-400 dark:hover:border-indigo-500 bg-white/30 dark:bg-slate-800/40'
+                        ? 'border-primary-500 bg-primary-50/50 dark:bg-primary-900/30 scale-[1.02]'
+                        : 'border-gray-300 dark:border-white/10 hover:border-primary-400 dark:hover:border-primary-500 bg-white/30 dark:bg-slate-800/40'
                     ]"
                 >
                     <input
@@ -130,14 +130,14 @@ const downloadTemplate = () => {
                     />
                     
                     <div class="flex justify-center mb-4">
-                        <div class="p-4 rounded-full bg-indigo-50 dark:bg-indigo-900/30 text-indigo-500 dark:text-indigo-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-300 group-hover:scale-110 transition-transform duration-300 shadow-sm">
+                        <div class="p-4 rounded-full bg-primary-50 dark:bg-primary-900/30 text-primary-500 dark:text-primary-400 group-hover:text-primary-600 dark:group-hover:text-primary-300 group-hover:scale-110 transition-transform duration-300 shadow-sm">
                              <Cloud class="w-10 h-10" />
                         </div>
                     </div>
 
                     <p
                     id="file-label"
-                    class="mt-2 text-sm font-medium text-gray-700 dark:text-slate-200 group-hover:text-indigo-600 dark:group-hover:text-indigo-300 transition-colors"
+                    class="mt-2 text-sm font-medium text-gray-700 dark:text-slate-200 group-hover:text-primary-600 dark:group-hover:text-primary-300 transition-colors"
                     >
                     Click or drag file here to upload
                     </p>
@@ -150,7 +150,7 @@ const downloadTemplate = () => {
                     <button
                         @click.prevent="downloadTemplate"
                         type="button"
-                        class="flex-1 inline-flex justify-center items-center px-4 py-2.5 border border-gray-300 dark:border-white/10 rounded-lg shadow-sm text-sm font-medium text-gray-700 dark:text-slate-200 bg-white/50 dark:bg-slate-800/40 hover:bg-white dark:hover:bg-slate-700/50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all backdrop-blur-sm"
+                        class="flex-1 inline-flex justify-center items-center px-4 py-2.5 border border-gray-300 dark:border-white/10 rounded-lg shadow-sm text-sm font-medium text-gray-700 dark:text-slate-200 bg-white/50 dark:bg-slate-800/40 hover:bg-white dark:hover:bg-slate-700/50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-all backdrop-blur-sm"
                     >
                         <svg class="w-4 h-4 mr-2 text-gray-500 dark:text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2-8H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2z" />
@@ -165,7 +165,7 @@ const downloadTemplate = () => {
                         :class="[
                             'flex-1 inline-flex justify-center items-center px-4 py-2.5 rounded-lg shadow-lg text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 transition-all transform active:scale-95',
                             form.file
-                            ? 'bg-indigo-600 hover:bg-indigo-700 hover:shadow-indigo-500/30'
+                            ? 'bg-primary-600 hover:bg-primary-700 hover:shadow-primary-500/30'
                             : 'bg-gray-400 dark:bg-slate-700 dark:text-slate-500 cursor-not-allowed opacity-70'
                         ]"
                     >
