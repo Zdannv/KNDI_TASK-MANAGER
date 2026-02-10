@@ -20,6 +20,7 @@ const availableReviewers = computed(() => {
     if (Array.isArray(props.pg)) {
         return props.pg.filter(user => !assignProgrammerId.includes(user.id));
     }
+    return [];
 });
 
 const initialReviewers = Array.isArray(props.task?.reviewer)
@@ -74,31 +75,34 @@ const cancel = () => {
                         valueKey="id"
                         class="mt-1 block w-full"
                         placeholder="Search or select a Reviewer..."
+                        :dark="true"
                     />
                     <button
                         type="button"
                         @click="removeReviewer(index)"
-                        class="px-3 py-2 text-gray-600 dark:text-gray-100 text-sm border border-gray-300 dark:border-gray-500 rounded-md"
+                        class="p-2.5 text-gray-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400 border border-gray-300 dark:border-white/10 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors bg-white/50 dark:bg-slate-800/50"
+                        title="Remove"
                     >
-                        <Close />
+                        <Close class="w-4 h-4" />
                     </button>
                 </div>
                 <InputError class="mt-2" :message="form.errors.reviewer" />
+                
                 <button
                     type="button"
                     @click="addReviewer"
-                    class="mt-2 px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-md hover:bg-green-700"
+                    class="mt-2 px-3 py-1.5 text-xs font-bold text-white bg-green-600 rounded-md hover:bg-green-700 shadow-sm transition-colors flex items-center gap-1"
                 >
-                    <Plus />
+                    <Plus class="w-3 h-3" /> Add Reviewer
                 </button>
             </div>
 
-            <div class="flex justify-end gap-4">
+            <div class="flex justify-end gap-4 pt-2">
                 <button
                     type="button"
                     @click="cancel"
                     :disabled="form.processing"
-                    class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-200 dark:bg-gray-600 rounded-md hover:bg-gray-300 dark:hover:bg-gray-500 disabled:opacity-50"
+                    class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-200 dark:bg-slate-700 rounded-md hover:bg-gray-300 dark:hover:bg-slate-600 disabled:opacity-50 transition-colors"
                 >
                     Cancel
                 </button>
@@ -107,7 +111,7 @@ const cancel = () => {
                     type="submit"
                     :disabled="form.processing"
                     :class="{ 'opacity-25 cursor-not-allowed': form.processing }"
-                    class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 transition-all duration-200"
+                    class="px-4 py-2 text-sm font-medium text-white bg-primary-600 rounded-md hover:bg-primary-700 transition-all duration-200 shadow-lg shadow-primary-500/30"
                 >
                     {{ form.processing ? 'Saving...' : 'Save' }}
                 </button>

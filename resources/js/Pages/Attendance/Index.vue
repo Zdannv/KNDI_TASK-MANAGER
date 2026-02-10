@@ -316,7 +316,7 @@ const resetFilter = () => {
 }
 
 :deep(.dp__input):hover {
-    border-color: #2876bc; /* Ganti indigo -> primary */
+    border-color: #2876bc; 
 }
 
 :deep(.dp__menu) {
