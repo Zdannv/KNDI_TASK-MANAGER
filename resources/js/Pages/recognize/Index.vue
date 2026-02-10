@@ -3,7 +3,6 @@ import { ref, onMounted, onBeforeUnmount } from 'vue';
 import { Head, Link } from '@inertiajs/vue3';
 import axios from 'axios';
 
-// --- State Management ---
 const videoRef = ref(null);
 const canvasRef = ref(null);
 const isCameraActive = ref(false);
@@ -15,24 +14,9 @@ const currentDate = ref('');
 let timeInterval;
 let scanInterval;
 
-// --- Sound Effects ---
-// PERINGATAN: Pastikan file sudah dipindah ke folder public/assets/sounds/
-const soundPath = '/assets/sounds/jokowi-mati-matian.mp3';
-const attendanceSound = new Audio(soundPath);
-
-const playSound = () => {
-    // Reset durasi ke awal agar bisa dimainkan berulang kali dengan cepat
-    attendanceSound.currentTime = 0;
-    attendanceSound.play().catch(error => {
-        // Ini akan menangkap jika browser masih memblokir autoplay
-        console.warn("Autoplay diblokir atau file tidak ditemukan:", error);
-    });
-};
-
-// --- Jam & Tanggal ---
 const updateTime = () => {
     const now = new Date();
-    currentTime.value = now.toLocaleTimeString('id-ID', {
+    currentTime.value = now.toLocaleTimeString('us-EN', {
         hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false
     });
     currentDate.value = now.toLocaleDateString('id-ID', {
@@ -40,7 +24,6 @@ const updateTime = () => {
     });
 };
 
-// --- Kontrol Kamera ---
 const toggleCamera = async () => {
     if (isCameraActive.value) stopCamera();
     else await startCamera();
@@ -66,7 +49,6 @@ const stopCamera = () => {
     isCameraActive.value = false;
 };
 
-// --- LOGIKA UTAMA (Resize + API) ---
 const captureAndRecognize = async () => {
     if (!isCameraActive.value || isProcessing.value || !videoRef.value) return;
 
@@ -74,63 +56,39 @@ const captureAndRecognize = async () => {
 
     try {
         const context = canvasRef.value.getContext('2d');
-        
         const scaleWidth = 500;
         const scaleHeight = (videoRef.value.videoHeight / videoRef.value.videoWidth) * scaleWidth;
         
         canvasRef.value.width = scaleWidth;
         canvasRef.value.height = scaleHeight;
         context.drawImage(videoRef.value, 0, 0, scaleWidth, scaleHeight);
+        
+        const imageBase64 = canvasRef.value.toDataURL('image/jpeg');
+        const response = await axios.post('/attendance/store', {
+            image: imageBase64,
+            type: attendanceType.value,
+        });
 
-        canvasRef.value.toBlob(async (blob) => {
-            if (!blob) { isProcessing.value = false; return; }
+        const res = response.data;
 
-            const formData = new FormData();
-            formData.append('file', blob, 'scan.jpg'); 
-
-            try {
-                const pyResponse = await axios.post('http://localhost:8000/recognize', formData, { timeout: 3000 });
-                
-                const detectedName = pyResponse.data.name; 
-                const score = pyResponse.data.score || 0;
-
-                if (detectedName && detectedName !== 'unknown' && score > 0.50) {
-                    
-                    if (recognitionResult.value && 
-                        recognitionResult.value.name === detectedName && 
-                        recognitionResult.value.status === 'success' &&
-                        recognitionResult.value.type === attendanceType.value) {
-                        return; 
-                    }
-
-                    const laravelResponse = await axios.post('/api/attendance/store', {
-                        name: detectedName,
-                        type: attendanceType.value 
-                    });
-
-                    const res = laravelResponse.data;
-
-                    // TRIGGER SUARA: Diputar jika Laravel merespon (baik sukses maupun sudah absen)
-                    if (res.status === 'success' || res.status === 'error') {
-                        playSound();
-                    }
-
-                    recognitionResult.value = {
-                        status: res.status === 'success' ? 'success' : 'error',
-                        name: res.name,
-                        message: res.message,
-                        type: attendanceType.value
-                    };
-                } 
-            } catch (error) {
-                console.error("API Error:", error);
-            } finally {
-                isProcessing.value = false;
-            }
-        }, 'image/jpeg', 0.8);
-
+        recognitionResult.value = {
+            status: res.status === 'success' ? 'success' : 'error',
+            name: res.name || "Gagal",
+            message: res.message,
+            type: attendanceType.value
+        }
     } catch (err) {
-        console.error(err);
+        if (err.response && err.response.status === 401) {
+            recognitionResult.value = {
+                status: 'error',
+                name: 'Unknown',
+                message: err.response.data.message,
+                type: attendanceType.value
+            }
+
+            console.log('catch...');
+        }
+    } finally {
         isProcessing.value = false;
     }
 };
@@ -140,7 +98,7 @@ onMounted(() => {
     timeInterval = setInterval(updateTime, 1000);
     scanInterval = setInterval(() => {
         if (isCameraActive.value) captureAndRecognize();
-    }, 800); 
+    }, 1500); 
 });
 
 onBeforeUnmount(() => {
@@ -170,7 +128,7 @@ onBeforeUnmount(() => {
                     </div>
                 </Link>
 
-                <div class="text-right">
+                <div class="text-right">Added column check_in_confidence & check_out_confidence
                     <div class="text-2xl font-mono font-bold text-gray-800 leading-none">{{ currentTime }}</div>
                     <div class="text-xs text-gray-500 font-medium uppercase mt-1">{{ currentDate }}</div>
                 </div>

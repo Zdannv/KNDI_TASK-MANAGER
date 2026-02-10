@@ -12,25 +12,6 @@ def initialize_model():
 
 model_app = initialize_model()
 
-def recognize_face(embedding, threshold=0.5):
-    if not known_faces:
-        return "Unknown", 0.0
-    
-    best_match = "Unknown"
-    highest_similarity = -1
-
-    for name, known_embedding in known_faces.items():
-        similarity_score = np.dot(embedding, known_embedding)
-
-        if similarity_score > highest_similarity:
-            highest_similarity = similarity_score
-            best_match = name
-
-    if highest_similarity > threshold:
-        return best_match, float(highest_similarity)
-    
-    return "Unknown", float(highest_similarity)
-
 def get_face_embedding(image_bytes):
     nparr = np.frombuffer(image_bytes, np.uint8)
     image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
@@ -43,3 +24,30 @@ def get_face_embedding(image_bytes):
         return None
     
     return faces[0].normed_embedding.tolist()
+
+def compare_faces(target_embedding, known_users, threshold=0.5):
+    best_match = None
+    highest_similarity = -1
+    
+    target_vec = np.array(target_embedding, dtype=np.float32)
+
+    for user in known_users:
+        if user['embedding'] is None:
+            continue
+            
+        known_vec = np.array(user['embedding'], dtype=np.float32)
+        
+        if target_vec.shape != known_vec.shape:
+            print(f"Dimensi tidak cocok untuk user {user['id']}")
+            continue
+
+        similarity = np.dot(target_vec, known_vec)
+
+        if similarity > highest_similarity:
+            highest_similarity = similarity
+            best_match = user['id']
+
+    if highest_similarity > threshold:
+        return best_match, float(highest_similarity)
+    
+    return None, float(highest_similarity)

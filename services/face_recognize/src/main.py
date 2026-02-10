@@ -2,6 +2,7 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from api.registration import router as registration_router
+from api.attendance import router as attendance_router
 
 app = FastAPI()
 app.add_middleware(
@@ -13,6 +14,7 @@ app.add_middleware(
 )
 
 app.include_router(registration_router)
+app.include_router(attendance_router)
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)

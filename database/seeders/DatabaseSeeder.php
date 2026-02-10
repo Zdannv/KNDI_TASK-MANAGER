@@ -98,6 +98,13 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('password')
         ]);
 
+        User::factory()->create([
+            'name' => 'hr',
+            'email' => 'hr@gmail.com',
+            'role' => 'other',
+            'password' => Hash::make('password')
+        ]);
+
         // 2. BUAT PROJECT OWNER & PROJECT
         $kd = ProjectOwner::create([
             'name' => 'KD',
@@ -239,30 +246,35 @@ class DatabaseSeeder extends Seeder
         Attendance::create([
             'user_id' => $farkhan->id,
             'check_in_time' => Carbon::today()->setHour(8)->setMinute(0),
+            'check_in_confidence' => 05,
             'check_out_time' => Carbon::today()->setHour(17)->setMinute(0),
         ]);
 
         Attendance::create([
             'user_id' => $farkhan->id,
             'check_in_time' => Carbon::yesterday()->setHour(8)->setMinute(15),
+            'check_in_confidence' => 05,
             'check_out_time' => Carbon::yesterday()->setHour(17)->setMinute(30),
         ]);
 
         Attendance::create([
             'user_id' => $leo->id,
             'check_in_time' => Carbon::today()->setHour(9)->setMinute(0),
+            'check_in_confidence' => 05,
             'check_out_time' => null,
         ]);
 
         Attendance::create([
             'user_id' => $wawan->id,
             'check_in_time' => Carbon::today()->setHour(8)->setMinute(45),
+            'check_in_confidence' => 05,
             'check_out_time' => Carbon::today()->setHour(18)->setMinute(0),
         ]);
         
         Attendance::create([
             'user_id' => $trisno->id,
             'check_in_time' => Carbon::yesterday()->setHour(8)->setMinute(30),
+            'check_in_confidence' => 05,
             'check_out_time' => Carbon::yesterday()->setHour(17)->setMinute(0),
         ]);
     }
