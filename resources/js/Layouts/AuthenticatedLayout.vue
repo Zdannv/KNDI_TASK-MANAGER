@@ -51,9 +51,9 @@ const showAvatarModal = ref(false);
 const avatarForm = useForm({ name: '', email: '', avatar: '' });
 
 const avatarAssets = [
-    '/avatars/avatar-1.jpeg', '/avatars/avatar-2.jpg', '/avatars/avatar-3.jpeg', '/avatars/avatar-4.jpg',
-    '/avatars/avatar-5.jpeg', '/avatars/avatar-6.jpeg', '/avatars/avatar-1.jpeg', '/avatars/avatar-2.jpg',
-    '/avatars/avatar-3.jpeg', '/avatars/avatar-4.jpg', '/avatars/avatar-5.jpeg', '/avatars/avatar-6.jpeg',
+    '/avatars/1.png', '/avatars/2.png', '/avatars/3.png', '/avatars/4.png',
+    '/avatars/5.png', '/avatars/6.png', '/avatars/7.png', '/avatars/8.png',
+    '/avatars/9.png', '/avatars/10.png', '/avatars/11.png', '/avatars/12.png',
 ];
 
 const selectedAvatarTemp = ref('');
