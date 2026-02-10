@@ -51,9 +51,9 @@ const showAvatarModal = ref(false);
 const avatarForm = useForm({ name: '', email: '', avatar: '' });
 
 const avatarAssets = [
-    '/avatars/avatar-1.jpeg', '/avatars/avatar-2.jpg', '/avatars/avatar-3.jpeg', '/avatars/avatar-4.jpg',
-    '/avatars/avatar-5.jpeg', '/avatars/avatar-6.jpeg', '/avatars/avatar-1.jpeg', '/avatars/avatar-2.jpg',
-    '/avatars/avatar-3.jpeg', '/avatars/avatar-4.jpg', '/avatars/avatar-5.jpeg', '/avatars/avatar-6.jpeg',
+    '/avatars/1.png', '/avatars/2.png', '/avatars/3.png', '/avatars/4.png',
+    '/avatars/5.png', '/avatars/6.png', '/avatars/7.png', '/avatars/8.png',
+    '/avatars/9.png', '/avatars/10.png', '/avatars/11.png', '/avatars/12.png',
 ];
 
 const selectedAvatarTemp = ref('');
@@ -135,8 +135,8 @@ const getInitials = (name) => {
                     <span class="font-bold text-lg text-gray-800 dark:text-white tracking-tight">KNDI Task</span>
                 </div>
                 <button @click="showProfilePanel = true" class="relative">
-                     <div v-if="user.avatar" class="w-8 h-8 rounded-none overflow-hidden border border-white/50 shadow-sm">
-                        <img :src="user.avatar" alt="Avatar" class="w-full h-full object-cover">
+                     <div v-if="user.avatar" class="w-8 h-8 rounded-none overflow-hidden border border-white/50 shadow-sm bg-gray-50 dark:bg-slate-800">
+                        <img :src="user.avatar" alt="Avatar" class="w-full h-full object-contain">
                     </div>
                     <div v-else class="w-8 h-8 rounded-none bg-primary-100/50 flex items-center justify-center text-primary-600 font-bold text-xs shadow-inner">
                          {{ getInitials(user.name) }}
@@ -152,7 +152,7 @@ const getInitials = (name) => {
         </nav>
 
         <nav 
-            class="hidden md:flex fixed top-4 left-4 bottom-4 z-50 transition-all duration-500 cubic-bezier(0.4, 0, 0.2, 1) shadow-2xl flex-col rounded-none overflow-hidden border border-white/20 dark:border-white/10" 
+            class="hidden md:flex fixed top-4 left-4 bottom-4 z-50 transition-all duration-500 shadow-2xl flex-col rounded-none overflow-hidden border border-white/20 dark:border-white/10" 
             :class="[
                 openMenus ? 'w-72' : 'w-24',
                 showProfilePanel ? '-translate-x-[200%]' : 'translate-x-0',
@@ -183,7 +183,6 @@ const getInitials = (name) => {
             </div>
         </nav>
 
-
         <div 
             class="flex-1 flex flex-col min-h-screen transition-all duration-500 ease-out pt-16 md:pt-0" 
             :class="{
@@ -206,8 +205,8 @@ const getInitials = (name) => {
                         @click="showProfilePanel = !showProfilePanel"
                         class="flex items-center gap-3 p-1.5 pr-5 rounded-none bg-white dark:bg-slate-800 shadow-sm hover:shadow-lg transition-all duration-300 group border border-gray-200 dark:border-white/10"
                     >
-                        <div v-if="user.avatar" class="w-10 h-10 rounded-none overflow-hidden border border-gray-100 dark:border-slate-700">
-                             <img :src="user.avatar" alt="User Avatar" class="w-full h-full object-cover">
+                        <div v-if="user.avatar" class="w-10 h-10 rounded-none overflow-hidden border border-gray-100 dark:border-slate-700 bg-gray-50 dark:bg-slate-900">
+                             <img :src="user.avatar" alt="User Avatar" class="w-full h-full object-contain">
                         </div>
                         <div v-else class="w-10 h-10 rounded-none bg-primary-100 dark:bg-primary-900/50 flex items-center justify-center text-primary-600 dark:text-primary-300 font-bold text-sm">
                             {{ getInitials(user.name) }}
@@ -225,9 +224,8 @@ const getInitials = (name) => {
             </main>
         </div>
 
-
         <aside 
-            class="fixed top-0 right-0 h-screen w-80 shadow-2xl z-[70] transform transition-transform duration-500 cubic-bezier(0.4, 0, 0.2, 1) overflow-y-auto border-l border-white/20 dark:border-white/10
+            class="fixed top-0 right-0 h-screen w-80 shadow-2xl z-[70] transform transition-transform duration-500 overflow-y-auto border-l border-white/20 dark:border-white/10
             bg-white dark:bg-slate-900 rounded-none"
             :class="showProfilePanel ? 'translate-x-0' : 'translate-x-full'"
         >
@@ -249,7 +247,7 @@ const getInitials = (name) => {
                 <div class="flex flex-col items-center mb-8 w-full">
                     <div class="relative group cursor-pointer mb-6" @click="openAvatarModal">
                         <div class="w-24 h-24 rounded-none bg-primary-50 dark:bg-slate-800 border-4 border-gray-100 dark:border-slate-700 shadow-xl flex items-center justify-center text-3xl font-bold text-primary-600 relative overflow-hidden">
-                            <img v-if="user.avatar" :src="user.avatar" class="w-full h-full object-cover" alt="Profile">
+                            <img v-if="user.avatar" :src="user.avatar" class="w-full h-full object-contain" alt="Profile">
                             <span v-else>{{ getInitials(user.name) }}</span>
                             <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                                 <span class="text-white font-bold text-xs">CHANGE</span>
@@ -311,26 +309,47 @@ const getInitials = (name) => {
             </div>
         </aside>
 
-        <Modal :show="showAvatarModal" @close="showAvatarModal = false">
-            <div class="p-6 bg-white dark:bg-slate-900">
-                <h2 class="text-lg font-bold text-gray-900 dark:text-slate-100 mb-6 text-center">Choose Your Avatar</h2>
-                <div class="flex flex-col items-center gap-6 mb-8">
-                    <img :src="selectedAvatarTemp" alt="Selected Preview" class="w-32 h-32 rounded-none object-cover border-4 border-primary-500 shadow-xl" />
-                    <div class="grid grid-cols-4 gap-3">
-                        <button 
-                            v-for="(asset, index) in avatarAssets" 
-                            :key="index" 
-                            @click="selectAvatar(asset)" 
-                            class="relative rounded-none transition-all duration-200"
-                            :class="[selectedAvatarTemp === asset ? 'ring-4 ring-primary-500 scale-105 opacity-100' : 'opacity-60 hover:opacity-100']"
-                        >
-                            <img :src="asset" class="w-14 h-14 rounded-none object-cover shadow-sm" />
-                        </button>
+        <Modal :show="showAvatarModal" @close="showAvatarModal = false" max-width="2xl">
+            <div class="p-8 bg-white dark:bg-slate-900 rounded-none">
+                <h2 class="text-xl font-bold text-gray-900 dark:text-slate-100 mb-8 text-center md:text-left">Select Profile Avatar</h2>
+                
+                <div class="flex flex-col md:flex-row gap-10">
+                    <div class="flex flex-col items-center md:items-start space-y-4">
+                        <span class="text-xs font-bold uppercase tracking-widest text-slate-400">Preview</span>
+                        <div class="w-48 h-48 bg-slate-50 dark:bg-slate-800 border-2 border-dashed border-slate-200 dark:border-slate-700 flex items-center justify-center overflow-hidden rounded-none shadow-inner">
+                            <img 
+                                :src="selectedAvatarTemp" 
+                                alt="Avatar Preview" 
+                                class="w-full h-full object-contain" 
+                            />
+                        </div>
+                    </div>
+
+                    <div class="flex-1">
+                        <span class="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4 block">Available Assets</span>
+                        <div class="grid grid-cols-3 sm:grid-cols-4 gap-3 max-h-[320px] overflow-y-auto pr-2 no-scrollbar">
+                            <button 
+                                v-for="(asset, index) in avatarAssets" 
+                                :key="index" 
+                                @click="selectAvatar(asset)" 
+                                class="relative aspect-square flex items-center justify-center bg-slate-50 dark:bg-slate-800 border-2 transition-all duration-300"
+                                :class="[selectedAvatarTemp === asset ? 'border-primary-500 shadow-md scale-95 bg-white dark:bg-slate-700' : 'border-transparent hover:border-slate-300 dark:hover:border-slate-600']"
+                            >
+                                <img :src="asset" class="w-full h-full object-contain p-1" />
+                                
+                                <div v-if="selectedAvatarTemp === asset" class="absolute -top-2 -right-2 bg-primary-500 text-white rounded-full p-0.5 shadow-lg">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3 h-3">
+                                        <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                            </button>
+                        </div>
                     </div>
                 </div>
-                <div class="flex justify-end gap-3 pt-4 border-t border-gray-100 dark:border-white/10">
-                    <SecondaryButton @click="showAvatarModal = false" class="rounded-none">Cancel</SecondaryButton>
-                    <PrimaryButton @click="saveAvatar" :disabled="avatarForm.processing" class="rounded-none">Save</PrimaryButton>
+
+                <div class="flex justify-end gap-3 mt-10 pt-6 border-t border-gray-100 dark:border-white/10">
+                    <SecondaryButton @click="showAvatarModal = false" class="rounded-none px-6">Cancel</SecondaryButton>
+                    <PrimaryButton @click="saveAvatar" :disabled="avatarForm.processing" class="rounded-none px-8">Update Avatar</PrimaryButton>
                 </div>
             </div>
         </Modal>
