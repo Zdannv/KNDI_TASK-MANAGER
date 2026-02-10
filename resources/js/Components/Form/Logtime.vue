@@ -48,7 +48,7 @@ const cancel = () => {
                 <input
                     type="date"
                     id="date"
-                    class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 shadow-sm"
+                    class="mt-1 block w-full rounded-md border-gray-300 dark:border-white/10 bg-white/50 dark:bg-slate-900/50 dark:text-white focus:border-primary-500 dark:focus:border-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 shadow-sm backdrop-blur-sm"
                     v-model="form.date"
                     required
                     autocomplete="date"
@@ -64,9 +64,10 @@ const cancel = () => {
                     :options="tasks"
                     label="issue"
                     valueKey="id"
-                    class="mt-1 block w-full text-black"
+                    class="mt-1 block w-full"
                     placeholder="Search or select a task..."
                     :required="true"
+                    :dark="true"
                 />
                 <InputError class="mt-2" :message="form.errors.task_id" />
             </div>
@@ -76,7 +77,7 @@ const cancel = () => {
                 <TextInput
                     id="time_used"
                     type="number"
-                    class="mt-1 block w-full"
+                    class="mt-1 block w-full bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm dark:border-white/10 dark:text-white"
                     v-model="form.time_used"
                     required
                     autofocus
@@ -93,17 +94,17 @@ const cancel = () => {
                 <TextInput
                     id="description"
                     type="text"
-                    class="mt-1 block w-full"
+                    class="mt-1 block w-full bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm dark:border-white/10 dark:text-white"
                     v-model="form.description"
                 />
             </div>
 
-            <div class="flex justify-end gap-4">
+            <div class="flex justify-end gap-4 pt-2">
                 <button
                     type="button"
                     @click="cancel"
                     :disabled="form.processing"
-                    class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-200 dark:bg-gray-600 rounded-md hover:bg-gray-300 dark:hover:bg-gray-500 disabled:opacity-50"
+                    class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-200 dark:bg-slate-700 rounded-md hover:bg-gray-300 dark:hover:bg-slate-600 disabled:opacity-50 transition-colors"
                 >
                     Cancel
                 </button>
@@ -111,7 +112,7 @@ const cancel = () => {
                     type="submit"
                     :disabled="form.processing"
                     :class="{ 'opacity-25 cursor-not-allowed': form.processing }"
-                    class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 transition-all duration-200"
+                    class="px-4 py-2 text-sm font-medium text-white bg-primary-600 rounded-md hover:bg-primary-700 transition-all duration-200 shadow-lg shadow-primary-500/30"
                 >
                     {{ form.processing ? 'Saving...' : 'Save' }}
                 </button>
