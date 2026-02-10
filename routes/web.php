@@ -15,8 +15,6 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-// --- ROUTE PUBLIC (BISA DIAKSES TANPA LOGIN) ---
-
 Route::get('/', function () {
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
@@ -24,17 +22,6 @@ Route::get('/', function () {
         'phpVersion' => PHP_VERSION,
     ]);
 })->name('welcome');
-
-// 1. Halaman Absensi Wajah (Kiosk Mode)
-Route::get('/recognize', function () {
-    return Inertia::render('recognize/Index');
-})->name('attendance.recognize');
-
-// 2. API Simpan Absensi (Digunakan oleh Vue setelah Python mendeteksi wajah)
-// Menerima input: name & type (check_in/check_out)
-Route::post('/api/attendance/store', [AttendanceController::class, 'apiStore'])->name('api.attendance.store');
-
-// ------------------------------------------------
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard')->middleware('role:other,pm');
@@ -83,10 +70,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/import', [ImportController::class, 'store'])->name('import.store')->middleware('role:other,co');
     Route::get('/import/template', [ImportController::class, 'template'])->name('import.template')->middleware('role:other,co');
 
-    // Route Attendance untuk Dashboard Admin
     Route::get('/attendance', [AttendanceController::class, 'index'])->name('attendance')->middleware('role:other');
     Route::get('/attendance/export', [AttendanceController::class, 'export'])->name('attendance.export')->middleware('role:other');
 });
+
+Route::get('/recognize', function () {
+    return Inertia::render('recognize/Index');
+})->name('attendance.recognize');
+
+Route::post('/attendance/store', [AttendanceController::class, 'store'])->name('attendance.store');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
