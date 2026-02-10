@@ -128,7 +128,7 @@ onBeforeUnmount(() => {
                     </div>
                 </Link>
 
-                <div class="text-right">Added column check_in_confidence & check_out_confidence
+                <div class="text-right">
                     <div class="text-2xl font-mono font-bold text-gray-800 leading-none">{{ currentTime }}</div>
                     <div class="text-xs text-gray-500 font-medium uppercase mt-1">{{ currentDate }}</div>
                 </div>
