@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Attendance;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Inertia\Inertia;
 use Carbon\Carbon;
 use App\Exports\AttendanceMultiSheetExport;
@@ -12,9 +13,6 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class AttendanceController extends Controller
 {
-    /**
-     * Menampilkan halaman log absensi (Dashboard Admin)
-     */
     public function index(Request $request)
     {
         $query = $request->query();
@@ -42,57 +40,59 @@ class AttendanceController extends Controller
         return Inertia::render('Attendance/Index', compact('attendances', 'users'));
     }
 
-    /**
-     * [BARU] API Store khusus untuk Face Recognition Kiosk
-     * Menerima 'name' dari Python dan 'type' (check_in/out) dari Vue.
-     * Tidak ada batasan jam (bebas jam berapa saja).
-     */
-    public function apiStore(Request $request)
+    public function store(Request $request)
     {
-        // 1. Validasi Input
         $request->validate([
-            'name' => 'required|string',
+            'image' => 'required|string',
             'type' => 'required|in:check_in,check_out',
         ]);
 
-        $name = $request->name;
-        $type = $request->type;
+        $verification = $this->verifyFace($request->image);
 
-        // 2. Cari User Berdasarkan Nama
-        $user = User::where('name', $name)->first();
+        if (!$verification || !isset($verification['success'])) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Proses verifikasi gagal dijalankan'
+            ], 500);
+        }
 
+        if (!$verification['success']) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $verification['message'],
+            ], 401);
+        }
+
+        // ERROR MASIH DISINI
+        $user = User::where('name', $verification['user_id'])->first();
         if (!$user) {
             return response()->json([
                 'status' => 'error',
-                'name' => $name,
-                'message' => "User '{$name}' tidak ditemukan di database!",
+                'message' => 'User dengan nama ' . $verification['user_id'] . ' tidak ditemukan di database',
             ], 404);
         }
 
-        // 3. Cek Data Absen Hari Ini
         $today = Carbon::today();
         $attendance = Attendance::where('user_id', $user->id)
                                 ->whereDate('check_in_time', $today)
                                 ->first();
 
-        // 4. Logika Check In / Check Out
-        if ($type === 'check_in') {
-            // --- KASUS CHECK IN ---
+        $confidence =  $verification['confidence'];
+
+        if ($request->type === 'check_in') {
             if ($attendance) {
-                // Ambil jam check-in yang sudah ada
-                $jamMasuk = Carbon::parse($attendance->check_in_time)->format('H:i');
-                
+                $checkIn = Carbon::parse($attendance->check_in_time)->format('H:i');
                 return response()->json([
                     'status' => 'error',
                     'name' => $user->name,
-                    'message' => "Anda sudah Check-In hari ini pada pukul {$jamMasuk}!"
+                    'message' => "Anda Sudah Melakukan Check-In"
                 ]);
             }
 
             Attendance::create([
                 'user_id' => $user->id,
-                'status' => 'present',
                 'check_in_time' => Carbon::now(),
+                'check_in_confidence' => $confidence
             ]);
 
             return response()->json([
@@ -100,131 +100,34 @@ class AttendanceController extends Controller
                 'name' => $user->name,
                 'message' => "Berhasil Check-In"
             ]);
-
         } else {
-            // --- KASUS CHECK OUT ---
             if (!$attendance) {
                 return response()->json([
                     'status' => 'error',
                     'name' => $user->name,
-                    'message' => "Anda belum melakukan Check-In hari ini!"
+                    'message' => "Anda Belum Melakukan Check-In!",
                 ]);
             }
 
-            // Cek apakah user sudah checkout sebelumnya
             if ($attendance->check_out_time) {
-                // Ambil jam check-out yang sudah ada
-                $jamPulang = Carbon::parse($attendance->check_out_time)->format('H:i');
-
                 return response()->json([
                     'status' => 'error',
                     'name' => $user->name,
-                    'message' => "Anda sudah Check-Out hari ini pada pukul {$jamPulang}!"
+                    'message' => "Anda Sudah Melakukan Check-Out",
                 ]);
             }
 
-            // Update waktu pulang
             $attendance->update([
                 'check_out_time' => Carbon::now(),
+                'check_out_confidence' => $confidence,
             ]);
 
             return response()->json([
                 'status' => 'success',
                 'name' => $user->name,
-                'message' => "Berhasil Check-Out"
+                'message' => "Berhasil Check-Out",
             ]);
         }
-    }
-
-    /**
-     * [LAMA] Store manual (biasanya dipakai untuk testing / input manual)
-     * Memiliki batasan jam kerja.
-     */
-    public function store(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string',
-        ]);
-
-        $user = User::where('name', $request->name)->first();
-
-        if (!$user) {
-            return response()->json([
-                'success' => false,
-                'message' => "User Tidak Ditemukan!",
-            ], 404);
-        }
-
-        $now = Carbon::now();
-        $today = Carbon::today();
-
-        // Cek status absen hari ini
-        $attendance = Attendance::where('user_id', $user->id)
-            ->whereDate('check_in_time', $today)
-            ->first();
-
-        // KASUS 1: Belum ada data absen -> Lakukan CHECK IN
-        if (!$attendance) {
-            return $this->performCheckIn($user, $now);
-        }
-
-        // KASUS 2: Sudah Check In tapi belum Check Out -> Lakukan CHECK OUT
-        if (is_null($attendance->check_out_time)) {
-            return $this->performCheckOut($user, $now);
-        }
-
-        // KASUS 3: Sudah Check In & Sudah Check Out -> Beri Info Jam
-        $jamPulang = Carbon::parse($attendance->check_out_time)->format('H:i');
-        
-        return response()->json([
-            'success' => false,
-            'message' => "Anda sudah selesai bekerja hari ini (Check-Out pukul {$jamPulang})."
-        ]);
-    }
-
-    /**
-     * Helper untuk method store lama
-     */
-    private function performCheckIn($user, $now)
-    {
-        Attendance::create([
-            'user_id' => $user->id,
-            'check_in_time' => $now,
-            'status' => 'present'
-        ]);
-
-        return response()->json([
-            'success' => true,
-            'message' => "Selamat Pagi {$user->name}, Check-In Berhasil"
-        ]);
-    }
-
-    /**
-     * Helper untuk method store lama
-     */
-    private function performCheckOut($user, $now)
-    {
-        $today = Carbon::today();
-        $attendance = Attendance::where('user_id', $user->id)
-            ->whereDate('check_in_time', $today)
-            ->whereNull('check_out_time')
-            ->first();
-
-        if ($attendance) {
-            $attendance->update([
-                'check_out_time' => $now,
-            ]);
-            
-            return response()->json([
-                'success' => true,
-                'message' => "Selamat Sore {$user->name}, Anda Berhasil Check-Out!",
-            ]);
-        }
-        
-        return response()->json([
-            'success' => false,
-            'message' => "Gagal memproses Check-Out."
-        ]);
     }
 
     public function export(Request $request)
@@ -245,7 +148,56 @@ class AttendanceController extends Controller
             }
         }
 
-        // Jalankan download Excel
         return Excel::download(new AttendanceMultiSheetExport($query), $filename);
+    }
+
+    private function verifyFace($imageBase64)
+    {
+        $host = env('PYTHON_SERVICE');
+        $port = env('PYTHON_SERVICE_PORT');
+
+        $users = User::whereNotNull('face_embedding')->get(['id', 'name', 'face_embedding']);
+
+        $userData = $users->map(function ($u) {
+            return [
+                'id' => $u->id,
+                'name' => $u->name,
+                'embedding' => $u->face_embedding,
+            ];
+        });
+        
+        try {
+            $imageRaw = $imageBase64;
+            if (str_contains($imageRaw, ',')) {
+                $imageRaw = explode(',', $imageRaw)[1];
+            }
+
+            $response = Http::timeout(5)->post("http://{$host}:{$port}/attendance", [
+                'image' => $imageBase64,
+                'users' => $userData, 
+            ]);
+
+            $result = $response->json();
+
+            if ($response->successful() && isset($result['match'])) {
+                return [
+                    'success' => $result['match'],
+                    'user_id' => $result['message'] ?? null,
+                    'confidence' => $result['confidence'] ?? 0
+                ];
+            }
+
+            return [
+                'success' => false, 
+                'message' => $result['message'] ?? 'Wajah tidak dikenali atau error dari server Python',
+                'confidence' => 0
+            ];
+        } catch (\Exception $err) {
+            return [
+                'success' => false, 
+                'message' => 'Gagal koneksi ke server: ' . $err->getMessage(),
+                'confidence' => 0
+            ];
+        }
     }
 }
