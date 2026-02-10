@@ -1,8 +1,0 @@
-FastApi
-opencv-python
-insightface
-uvicorn
-onnxruntime
-python-multipart
-#run : pip install -r requirements.txt
-uvicorn api:app --reload --port 8000#
