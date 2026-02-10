@@ -15,7 +15,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->dateTime('check_in_time');
+            $table->decimal('check_in_confidence');
             $table->dateTime('check_out_time')->nullable();
+            $table->decimal('check_out_confidence')->nullable();
             $table->timestamps();
         });
     }
