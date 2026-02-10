@@ -158,7 +158,6 @@ const logtimeSegments = computed(() => {
     totalCalc += time;
   });
 
-  // Ganti warna hardcoded indigo (#6366f1) ke primary (#2876bc)
   const colors = ['#2876bc', '#ec4899', '#10b981', '#f59e0b', '#8b5cf6', '#3b82f6', '#06b6d4', '#f43f5e'];
   const circumference = 2 * Math.PI * 40; 
   let currentOffset = 0;

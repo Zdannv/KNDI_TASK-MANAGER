@@ -59,8 +59,6 @@ watch(activeIndex, (newVal, oldVal) => {
         moveDirection.value = newVal > oldVal ? 'down' : 'up';
         isMoving.value = true;
         
-        // Timer disamakan dengan durasi animasi (300ms)
-        // Agar dia baru 'mengembang' lagi setelah sampai di tujuan
         setTimeout(() => {
             isMoving.value = false;
         }, 300); 
@@ -74,23 +72,17 @@ watch(activeIndex, (newVal, oldVal) => {
         <div
             class="absolute left-0 z-0 bg-gradient-to-r from-white/95 to-white/70 dark:from-primary-600/40 dark:to-transparent backdrop-blur-md border border-white/40 dark:border-white/10 shadow-lg"
             :class="[
-                // Base classes
                 'h-[50px] transform-gpu transition-all',
-                
-                // DURASI DIPERCEPAT: duration-300 biar ngebut
-                // EASING DIUBAH: ease-in-out biar smooth saat berubah bentuk (jangan pake bezier mantul buat scale)
                 'duration-300 ease-in-out', 
 
                 activeIndex === -1 ? 'opacity-0 scale-90' : 'opacity-100',
                 sidebarOpen ? 'w-full ml-4' : 'w-[calc(100%-24px)] mx-3',
                 
-                // --- STATE ANIMASI ---
                 isMoving 
-                    ? 'scale-y-[0.4] scale-x-[0.4] rounded-full opacity-80'  // Pas jalan: Kecil, bulet, agak transparan
-                    : 'scale-y-100 scale-x-100 rounded-l-full rounded-r-none opacity-100', // Pas diem: Normal
+                    ? 'scale-y-[0.4] scale-x-[0.4] rounded-full opacity-80'
+                    : 'scale-y-100 scale-x-100 rounded-l-full rounded-r-none opacity-100',
             ]"
             :style="{
-                // Kita pindahkan 'origin' logic ke style/class agar lebih responsif
                 transformOrigin: 'center', 
                 transform: `translateY(${activeIndex * (ITEM_HEIGHT + GAP)}px)`
             }"

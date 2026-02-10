@@ -97,16 +97,13 @@ watch(openMenus, (isOpen) => { if (isOpen) showProfilePanel.value = false; });
 watch(showProfilePanel, (isOpen) => {
     if (isOpen) {
         openMenus.value = false;
-        // Kunci scroll body saat sidebar profil terbuka
         document.body.style.overflow = 'hidden';
     } else {
         if (window.innerWidth >= 1024) openMenus.value = true;
-        // Lepas kunci scroll body
         document.body.style.overflow = '';
     }
 });
 
-// Pastikan scroll dilepas saat komponen di-unmount (pindah halaman full reload)
 onUnmounted(() => {
     document.body.style.overflow = '';
 });
@@ -138,7 +135,7 @@ const getInitials = (name) => {
                      <div v-if="user.avatar" class="w-8 h-8 rounded-none overflow-hidden border border-white/50 shadow-sm bg-gray-50 dark:bg-slate-800">
                         <img :src="user.avatar" alt="Avatar" class="w-full h-full object-contain">
                     </div>
-                    <div v-else class="w-8 h-8 rounded-none bg-primary-100/50 flex items-center justify-center text-primary-600 font-bold text-xs shadow-inner">
+                    <div v-else class="w-8 h-8 rounded-none bg-primary-100 dark:bg-primary-900/50 flex items-center justify-center text-primary-600 dark:text-primary-300 font-bold text-sm shadow-inner">
                          {{ getInitials(user.name) }}
                     </div>
                 </button>
@@ -192,7 +189,7 @@ const getInitials = (name) => {
             }"
         >
             <header class="hidden md:flex h-24 items-center justify-between px-4 sticky top-0 z-40 transition-colors duration-300
-                bg-transparent backdrop-blur-md border-b border-white/5 dark:border-white/5">
+                bg-[#F2F5FA] dark:bg-[#1e293b] border-b border-gray-200 dark:border-white/5 shadow-sm">
                 <div>
                     <h1 class="text-3xl font-bold text-[#0d1b3e] dark:text-slate-100 tracking-tight">
                         Hello, {{ user.name.split(' ')[0] }}!
@@ -310,34 +307,38 @@ const getInitials = (name) => {
         </aside>
 
         <Modal :show="showAvatarModal" @close="showAvatarModal = false" max-width="2xl">
-            <div class="p-8 bg-white dark:bg-slate-900 rounded-none">
+            <div class="p-8 bg-white dark:bg-slate-800 rounded-lg"> 
                 <h2 class="text-xl font-bold text-gray-900 dark:text-slate-100 mb-8 text-center md:text-left">Select Profile Avatar</h2>
                 
                 <div class="flex flex-col md:flex-row gap-10">
                     <div class="flex flex-col items-center md:items-start space-y-4">
                         <span class="text-xs font-bold uppercase tracking-widest text-slate-400">Preview</span>
-                        <div class="w-48 h-48 bg-slate-50 dark:bg-slate-800 border-2 border-dashed border-slate-200 dark:border-slate-700 flex items-center justify-center overflow-hidden rounded-none shadow-inner">
+                        <div class="w-48 h-48 bg-slate-50 dark:bg-slate-800 border-2 border-dashed border-slate-200 dark:border-slate-700 flex items-center justify-center overflow-hidden rounded-xl shadow-inner">
                             <img 
                                 :src="selectedAvatarTemp" 
                                 alt="Avatar Preview" 
-                                class="w-full h-full object-contain" 
+                                class="w-full h-full object-contain p-2" 
                             />
                         </div>
                     </div>
 
                     <div class="flex-1">
                         <span class="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4 block">Available Assets</span>
-                        <div class="grid grid-cols-3 sm:grid-cols-4 gap-3 max-h-[320px] overflow-y-auto pr-2 no-scrollbar">
+                        <div class="grid grid-cols-3 sm:grid-cols-4 gap-4 max-h-[320px] overflow-y-auto pr-2 no-scrollbar p-1"> 
                             <button 
                                 v-for="(asset, index) in avatarAssets" 
                                 :key="index" 
                                 @click="selectAvatar(asset)" 
-                                class="relative aspect-square flex items-center justify-center bg-slate-50 dark:bg-slate-800 border-2 transition-all duration-300"
-                                :class="[selectedAvatarTemp === asset ? 'border-primary-500 shadow-md scale-95 bg-white dark:bg-slate-700' : 'border-transparent hover:border-slate-300 dark:hover:border-slate-600']"
+                                class="relative aspect-square flex items-center justify-center transition-all duration-300 rounded-xl group"
+                                :class="[
+                                    selectedAvatarTemp === asset 
+                                        ? 'bg-white dark:bg-slate-700 border-2 border-primary-500 shadow-lg scale-95 ring-2 ring-primary-500/20' 
+                                        : 'bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700/60 shadow-sm hover:shadow-md hover:border-primary-400 dark:hover:border-primary-500 hover:-translate-y-1'
+                                ]"
                             >
-                                <img :src="asset" class="w-full h-full object-contain p-1" />
+                                <img :src="asset" class="w-full h-full object-contain p-2" />
                                 
-                                <div v-if="selectedAvatarTemp === asset" class="absolute -top-2 -right-2 bg-primary-500 text-white rounded-full p-0.5 shadow-lg">
+                                <div v-if="selectedAvatarTemp === asset" class="absolute -top-2 -right-2 bg-primary-500 text-white rounded-full p-1 shadow-lg border-2 border-white dark:border-slate-800">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3 h-3">
                                         <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd" />
                                     </svg>
@@ -348,14 +349,14 @@ const getInitials = (name) => {
                 </div>
 
                 <div class="flex justify-end gap-3 mt-10 pt-6 border-t border-gray-100 dark:border-white/10">
-                    <SecondaryButton @click="showAvatarModal = false" class="rounded-none px-6">Cancel</SecondaryButton>
-                    <PrimaryButton @click="saveAvatar" :disabled="avatarForm.processing" class="rounded-none px-8">Update Avatar</PrimaryButton>
+                    <SecondaryButton @click="showAvatarModal = false" class="rounded-lg px-6">Cancel</SecondaryButton>
+                    <PrimaryButton @click="saveAvatar" :disabled="avatarForm.processing" class="rounded-lg px-8">Update Avatar</PrimaryButton>
                 </div>
             </div>
         </Modal>
 
         <Modal :show="showPasswordModal" @close="closePasswordModal">
-            <div class="p-6 bg-white dark:bg-slate-900">
+            <div class="p-6 bg-white dark:bg-slate-900 rounded-lg">
                 <div class="flex items-center justify-between mb-4">
                     <h2 class="text-lg font-bold text-gray-900 dark:text-slate-100">Change Password</h2>
                     <button @click="closePasswordModal" class="text-gray-400 hover:text-gray-600"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg></button>

@@ -125,8 +125,8 @@ const resetFilter = () => {
         <div
           class="flex justify-between px-6 py-4 items-center text-gray-800 dark:text-gray-200 
                  bg-white/40 dark:bg-gradient-to-b dark:from-slate-700/30 dark:to-slate-900/60 backdrop-blur-xl border border-white/40 dark:border-white/20 
-                 shadow-lg rounded-lg transition-all duration-700 ease-out"
-          :class="{ 'translate-y-0 opacity-100': isLoaded, 'translate-y-4 opacity-0': !isLoaded }"
+                 shadow-lg rounded-lg transition-opacity duration-500 ease-out"
+          :class="{ 'opacity-100': isLoaded, 'opacity-0': !isLoaded }"
         >
           <div>
             <h2 class="font-bold text-xl leading-tight text-gray-800 dark:text-slate-100 drop-shadow-sm">
@@ -149,8 +149,8 @@ const resetFilter = () => {
 
     <div
       v-if="options"
-      class="w-full pt-4 sm:pt-6 transition-all duration-700 ease-out"
-      :class="{ 'translate-y-0 opacity-100': isLoaded, 'translate-y-4 opacity-0': !isLoaded }"
+      class="w-full pt-4 sm:pt-6 transition-opacity duration-500 ease-out"
+      :class="{ 'opacity-100': isLoaded, 'opacity-0': !isLoaded }"
     >
       <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-8">
         <div class="flex flex-col py-6 px-6 text-gray-800 dark:text-gray-200 
@@ -202,8 +202,8 @@ const resetFilter = () => {
     </div>
 
     <div
-      class="w-full py-6 sm:py-8 transition-all duration-700 ease-out delay-75"
-      :class="{ 'opacity-100': isLoaded, 'translate-y-4 opacity-0': !isLoaded }"
+      class="w-full py-6 sm:py-8 transition-opacity duration-700 ease-out delay-75 transform-gpu"
+      :class="{ 'opacity-100': isLoaded, 'opacity-0': !isLoaded }"
     >
       <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-8">
         
@@ -218,10 +218,10 @@ const resetFilter = () => {
             </div>
 
             <div
-                class="w-full overflow-x-auto bg-white/40 dark:bg-gradient-to-b dark:from-slate-800/60 dark:to-slate-950/80 backdrop-blur-xl border border-white/40 dark:border-white/20 shadow-xl rounded-b-lg rounded-tr-lg relative z-0"
+                class="w-full overflow-x-auto bg-white/40 dark:bg-gradient-to-b dark:from-slate-800/60 dark:to-slate-950/80 backdrop-blur-xl border border-white/40 dark:border-white/20 shadow-xl rounded-b-lg rounded-tr-lg relative z-0 transform-gpu will-change-transform"
             >
             <table class="w-full min-w-[40rem] text-left dark:text-slate-200 table-auto border-collapse">
-                <thead class="sticky top-0 z-20 bg-white/50 dark:bg-slate-800/90 backdrop-blur-md border-b border-white/20 dark:border-white/10">
+                <thead class="sticky top-0 z-20 bg-white/90 dark:bg-slate-900/95 backdrop-blur-sm border-b border-white/20 dark:border-white/10 shadow-sm">
                 <tr>
                     <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Date</th>
                     <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Employee Name</th>
@@ -316,7 +316,7 @@ const resetFilter = () => {
 }
 
 :deep(.dp__input):hover {
-    border-color: #2876bc; /* Ganti indigo -> primary */
+    border-color: #2876bc; 
 }
 
 :deep(.dp__menu) {
@@ -360,4 +360,4 @@ const resetFilter = () => {
 :global(.dark) ::-webkit-scrollbar-thumb:hover {
   background-color: rgba(255, 255, 255, 0.2);
 }
-</style>  
+</style>

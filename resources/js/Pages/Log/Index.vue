@@ -61,7 +61,7 @@ const formatDate = (date) => {
             
             <div class="relative z-10 -mb-[1px]">
                 <div class="w-fit px-6 h-12 bg-white/40 dark:bg-slate-700/50 dark:to-slate-800/60 backdrop-blur-xl border-t border-l border-r border-white/40 dark:border-white/20 rounded-t-lg shadow-sm relative flex items-center gap-3">
-                    <Warning class="w-5 h-5 text-indigo-600 dark:text-indigo-400 drop-shadow-sm" />
+                    <Warning class="w-5 h-5 text-primary-600 dark:text-primary-400 drop-shadow-sm" />
                     <span class="font-bold text-gray-800 dark:text-slate-100 text-sm tracking-wide shadow-black drop-shadow-sm">Activity Logs</span>
                     <div class="absolute -bottom-[1px] left-0 right-0 h-[2px] bg-white/40 dark:bg-slate-800/80 z-20"></div>
                 </div>
@@ -86,7 +86,7 @@ const formatDate = (date) => {
                     </tr>
                     </thead>
                     <tbody class="divide-y divide-white/20 dark:divide-white/5">
-                    <tr v-for="log in logs.data" :key="log.id" class="hover:bg-white/30 dark:hover:bg-indigo-500/10 transition duration-200">
+                    <tr v-for="log in logs.data" :key="log.id" class="hover:bg-white/30 dark:hover:bg-primary-500/10 transition duration-200">
                         <td class="p-5 align-middle text-sm text-gray-500 dark:text-slate-400 font-mono">
                             {{ formatDate(log.created_at) }}
                         </td>
@@ -121,7 +121,7 @@ const formatDate = (date) => {
 </template>
 
 <style scoped>
-/* Custom Scrollbar */
+/* Scrollbar Default (Light Mode) */
 ::-webkit-scrollbar {
   height: 6px;
   width: 6px;
@@ -130,10 +130,18 @@ const formatDate = (date) => {
   background: transparent; 
 }
 ::-webkit-scrollbar-thumb {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(156, 163, 175, 0.5); /* Abu-abu untuk Light Mode */
   border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(156, 163, 175, 0.8);
+}
+
+/* Scrollbar Dark Mode */
+:global(.dark) ::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.1); 
+}
+:global(.dark) ::-webkit-scrollbar-thumb:hover {
   background-color: rgba(255, 255, 255, 0.2);
 }
 </style>

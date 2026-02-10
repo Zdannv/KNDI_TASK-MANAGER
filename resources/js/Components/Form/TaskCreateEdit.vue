@@ -1,6 +1,6 @@
 <script setup>
 import { useForm } from '@inertiajs/vue3';
-import { computed } from 'vue'; // Tambahkan import computed
+import { computed } from 'vue'; 
 import Close from '../Icon/Close.vue';
 import Plus from '../Icon/Plus.vue';
 import TextInput from '@/Components/TextInput.vue';
@@ -48,6 +48,7 @@ const form = useForm({
     ticket_link: props.task?.ticket_link || '',
     related_links: initialLinks,
     description: props.task?.description || '',
+    // Format YYYY-MM-DD wajib untuk input type="date"
     start_date: props.task?.start_date ? moment(props.task?.start_date).format('YYYY-MM-DD') : undefined,
     due_date: props.task?.due_date ? moment(props.task?.due_date).format('YYYY-MM-DD') : undefined,
     _method: props.isEditMode ? 'PUT' : undefined,
@@ -170,19 +171,19 @@ const types = [
                         </div>
                         <div class="mb-4">
                             <InputLabel value="Ticket Link" class="text-sm font-medium text-gray-600 dark:text-gray-400" />
-                            <TextInput v-model="form.ticket_link" class="mt-1 block w-full bg-slate-50/50 dark:bg-slate-900/50 border-gray-300 dark:border-gray-700 rounded-md text-sm font-medium text-indigo-600" />
+                            <TextInput v-model="form.ticket_link" class="mt-1 block w-full bg-slate-50/50 dark:bg-slate-900/50 border-gray-300 dark:border-gray-700 rounded-md text-sm font-medium text-primary-600" />
                             <InputError :message="form.errors.ticket_link" />
                         </div>
                         <div class="mb-4">
                             <InputLabel value="Related Links" class="text-sm font-medium text-gray-600 dark:text-gray-400" />
                             <div class="space-y-3 mt-2">
                                 <div v-for="(link, index) in form.related_links" :key="index" class="flex items-center group">
-                                    <TextInput v-model="form.related_links[index]" class="block w-full bg-slate-50/50 border-gray-300 rounded-md text-sm text-indigo-600" />
+                                    <TextInput v-model="form.related_links[index]" class="block w-full bg-slate-50/50 border-gray-300 rounded-md text-sm text-primary-600" />
                                     <button type="button" @click="removeRelatedLink(index)" class="ml-3 text-gray-400 hover:text-red-500 transition-colors">
                                         <Close class="w-4 h-4" />
                                     </button>
                                 </div>
-                                <button type="button" @click="addRelatedLink" class="inline-flex items-center text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline mt-2 uppercase tracking-widest transition-all">
+                                <button type="button" @click="addRelatedLink" class="inline-flex items-center text-xs font-bold text-primary-600 dark:text-primary-400 hover:underline mt-2 uppercase tracking-widest transition-all">
                                     + Add Related Link
                                 </button>
                             </div>
@@ -204,7 +205,7 @@ const types = [
                     type="submit" 
                     :disabled="form.processing" 
                     :class="{ 'opacity-50 cursor-not-allowed': form.processing }"
-                    class="px-10 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold rounded shadow-lg transition-all uppercase tracking-widest active:scale-95"
+                    class="px-10 py-2 bg-primary-600 hover:bg-primary-700 text-white text-sm font-bold rounded shadow-lg transition-all uppercase tracking-widest active:scale-95"
                 >
                     <span v-if="form.processing">
                         {{ isEditMode ? 'Updating...' : 'Creating...' }}
