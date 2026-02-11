@@ -81,11 +81,13 @@ class AttendanceController extends Controller
 
         if ($request->type === 'check_in') {
             if ($attendance) {
+                $now = Carbon::parse($attendance->check_in_time)->format('H:i:s');
+
                 $checkIn = Carbon::parse($attendance->check_in_time)->format('H:i');
                 return response()->json([
                     'status' => 'error',
                     'name' => $user->name,
-                    'message' => "Anda Sudah Melakukan Check-In"
+                    'message' => "Anda Sudah Melakukan Check-In Pada Pukul $now"
                 ]);
             }
 
@@ -110,10 +112,12 @@ class AttendanceController extends Controller
             }
 
             if ($attendance->check_out_time) {
+                $now = Carbon::parse($attendance->check_in_time)->format('H:i:s');
+
                 return response()->json([
                     'status' => 'error',
                     'name' => $user->name,
-                    'message' => "Anda Sudah Melakukan Check-Out",
+                    'message' => "Anda Sudah Melakukan Check-Out Pada Pukul $now",
                 ]);
             }
 
