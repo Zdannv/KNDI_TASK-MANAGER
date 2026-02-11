@@ -17,11 +17,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // 1. BUAT USER
+        // 1. BUAT USER (Ditambahkan 'avatar' default agar tidak not found)
         $farkhan = User::factory()->create([
             'name' => 'Farkhan',
             'email' => 'farkhan@kyodo-i.com',
             'role' => 'pg',
+            'avatar' => '/avatars/1.png',
             'password' => Hash::make('password')
         ]);
 
@@ -47,6 +48,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Leo',
             'email' => 'leo@kyodo-i.com',
             'role' => 'pm',
+            'avatar' => '/avatars/1.png',
             'password' => Hash::make('password')
         ]);
 
@@ -67,6 +69,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Wawan',
             'email' => 'wawan@kyodo-i.com',
             'role' => 'pg',
+            'avatar' => '/avatars/1.png',
             'password' => Hash::make('password')
         ]);
 
@@ -74,6 +77,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Trisno',
             'email' => 'trisno@kyodo-i.com',
             'role' => 'pg',
+            'avatar' => '/avatars/1.png',
             'password' => Hash::make('password')
         ]);
 
@@ -81,6 +85,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Tasya',
             'email' => 'tasya@kyodo-i.com',
             'role' => 'co',
+            'avatar' => '/avatars/1.png',
             'password' => Hash::make('password')
         ]);
 
@@ -88,6 +93,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Nora',
             'email' => 'nora@kyodo-i.com',
             'role' => 'other',
+            'avatar' => '/avatars/1.png',
             'password' => Hash::make('password')
         ]);
 
@@ -95,6 +101,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Aries',
             'email' => 'aries@kyodo-i.com',
             'role' => 'ds',
+            'avatar' => '/avatars/1.png',
             'password' => Hash::make('password')
         ]);
 
@@ -102,6 +109,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'hr',
             'email' => 'hr@gmail.com',
             'role' => 'other',
+            'avatar' => '/avatars/1.png',
             'password' => Hash::make('password')
         ]);
 
@@ -246,35 +254,35 @@ class DatabaseSeeder extends Seeder
         Attendance::create([
             'user_id' => $farkhan->id,
             'check_in_time' => Carbon::today()->setHour(8)->setMinute(0),
-            'check_in_confidence' => 05,
+            'check_in_confidence' => 0.5,
             'check_out_time' => Carbon::today()->setHour(17)->setMinute(0),
         ]);
 
         Attendance::create([
             'user_id' => $farkhan->id,
             'check_in_time' => Carbon::yesterday()->setHour(8)->setMinute(15),
-            'check_in_confidence' => 05,
+            'check_in_confidence' => 0.5,
             'check_out_time' => Carbon::yesterday()->setHour(17)->setMinute(30),
         ]);
 
         Attendance::create([
             'user_id' => $leo->id,
             'check_in_time' => Carbon::today()->setHour(9)->setMinute(0),
-            'check_in_confidence' => 05,
+            'check_in_confidence' => 0.5,
             'check_out_time' => null,
         ]);
 
         Attendance::create([
             'user_id' => $wawan->id,
             'check_in_time' => Carbon::today()->setHour(8)->setMinute(45),
-            'check_in_confidence' => 05,
+            'check_in_confidence' => 0.5,
             'check_out_time' => Carbon::today()->setHour(18)->setMinute(0),
         ]);
         
         Attendance::create([
             'user_id' => $trisno->id,
             'check_in_time' => Carbon::yesterday()->setHour(8)->setMinute(30),
-            'check_in_confidence' => 05,
+            'check_in_confidence' => 0.5,
             'check_out_time' => Carbon::yesterday()->setHour(17)->setMinute(0),
         ]);
     }

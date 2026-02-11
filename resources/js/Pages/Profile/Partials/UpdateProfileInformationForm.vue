@@ -16,27 +16,27 @@ defineProps({
 
 const user = usePage().props.auth.user;
 
-// Daftar 12 Avatar (Menggunakan file yang sudah ada, diduplikasi agar jadi 12)
+// Daftar 12 Avatar
 const availableAvatars = [
-    '/avatars/avatar-1.jpeg',
-    '/avatars/avatar-2.jpg',
-    '/avatars/avatar-3.jpeg',
-    '/avatars/avatar-4.jpg',
-    '/avatars/avatar-5.jpeg',
-    '/avatars/avatar-6.jpeg',
-    '/avatars/avatar-1.jpeg', 
-    '/avatars/avatar-2.jpg',
-    '/avatars/avatar-3.jpeg',
-    '/avatars/avatar-4.jpg',
-    '/avatars/avatar-5.jpeg',
-    '/avatars/avatar-6.jpeg',
+    '/avatars/1.png',
+    '/avatars/2.png',
+    '/avatars/3.png',
+    '/avatars/4.png',
+    '/avatars/5.png',
+    '/avatars/6.png',
+    '/avatars/7.png', 
+    '/avatars/8.png',
+    '/avatars/9.png',
+    '/avatars/10.png',
+    '/avatars/11.png',
+    '/avatars/12.png',
 ];
 
 const form = useForm({
     name: user.name,
     email: user.email,
-    // Gunakan avatar user saat ini, atau default ke avatar-1 jika belum ada
-    avatar: user.avatar || '/avatars/avatar-1.jpeg',
+    // MODIFIKASI: Jika user.avatar null/undefined, set ke path avatar 1 secara default
+    avatar: user.avatar || '/avatars/1.png',
 });
 </script>
 
