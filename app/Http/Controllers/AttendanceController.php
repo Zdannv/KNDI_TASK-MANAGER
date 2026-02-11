@@ -68,7 +68,7 @@ class AttendanceController extends Controller
         if (!$user) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'User dengan nama ' . $user['name'] . ' tidak ditemukan di database',
+                'message' => 'User dengan id ' . $verification['user_id'] . ' tidak ditemukan di database',
             ], 404);
         }
 
