@@ -31,7 +31,7 @@ const nameForm = useForm({ name: '', email: '', avatar: '' });
 const startEditingName = () => {
     nameForm.name = user.value.name;
     nameForm.email = user.value.email;
-    nameForm.avatar = user.value.avatar;
+    nameForm.avatar = user.value.avatar || '/avatars/1.png'; // Fallback ke default
     isEditingName.value = true;
 };
 
@@ -59,7 +59,8 @@ const avatarAssets = [
 const selectedAvatarTemp = ref('');
 
 const openAvatarModal = () => {
-    selectedAvatarTemp.value = user.value.avatar || avatarAssets[0];
+    // Jika user.avatar null, tampilkan avatar 1 sebagai pilihan awal di modal
+    selectedAvatarTemp.value = user.value.avatar || '/avatars/1.png';
     showAvatarModal.value = true;
 };
 const selectAvatar = (assetPath) => { selectedAvatarTemp.value = assetPath; };
