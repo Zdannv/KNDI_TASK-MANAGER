@@ -63,12 +63,12 @@ class AttendanceController extends Controller
             ], 401);
         }
 
-        // ERROR MASIH DISINI
-        $user = User::where('name', $verification['user_id'])->first();
+        $user = User::find($verification['user_id']);
+
         if (!$user) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'User dengan nama ' . $verification['user_id'] . ' tidak ditemukan di database',
+                'message' => 'User dengan nama ' . $user['name'] . ' tidak ditemukan di database',
             ], 404);
         }
 
