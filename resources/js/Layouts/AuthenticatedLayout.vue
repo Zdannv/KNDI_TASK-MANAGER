@@ -165,7 +165,7 @@ const getInitials = (name) => {
                     <div class="bg-white/10 p-1.5 rounded-none shadow-lg border border-white/10">
                         <img src="/icon_kndi.svg" alt="Logo" class="w-6 h-6 shrink-0" />
                     </div>
-                    <span class="text-white font-bold text-2xl tracking-wide">KNDI.</span>
+                    <span class="text-white font-bold text-2xl tracking-wide">KNDI</span>
                 </div>
                 
                 <button 
