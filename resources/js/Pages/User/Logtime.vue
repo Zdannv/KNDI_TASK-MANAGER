@@ -322,7 +322,7 @@ const closeDetailLogtime = () => {
                         {{ value.description || '-' }}
                       </div>
                     </td>
-                    <td class="p-4 text-sm">{{ value.time_used }} h</td>
+                    <td class="p-4 text-sm">{{ parseFloat(value.time_used) }} h</td>
                     <td v-if="['other', 'co'].includes(role)" class="p-4">
                       <div class="flex justify-center gap-8">
                         <button
