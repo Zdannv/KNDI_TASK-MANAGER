@@ -69,7 +69,7 @@ const cancel = () => {
                 <button
                     type="button"
                     @click="addLink"
-                    class="mt-2 px-3 py-1.5 text-xs font-bold text-white bg-green-600 rounded-md hover:bg-green-700 shadow-sm transition-colors flex items-center gap-1"
+                    class="mt-2 px-3 py-1.5 text-sm font-bold text-white bg-green-600 rounded-md hover:bg-green-700 shadow-sm transition-colors flex items-center gap-1"
                 >
                     <Plus class="w-3 h-3" /> Add Link
                 </button>
