@@ -102,7 +102,7 @@ const handleSearch = () => {
   
   <div class="w-full">
     
-    <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-8 mt-8">
+    <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-0 mt-8">
         <div
           class="flex flex-col md:flex-row justify-between px-6 py-4 items-center gap-4 text-gray-800 dark:text-gray-200 
                  bg-white/40 dark:bg-gradient-to-b dark:from-slate-700/30 dark:to-slate-900/60 backdrop-blur-xl border border-white/40 dark:border-white/20 
@@ -169,7 +169,7 @@ const handleSearch = () => {
     </div>
 
     <div class="w-full py-8">
-      <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-8">
+      <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-0">
         
         <div 
           class="flex flex-col items-start transition-all duration-700 ease-out delay-100"

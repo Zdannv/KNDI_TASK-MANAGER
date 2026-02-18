@@ -121,7 +121,7 @@ const resetFilter = () => {
   
   <div class="w-full">
     
-    <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-8 mt-8">
+    <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-0 mt-8">
         <div
           class="flex justify-between px-6 py-4 items-center text-gray-800 dark:text-gray-200 
                  bg-white/40 dark:bg-gradient-to-b dark:from-slate-700/30 dark:to-slate-900/60 backdrop-blur-xl border border-white/40 dark:border-white/20 
@@ -152,7 +152,7 @@ const resetFilter = () => {
       class="w-full pt-4 sm:pt-6 transition-opacity duration-500 ease-out"
       :class="{ 'opacity-100': isLoaded, 'opacity-0': !isLoaded }"
     >
-      <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-8">
+      <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-0">
         <div class="flex flex-col py-6 px-6 text-gray-800 dark:text-gray-200 
                     bg-white/40 dark:bg-gradient-to-b dark:from-slate-700/30 dark:to-slate-900/60 backdrop-blur-xl border border-white/40 dark:border-white/10 
                     shadow-lg rounded-lg font-medium">
@@ -205,7 +205,7 @@ const resetFilter = () => {
       class="w-full py-6 sm:py-8 transition-opacity duration-700 ease-out delay-75 transform-gpu"
       :class="{ 'opacity-100': isLoaded, 'opacity-0': !isLoaded }"
     >
-      <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-8">
+      <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-0">
         
         <div class="flex flex-col items-start">
             
