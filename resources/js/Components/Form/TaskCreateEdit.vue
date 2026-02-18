@@ -183,7 +183,7 @@ const types = [
                                         <Close class="w-4 h-4" />
                                     </button>
                                 </div>
-                                <button type="button" @click="addRelatedLink" class="inline-flex items-center text-xs font-bold text-primary-600 dark:text-primary-400 hover:underline mt-2 uppercase tracking-widest transition-all">
+                                <button type="button" @click="addRelatedLink" class="inline-flex items-center text-sm font-bold text-primary-600 dark:text-primary-400 hover:underline mt-2 uppercase tracking-widest transition-all">
                                     + Add Related Link
                                 </button>
                             </div>
