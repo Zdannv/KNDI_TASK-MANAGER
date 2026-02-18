@@ -15,7 +15,11 @@ export default {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
-            // MENAMBAHKAN WARNA CUSTOM DISINI
+            boxShadow: {
+                'white-sm': '0 0 20px rgba(255, 255, 255, 0.15)',
+                'white-md': '0 0 40px rgba(255, 255, 255, 0.25)',
+                'white-lg': '0 0 60px rgba(255, 255, 255, 0.40)',
+            },
             colors: {
                 primary: {
                     50: '#f2f7fc',
