@@ -1,10 +1,7 @@
 <script setup>
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import { ref, onMounted } from 'vue';
-import ApplicationLogo from '@/Components/ApplicationLogo.vue';
-import Attendance from '@/Components/Icon/attendance.vue';
 import TextInput from '@/Components/TextInput.vue';
-import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
 import Checkbox from '@/Components/Checkbox.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
@@ -40,35 +37,27 @@ onMounted(() => {
 <template>
   <Head title="Project & HR Management" />
   
-  <div class="min-h-screen w-full flex items-center justify-center p-4 lg:p-8 bg-slate-50 dark:bg-slate-850 relative overflow-hidden">
+  <div class="min-h-screen w-full flex flex-col items-center justify-center p-4 lg:p-8 bg-slate-50 dark:bg-slate-850 relative overflow-hidden">
     
     <img src="/background/welcome-light.jpg" class="absolute inset-0 w-full h-full object-cover opacity-30 pointer-events-none dark:hidden" />
     <img src="/background/welcome-dark.jpg" class="absolute inset-0 w-full h-full object-cover opacity-30 pointer-events-none hidden dark:block">
 
     <div 
-      class="relative z-10 w-full max-w-6xl bg-white dark:bg-slate-900 rounded-xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden grid grid-cols-1 lg:grid-cols-3 transition-all duration-700"
+      class="relative z-10 w-full max-w-6xl bg-white dark:bg-slate-900 rounded-lg shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden grid grid-cols-1 lg:grid-cols-3 transition-all duration-700 mb-8"
       :class="{ 'translate-y-0 opacity-100': isLoaded, 'translate-y-8 opacity-0': !isLoaded }"
     >
       
       <div class="relative lg:col-span-2 p-8 lg:p-16 flex flex-col justify-between items-start text-left min-h-[500px] overflow-hidden">
-        <div class="absolute inset-0 z-0">
-          <img src="/background/welcome-dark.jpg" class="w-full h-full object-cover dark:hidden" />
-          <img src="/background/welcome-light.jpg" class="w-full h-full object-cover hidden dark:block">
-          <!-- <div class="absolute inset-0 bg-gradient-to-br from-blue-800/90 via-blue-700/80 to-slate-900/95"></div> -->
-        </div>
-
         <div class="relative z-10 w-full flex flex-col h-full justify-between">
-          <!-- <div class="mb-8">
-              <ApplicationLogo class="w-24 h-24" />
-          </div> -->
-
-          <img src="/icon_kndi.svg" alt="Icon" class="w-28 h-28">
+          <div class="mb-8">
+              <img src="/icon_kndi.svg" alt="Icon" class="w-32 h-32 object-contain object-left">
+          </div>
 
           <div>
-            <h1 class="text-4xl md:text-6xl font-extrabold text-blue-700 tracking-tight leading-tight mb-4">
+            <h1 class="text-4xl md:text-6xl font-extrabold text-[#2876BC] tracking-tight leading-tight mb-4">
               Task Manager
             </h1>
-            <p class="text-xl font-medium text-blue-700 mb-6">
+            <p class="text-xl font-medium text-[#2876BC] mb-6">
                 Kyodo News Digital Indonesia
             </p>
             <p class="max-w-md text-base text-black dark:text-white leading-relaxed mb-10">
@@ -131,8 +120,8 @@ onMounted(() => {
       </div>
     </div>
 
-    <footer class="fixed bottom-0 w-full py-4 text-sm text-black text-center bg-transparent z-20">
-      <p>© {{ new Date().getFullYear() }} 2026 PT. KND Indonesia</p>
+    <footer class="relative z-20 w-full text-sm text-white dark:text-black text-center">
+      <p>© {{ new Date().getFullYear() }} PT. KND Indonesia</p>
     </footer>
   </div>
 </template>
