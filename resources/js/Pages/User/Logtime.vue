@@ -151,7 +151,7 @@ const closeDetailLogtime = () => {
   <Head title="Logtimes" />
   
   <div class="w-full"> 
-    <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-8 mt-8">
+    <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-0 mt-8">
         <div
           class="flex justify-between px-6 py-4 items-center text-gray-800 dark:text-gray-200 
                  bg-white/40 dark:bg-gradient-to-b dark:from-slate-700/30 dark:to-slate-900/60 backdrop-blur-xl border border-white/40 dark:border-white/20 
@@ -216,7 +216,7 @@ const closeDetailLogtime = () => {
       class="w-full pt-4 sm:pt-6 transition-all duration-500 ease-out"
       :class="{ 'translate-y-0 opacity-100': isLoaded, 'translate-y-12 opacity-0': !isLoaded }"
     >
-      <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-8">
+      <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-0">
         <div class="flex flex-col py-6 px-6 text-gray-800 dark:text-gray-200 
                     bg-white/40 dark:bg-gradient-to-b dark:from-slate-700/30 dark:to-slate-900/60 backdrop-blur-xl border border-white/40 dark:border-white/10 
                     shadow-lg rounded-lg font-medium">
@@ -268,7 +268,7 @@ const closeDetailLogtime = () => {
       class="w-full py-6 sm:py-8 transition-all duration-700 ease-out delay-100"
       :class="{ 'opacity-100': isLoaded, 'translate-y-12 opacity-0': !isLoaded }"
     >
-      <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-8">
+      <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-0">
         
         <div class="flex flex-col items-start">
             
@@ -313,7 +313,7 @@ const closeDetailLogtime = () => {
                         </a>
                     </td>
                     <td class="p-5">
-                        <a :href="'//' + value.task.ticket_link" target="_blank" class="text-sm font-mono text-primary-600 dark:text-primary-400 hover:underline">
+                        <a :href="'//' + value.task.ticket_link" target="_blank" class="text-sm text-primary-600 dark:text-primary-400 hover:underline">
                         {{ value.task.ticket_link }}
                         </a>
                     </td>
@@ -322,7 +322,7 @@ const closeDetailLogtime = () => {
                         {{ value.description || '-' }}
                       </div>
                     </td>
-                    <td class="p-4 text-sm">{{ value.time_used }} h</td>
+                    <td class="p-4 text-sm">{{ parseFloat(value.time_used) }} h</td>
                     <td v-if="['other', 'co'].includes(role)" class="p-4">
                       <div class="flex justify-center gap-8">
                         <button

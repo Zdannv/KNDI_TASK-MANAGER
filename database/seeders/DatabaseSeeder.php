@@ -17,7 +17,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // 1. BUAT USER (Ditambahkan 'avatar' default agar tidak not found)
         $farkhan = User::factory()->create([
             'name' => 'Farkhan',
             'email' => 'farkhan@kyodo-i.com',
@@ -105,15 +104,14 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('password')
         ]);
 
-        User::factory()->create([
-            'name' => 'hr',
+        $HR = User::factory()->create([
+            'name' => 'HR',
             'email' => 'hr@gmail.com',
             'role' => 'other',
             'avatar' => '/avatars/1.png',
             'password' => Hash::make('password')
         ]);
 
-        // 2. BUAT PROJECT OWNER & PROJECT
         $kd = ProjectOwner::create([
             'name' => 'KD',
             'creator' => $farkhan->id,
@@ -153,7 +151,6 @@ class DatabaseSeeder extends Seeder
             'updater' => $farkhan->id
         ]);
 
-        // 3. BUAT TASK
         $task1 = Task::create([
             'project_id' => $signage->id,
             'issue' => 'famima xxx',
@@ -198,7 +195,6 @@ class DatabaseSeeder extends Seeder
             'updater' => $tasya->id
         ]);
 
-        // 4. BUAT PR & REPLIES
         $pr1 = $task2->pullRequests()->create([
             'from' => $farkhan->id,
             'pr_links' => ['https://bitbucket.org/kyodo/47_site/pull-requests/200'],
