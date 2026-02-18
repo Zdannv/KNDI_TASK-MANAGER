@@ -130,7 +130,7 @@ onBeforeUnmount(() => {
 
                 <div class="text-right">
                     <div class="text-2xl font-mono font-bold text-gray-800 leading-none">{{ currentTime }}</div>
-                    <div class="text-xs text-gray-500 font-medium uppercase mt-1">{{ currentDate }}</div>
+                    <div class="text-sm text-gray-500 font-medium uppercase mt-1">{{ currentDate }}</div>
                 </div>
             </div>
         </header>
@@ -175,7 +175,7 @@ onBeforeUnmount(() => {
                             <button 
                                 v-if="isCameraActive"
                                 @click="toggleCamera"
-                                class="absolute top-4 right-4 z-50 bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-red-500/80 hover:border-red-500 px-4 py-2 rounded-full text-xs font-bold shadow-lg transition-all flex items-center gap-2 group"
+                                class="absolute top-4 right-4 z-50 bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-red-500/80 hover:border-red-500 px-4 py-2 rounded-full text-sm font-bold shadow-lg transition-all flex items-center gap-2 group"
                             >
                                 <span class="w-2 h-2 rounded-full bg-red-500 group-hover:bg-white transition-colors animate-pulse"></span>
                                 Matikan
@@ -225,7 +225,7 @@ onBeforeUnmount(() => {
                                         {{ recognitionResult.message }}
                                     </div>
                                     
-                                    <p class="text-xs text-gray-400 mt-6 uppercase tracking-widest font-semibold">
+                                    <p class="text-sm text-gray-400 mt-6 uppercase tracking-widest font-semibold">
                                         Status Terakhir • {{ recognitionResult.type === 'check_in' ? 'Masuk' : 'Pulang' }}
                                     </p>
                                 </div>

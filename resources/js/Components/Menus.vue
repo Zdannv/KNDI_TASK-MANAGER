@@ -70,7 +70,7 @@ watch(activeIndex, (newVal, oldVal) => {
     <div class="relative flex flex-col gap-2">
         
         <div
-            class="absolute left-0 z-0 bg-gradient-to-r from-white/95 to-white/70 dark:from-primary-600/40 dark:to-transparent backdrop-blur-md border border-white/40 dark:border-white/10 shadow-lg"
+            class="absolute left-0 z-0 bg-gradient-to-r from-white/95 to-white/70 dark:from-primary-600 dark:to-transparent backdrop-blur-md border border-white/40 dark:border-white/10 shadow-lg"
             :class="[
                 'h-[50px] transform-gpu transition-all',
                 'duration-300 ease-in-out', 
@@ -119,7 +119,7 @@ watch(activeIndex, (newVal, oldVal) => {
 
                 <div
                     v-if="!sidebarOpen"
-                    class="absolute left-[calc(100%+10px)] top-1/2 -translate-y-1/2 bg-[#0d1b3e]/90 dark:bg-slate-900/95 backdrop-blur-md text-white text-xs font-bold px-3 py-1.5 rounded-none opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap shadow-xl z-50 border border-white/20 dark:border-white/10"
+                    class="absolute left-[calc(100%+10px)] top-1/2 -translate-y-1/2 bg-[#0d1b3e]/90 dark:bg-slate-900/95 backdrop-blur-md text-white text-sm font-bold px-3 py-1.5 rounded-none opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap shadow-xl z-50 border border-white/20 dark:border-white/10"
                 >
                     {{ item.label }}
                     <div class="absolute top-1/2 -left-1 -translate-y-1/2 border-4 border-transparent border-r-[#0d1b3e]/90 dark:border-r-slate-900/95"></div>

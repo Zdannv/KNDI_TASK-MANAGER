@@ -141,7 +141,7 @@ const downloadTemplate = () => {
                     >
                     Click or drag file here to upload
                     </p>
-                    <p class="text-xs text-gray-400 dark:text-slate-500 mt-2">
+                    <p class="text-sm text-gray-400 dark:text-slate-500 mt-2">
                     Compatible files: XLSX, XLS, CSV (Max 10MB)
                     </p>
                 </div>

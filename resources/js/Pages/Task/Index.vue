@@ -105,7 +105,7 @@ const handleSearch = () => {
     <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-0 mt-8">
         <div
           class="flex flex-col md:flex-row justify-between px-6 py-4 items-center gap-4 text-gray-800 dark:text-gray-200 
-                 bg-white/40 dark:bg-gradient-to-b dark:from-slate-700/30 dark:to-slate-900/60 backdrop-blur-xl border border-white/40 dark:border-white/20 
+                 bg-white/40 dark:bg-slate-800 dark:from-slate-700/30 dark:to-slate-900/60 backdrop-blur-xl border border-white/40 dark:border-white/20 
                  shadow-lg rounded-lg transition-all duration-1000 ease-out"
           :class="{ 'translate-y-0 opacity-100': isLoaded, 'translate-y-8 opacity-0': !isLoaded }"
         >
@@ -211,11 +211,11 @@ const handleSearch = () => {
                       <div class="flex flex-wrap gap-1">
                            <span v-for="(id, idx) in [...(task.programmer || []), ...(task.designer || []), ...(task.communicator || [])]" 
                               :key="idx"
-                              class="inline-block px-2 py-0.5 rounded-md bg-white/50 dark:bg-slate-800/40 border border-gray-200 dark:border-white/10 text-xs text-gray-700 dark:text-slate-300"
+                              class="inline-block px-2 py-0.5 rounded-md bg-white/50 dark:bg-slate-800/40 border border-gray-200 dark:border-white/10 text-sm text-gray-700 dark:text-slate-300"
                            >
                               {{ users.find(u => u.id === id)?.name || id }}
                            </span>
-                           <span v-if="![...(task.programmer || []), ...(task.designer || []), ...(task.communicator || [])].length" class="text-gray-400 text-xs italic">-</span>
+                           <span v-if="![...(task.programmer || []), ...(task.designer || []), ...(task.communicator || [])].length" class="text-gray-400 text-sm italic">-</span>
                       </div>
                     </td>
 
@@ -248,7 +248,7 @@ const handleSearch = () => {
                     <td class="p-5 align-middle text-sm text-gray-500 dark:text-slate-400">{{ formatDate(task.start_date) }}</td>
                     <td class="p-5 align-middle text-sm">
                       <span :class="[
-                          'px-2 py-1 rounded-md text-xs font-bold border',
+                          'px-2 py-1 rounded-md text-sm font-bold border',
                           task.due_date && moment().startOf('day').isAfter(moment(task.due_date).startOf('day'))
                               ? 'bg-red-50/50 text-red-600 border-red-100 dark:bg-red-900/20 dark:text-red-400 dark:border-red-900/30'
                               : 'bg-emerald-50/50 text-emerald-600 border-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-900/30'

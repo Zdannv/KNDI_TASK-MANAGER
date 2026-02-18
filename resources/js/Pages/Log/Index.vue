@@ -94,7 +94,7 @@ const formatDate = (date) => {
                             <span class="font-medium text-gray-700 dark:text-slate-200">{{ log.user?.name || '-' }}</span>
                         </td>
                         <td class="p-5 align-middle min-w-[200px]">
-                            <span class="inline-block px-2 py-1 rounded text-xs font-bold bg-slate-100/50 dark:bg-slate-800/50 border border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-300">
+                            <span class="inline-block px-2 py-1 rounded text-sm font-bold bg-slate-100/50 dark:bg-slate-800/50 border border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-300">
                                 {{ log.target || '-' }}
                             </span>
                         </td>
