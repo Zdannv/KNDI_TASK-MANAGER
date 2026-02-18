@@ -70,7 +70,7 @@ watch(activeIndex, (newVal, oldVal) => {
     <div class="relative flex flex-col gap-2">
         
         <div
-            class="absolute left-0 z-0 bg-gradient-to-r from-white/95 to-white/70 dark:from-primary-600/40 dark:to-transparent backdrop-blur-md border border-white/40 dark:border-white/10 shadow-lg"
+            class="absolute left-0 z-0 bg-gradient-to-r from-white/95 to-white/70 dark:from-primary-600 dark:to-transparent backdrop-blur-md border border-white/40 dark:border-white/10 shadow-lg"
             :class="[
                 'h-[50px] transform-gpu transition-all',
                 'duration-300 ease-in-out', 
