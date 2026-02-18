@@ -37,19 +37,19 @@ onMounted(() => {
 <template>
   <Head title="Project & HR Management" />
   
-  <div class="min-h-screen w-full flex flex-col items-center justify-center p-4 lg:p-8 bg-slate-50 dark:bg-slate-850 relative overflow-hidden">
+  <div class="min-h-screen w-full flex flex-col items-center justify-center p-4 lg:p-8 relative overflow-hidden">
     
     <img src="/background/welcome-light.jpg" class="absolute inset-0 w-full h-full object-cover opacity-30 pointer-events-none dark:hidden" />
-    <img src="/background/welcome-dark.jpg" class="absolute inset-0 w-full h-full object-cover opacity-30 pointer-events-none hidden dark:block">
+    <img src="/background/BG-TM.jpg" class="absolute inset-0 w-full h-full object-cover pointer-events-none hidden dark:block">
 
     <div 
-      class="relative z-10 w-full max-w-6xl bg-white dark:bg-slate-900 rounded-lg shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden grid grid-cols-1 lg:grid-cols-3 transition-all duration-700 mb-8"
+      class="relative z-10 w-full max-w-6xl bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 overflow-hidden grid grid-cols-1 lg:grid-cols-3 transition-all duration-700 mb-8 shadow-white-md"
       :class="{ 'translate-y-0 opacity-100': isLoaded, 'translate-y-8 opacity-0': !isLoaded }"
     >
       
       <div class="relative lg:col-span-2 p-8 lg:p-16 flex flex-col justify-between items-start text-left min-h-[500px] overflow-hidden">
         <div class="relative z-10 w-full flex flex-col h-full justify-between">
-          <div class="mb-8">
+          <div class="">
               <img src="/icon_kndi.svg" alt="Icon" class="w-32 h-32 object-contain object-left">
           </div>
 
@@ -73,7 +73,7 @@ onMounted(() => {
         </div>
       </div>
 
-      <div class="lg:col-span-1 p-8 lg:p-12 bg-white dark:bg-slate-900 flex flex-col justify-center border-t lg:border-t-0 lg:border-l border-slate-100 dark:border-slate-800">
+      <div class="lg:col-span-1 p-8 lg:p-12 bg-white dark:bg-[#132440] flex flex-col justify-center border-t lg:border-t-0 lg:border-l border-slate-100 dark:border-slate-800">
         <div class="w-full">
             <h2 class="text-2xl font-extrabold text-slate-800 dark:text-white mb-8">AKUN</h2>
             
@@ -113,14 +113,14 @@ onMounted(() => {
                 class="w-full justify-center px-4 py-3 rounded-xl text-white font-bold bg-[#2876BC] hover:bg-blue-700 transition-all shadow-md active:scale-[0.98]" 
                 :disabled="form.processing"
               >
-                Masuk
+                MASUK
               </button>
             </form>
         </div>
       </div>
     </div>
 
-    <footer class="relative z-20 w-full text-sm text-white dark:text-black text-center">
+    <footer class="relative z-20 w-full text-sm text-dark dark:text-white text-center">
       <p>© {{ new Date().getFullYear() }} PT. KND Indonesia</p>
     </footer>
   </div>
