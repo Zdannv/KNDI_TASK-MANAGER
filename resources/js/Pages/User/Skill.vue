@@ -95,7 +95,7 @@ watch(id, (newValue) => {
     <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-0">
         <div
           class="flex justify-between px-6 py-4 items-center text-gray-800 dark:text-gray-200 
-                 bg-white/40 dark:bg-gradient-to-b dark:from-slate-700/30 dark:to-slate-900/60 backdrop-blur-xl border border-white/40 dark:border-white/20 
+                 bg-white/40 dark:bg-slate-800 dark:from-slate-700/30 backdrop-blur-xl border border-white/40 dark:border-white/20 
                  shadow-lg rounded-lg transition-all duration-1000 ease-out"
           :class="{ 'translate-y-0 opacity-100': isLoaded, 'translate-y-8 opacity-0': !isLoaded }"
         >
@@ -167,11 +167,11 @@ watch(id, (newValue) => {
     >
       <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-0">
         <div class="flex flex-col py-6 px-6 text-gray-800 dark:text-gray-200 
-                    bg-white/40 dark:bg-gradient-to-b dark:from-slate-700/30 dark:to-slate-900/60 backdrop-blur-xl border border-white/40 dark:border-white/10 
+                    bg-white/40 dark:bg-slate-800 dark:from-slate-700/30 backdrop-blur-xl border border-white/40 dark:border-white/10 
                     shadow-lg rounded-lg font-medium">
-          <div class="flex flex-col sm:flex-row gap-4 pb-4 border-b border-gray-200/50 dark:border-white/5 mb-4">
+          <div class="flex flex-col sm:flex-row justify-between items-center gap-2 pb-4 border-b border-gray-200/50 dark:border-white/5 mb-4">
              <div class="w-full sm:w-1/2">
-                <label class="text-xs font-bold text-gray-500 dark:text-slate-400 mb-1 block uppercase">Filter User</label>
+                <label class="text-sm font-bold text-gray-500 dark:text-slate-400 mb-1 block uppercase">Filter User</label>
                 <SelectInput
                   id="user"
                   v-model="id"
@@ -183,22 +183,22 @@ watch(id, (newValue) => {
                   :dark="true"
                 />
             </div>
-          </div>
-          <div class="hidden sm:flex justify-end gap-3">
-            <button
-              @click="exportSkill"
-              class="flex items-center gap-2 px-3 py-2 text-sm font-bold rounded-lg bg-primary-50/50 hover:bg-primary-100/50 text-primary-700 dark:bg-primary-900/30 dark:hover:bg-primary-900/50 dark:text-primary-300 transition-colors border border-primary-200/50 dark:border-primary-800/50"
-            >
-              <Download class="w-4 h-4" />
-              <span>{{ id ? 'Export Data' : 'Export All' }}</span>
-            </button>
-            <button
-              @click="() => router.get(route('skill.list'))"
-              class="flex items-center gap-2 px-3 py-2 text-sm font-bold rounded-lg bg-gray-100/50 hover:bg-gray-200/50 text-gray-600 dark:bg-slate-700/50 dark:hover:bg-slate-600/50 dark:text-slate-300 transition-colors border border-gray-200/50 dark:border-slate-600/50"
-            >
-              <Close class="w-4 h-4" />
-              <span>Reset</span>
-            </button>
+            <div class="hidden sm:flex justify-end gap-3">
+              <button
+                @click="exportSkill"
+                class="flex items-center gap-2 h-12 px-3 py-2 text-sm font-bold rounded-lg bg-primary-50/50 hover:bg-primary-100/50 text-primary-700 dark:bg-primary-900/30 dark:hover:bg-primary-900/50 dark:text-primary-300 transition-colors border border-primary-200/50 dark:border-primary-800/50"
+              >
+                <Download class="w-4 h-4" />
+                <span>{{ id ? 'Export Data' : 'Export All' }}</span>
+              </button>
+              <button
+                @click="() => router.get(route('skill.list'))"
+                class="flex items-center gap-2 h-12 px-3 py-2 text-sm font-bold rounded-lg bg-gray-100/50 hover:bg-gray-200/50 text-gray-600 dark:bg-slate-700/50 dark:hover:bg-slate-600/50 dark:text-slate-300 transition-colors border border-gray-200/50 dark:border-slate-600/50"
+              >
+                <Close class="w-4 h-4" />
+                <span>Reset</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
