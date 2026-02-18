@@ -129,7 +129,7 @@ watch(() => page.props.flash, checkFlash, { deep: true })
           <p class="text-sm font-medium text-gray-900 dark:text-gray-100">
             {{ message }}
           </p>
-          <div v-if="importErrors.length > 0" class="mt-3 text-xs text-gray-600 dark:text-gray-400 max-h-48 overflow-y-auto">
+          <div v-if="importErrors.length > 0" class="mt-3 text-sm text-gray-600 dark:text-gray-400 max-h-48 overflow-y-auto">
             <p class="font-semibold mb-1">Detail kesalahan:</p>
             <ul class="list-disc list-inside space-y-1">
               <li v-for="(error, index) in importErrors" :key="index">
