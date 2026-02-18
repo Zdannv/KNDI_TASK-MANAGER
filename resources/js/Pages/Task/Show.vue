@@ -222,7 +222,7 @@ const visibleButtons = computed(() => {
     <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-0 mt-8">
         <div
           class="flex flex-col md:flex-row justify-between px-6 py-4 items-start md:items-center gap-4 text-gray-800 dark:text-gray-200 
-                 bg-white/40 dark:bg-gradient-to-b dark:from-slate-700/30 dark:to-slate-900/60 backdrop-blur-xl border border-white/40 dark:border-white/20 
+                 bg-slate-800 dark:bg-gradient-to-b dark:from-slate-700/30 dark:to-slate-900/60 backdrop-blur-xl border border-white/40 dark:border-white/20 
                  shadow-lg rounded-lg transition-all duration-700 ease-out"
           :class="{ 'opacity-100': isLoaded, 'translate-y-8 opacity-0': !isLoaded }"
         >
@@ -241,7 +241,7 @@ const visibleButtons = computed(() => {
                 <h2 class="font-bold text-xl leading-tight text-gray-900 dark:text-slate-100 drop-shadow-sm">
                 {{ task.issue }}
                 </h2>
-                <div class="flex items-center gap-2 mt-1 text-xs font-medium text-gray-500 dark:text-slate-400">
+                <div class="flex items-center gap-2 mt-1 text-sm font-medium text-gray-500 dark:text-slate-400">
                     <span class="px-2 py-0.5 rounded-md bg-primary-50/50 dark:bg-primary-900/30 border border-primary-100/50 dark:border-primary-800/30 text-primary-600 dark:text-primary-400 uppercase tracking-wider">
                         {{ task.type }}
                     </span>
@@ -322,7 +322,7 @@ const visibleButtons = computed(() => {
     >
       <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-0">
         
-        <div class="bg-white/40 dark:bg-gradient-to-b dark:from-slate-800/60 dark:to-slate-950/80 backdrop-blur-xl border border-white/40 dark:border-white/20 shadow-2xl rounded-lg overflow-hidden flex flex-col">
+        <div class="bg-slate-900 dark:bg-gradient-to-b dark:from-slate-800/60 dark:to-slate-950/80 backdrop-blur-xl border border-white/40 dark:border-white/20 shadow-2xl rounded-lg overflow-hidden flex flex-col">
 
           <div class="p-8 border-b border-white/20 dark:border-white/5">
             <h3 class="text-lg font-bold text-gray-800 dark:text-slate-100 mb-6 flex items-center gap-2">
@@ -368,23 +368,23 @@ const visibleButtons = computed(() => {
             </h3>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
               <div class="flex flex-col gap-1">
-                  <span class="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wide">Project Leader</span>
+                  <span class="text-sm font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wide">Project Leader</span>
                   <span class="text-sm font-semibold text-gray-800 dark:text-slate-200">{{ getNameUser(task.pl) }}</span>
               </div>
               <div class="flex flex-col gap-1">
-                  <span class="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wide">Communicator</span>
+                  <span class="text-sm font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wide">Communicator</span>
                   <span class="text-sm font-medium text-gray-700 dark:text-slate-300">{{ formatJsonList(task.communicator) }}</span>
               </div>
               <div class="flex flex-col gap-1">
-                  <span class="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wide">Programmer</span>
+                  <span class="text-sm font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wide">Programmer</span>
                   <span class="text-sm font-medium text-gray-700 dark:text-slate-300">{{ formatJsonList(task.programmer) }}</span>
               </div>
               <div class="flex flex-col gap-1">
-                  <span class="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wide">Designer</span>
+                  <span class="text-sm font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wide">Designer</span>
                   <span class="text-sm font-medium text-gray-700 dark:text-slate-300">{{ formatJsonList(task.designer) }}</span>
               </div>
               <div class="flex flex-col gap-1">
-                  <span class="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wide">Reviewer</span>
+                  <span class="text-sm font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wide">Reviewer</span>
                   <span class="text-sm font-medium text-gray-700 dark:text-slate-300">{{ formatJsonList(task.reviewer) }}</span>
               </div>
             </div>
@@ -399,20 +399,20 @@ const visibleButtons = computed(() => {
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <div class="lg:col-span-2 space-y-6">
                     <div>
-                        <label class="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wide block mb-2">Description</label>
+                        <label class="text-sm font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wide block mb-2">Description</label>
                         <div class="p-4 rounded-lg bg-white/50 dark:bg-slate-800/40 border border-white/40 dark:border-white/10 text-gray-700 dark:text-slate-300 text-sm whitespace-pre-wrap leading-relaxed shadow-inner max-h-[300px] overflow-y-auto custom-scrollbar">
                             {{ task.description || 'No description provided.' }}
                         </div>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label class="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wide block mb-1">Ticket Link</label>
+                            <label class="text-sm font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wide block mb-1">Ticket Link</label>
                             <a :href="'//' + task.ticket_link" target="_blank" class="text-sm font-medium text-primary-600 dark:text-primary-400 hover:underline break-all flex items-center gap-1">
                                 {{ task.ticket_link }} <span class="text-[10px]">↗</span>
                             </a>
                         </div>
                         <div>
-                            <label class="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wide block mb-1">Related Links</label>
+                            <label class="text-sm font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wide block mb-1">Related Links</label>
                             <div v-if="task.related_links?.length > 0" class="space-y-1">
                                 <div v-for="link in task.related_links" :key="link">
                                     <a :href="'//' + link" target="_blank" class="text-sm font-medium text-primary-600 dark:text-primary-400 hover:underline break-all flex items-center gap-1">
@@ -426,7 +426,7 @@ const visibleButtons = computed(() => {
                 </div>
 
                 <div>
-                    <label class="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wide block mb-2">Time Allocation</label>
+                    <label class="text-sm font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wide block mb-2">Time Allocation</label>
                     <div v-if="logtimeSegments.length > 0" class="p-5 rounded-lg bg-white/50 dark:bg-slate-800/40 border border-white/40 dark:border-white/10 shadow-sm flex flex-col items-center">
                         <div class="relative w-40 h-40 mb-6">
                            <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
@@ -449,7 +449,7 @@ const visibleButtons = computed(() => {
                            </div>
                         </div>
                         <div class="w-full space-y-2 max-h-[150px] overflow-y-auto custom-scrollbar pr-2">
-                            <div v-for="seg in logtimeSegments" :key="seg.id" class="flex justify-between items-center text-xs">
+                            <div v-for="seg in logtimeSegments" :key="seg.id" class="flex justify-between items-center text-sm">
                                 <div class="flex items-center gap-2">
                                     <span class="w-2.5 h-2.5 rounded-full" :style="{ backgroundColor: seg.color }"></span>
                                     <span class="text-gray-600 dark:text-slate-300 font-medium truncate max-w-[100px]" :title="seg.name">{{ seg.name }}</span>
@@ -484,7 +484,7 @@ const visibleButtons = computed(() => {
                                 <span class="font-bold text-sm text-gray-900 dark:text-slate-100">{{ getNameUser(pr.from) }}</span>
                                 <span class="px-1.5 py-0.5 rounded text-[10px] bg-gray-100 dark:bg-slate-700 text-gray-500 dark:text-slate-400">Commented</span>
                             </div>
-                            <span class="text-xs text-gray-400">{{ formatDate(pr.created_at, true) }}</span>
+                            <span class="text-sm text-gray-400">{{ formatDate(pr.created_at, true) }}</span>
                         </div>
 
                         <div class="text-sm text-gray-700 dark:text-slate-300 whitespace-pre-wrap mb-4">
@@ -492,24 +492,42 @@ const visibleButtons = computed(() => {
                         </div>
 
                         <div v-if="pr.pr_links && pr.pr_links.length > 0" class="mb-4 flex flex-wrap gap-2">
-                           <a v-for="link in pr.pr_links" :key="link" :href="'//' + link" target="_blank" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400 text-xs font-medium border border-primary-100 dark:border-primary-800 hover:bg-primary-100 dark:hover:bg-primary-900/40 transition">
+                           <a v-for="link in pr.pr_links" :key="link" :href="'//' + link" target="_blank" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400 text-sm font-medium border border-primary-100 dark:border-primary-800 hover:bg-primary-100 dark:hover:bg-primary-900/40 transition">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>
-                                PR Link
+                                {{ link }}
                            </a>
                         </div>
 
                         <div v-if="pr.replies && pr.replies.length > 0" class="mt-4 space-y-3 pl-4 border-l border-gray-200 dark:border-slate-700">
                             <div v-for="r in pr.replies" :key="r.id" class="bg-gray-50/80 dark:bg-slate-900/50 p-3 rounded-lg border border-gray-100 dark:border-white/5">
                                 <div class="flex justify-between items-center mb-1">
-                                    <span class="font-semibold text-xs text-gray-800 dark:text-slate-200">{{ r.user ? r.user.name : getNameUser(r.from) }}</span>
+                                    <span class="font-semibold text-sm text-gray-800 dark:text-slate-200">{{ r.user ? r.user.name : getNameUser(r.from) }}</span>
                                     <span class="text-[10px] text-gray-400">{{ formatDate(r.created_at, true) }}</span>
                                 </div>
-                                <p class="text-xs text-gray-600 dark:text-slate-400 whitespace-pre-wrap">{{ r.comment }}</p>
+                                <p class="text-sm text-gray-600 dark:text-slate-400 whitespace-pre-wrap">{{ r.comment }}</p>
+                                <div
+                                  v-if="r.pr_links && r.pr_links.length > 0"
+                                  v-for="links in r.pr_links"
+                                  class="text-[#50B2D8]"
+                                >
+                                  <a 
+                                    :href="'//' + links"
+                                    target="_blank"
+                                    class="flex flex-cols"
+                                  >
+                                    <span class="flex items-center gap-1">
+                                      <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                                      </svg>
+                                      {{ links }}
+                                    </span>
+                                  </a>
+                                </div>
                             </div>
                         </div>
 
                         <div class="mt-3 flex justify-end">
-                           <button @click="handleReply(pr.id)" class="text-xs font-semibold text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300 hover:underline">
+                           <button @click="handleReply(pr.id)" class="text-sm font-semibold text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300 hover:underline">
                              Reply
                            </button>
                         </div>
