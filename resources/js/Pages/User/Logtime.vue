@@ -21,12 +21,15 @@ import Download2 from '@/Components/Icon/Download2.vue';
 import Modal from '@/Components/Modal.vue';
 import Trash from '@/Components/Icon/Trash.vue';
 import Detail from '@/Components/Icon/Detail.vue';
+import DeleteConfirmationModal from '@/Components/DeleteConfirmationModal.vue';
 
 const showButtons = ref(false);
 const openForm = ref(false);
 const isLoaded = ref(false);
 const selectedLogtime = ref(null);
 const showDetailLogtime = ref(false);
+const confirmDeleteModal = ref(false);
+const itemToDelete = ref(null);
 
 onMounted(() => {
   setTimeout(() => {
@@ -66,10 +69,20 @@ const handleCloseForm = () => {
   openForm.value = false;
 };
 
-const handleDelete = (id) => {
-  if (confirm('Are you sure you want to delete this logtime?')) {
-    router.delete(route('logtime.destroy', id));
-  }
+const openDeleteModal = (id) => {
+  itemToDelete.value = id;
+  confirmDeleteModal.value = true;
+}
+
+const closeDeleteModal = () => {
+  itemToDelete.value = null;
+  confirmDeleteModal.value = false;
+}
+
+const handleConfirmDelete = () => {
+  router.delete(route('logtime.destroy', itemToDelete.value), {
+    onSuccess: () => closeDeleteModal(),
+  })
 };
 
 const props = defineProps({
@@ -215,7 +228,7 @@ const closeDetailLogtime = () => {
       v-if="options"
       class="w-full pt-4 sm:pt-6 transition-all duration-500 ease-out"
       :class="{ 'translate-y-0 opacity-100': isLoaded, 'translate-y-12 opacity-0': !isLoaded }"
-    >
+    >Apakah Anda yakin ingin menghapus catatan waktu ini? Tindakan ini tidak dapat dibatalkan.
       <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-0">
         <div class="flex flex-col py-6 px-6 text-gray-800 dark:text-gray-200 
                     bg-white/40 dark:bg-slate-900/40 backdrop-blur-xl border border-white/40 dark:border-white/10 
@@ -401,6 +414,14 @@ const closeDetailLogtime = () => {
         </div>
     </div>
   </Modal>
+
+  <DeleteConfirmationModal 
+    :show="confirmDeleteModal"
+    title="Delete Log Time"
+    message="Are you sure want to delete this logtime?"
+    @close="closeDeleteModal"
+    @confirm="handleConfirmDelete"
+  />
   </div> 
 </template>
 
