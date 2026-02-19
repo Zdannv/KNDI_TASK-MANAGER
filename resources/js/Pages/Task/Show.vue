@@ -1,7 +1,6 @@
 <script>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 
-// 1. Layout Persistent
 export default { layout: AuthenticatedLayout };
 </script>
 
@@ -18,6 +17,7 @@ import TaskAssignForm from '@/Components/Form/TaskAssign.vue';
 import TaskPrForm from '@/Components/Form/TaskPr.vue';
 import TaskCommentForm from '@/Components/Form/TaskComment.vue';
 import TaskReplyForm from '@/Components/Form/TaskReply.vue';
+import DeleteConfirmationModal from '@/Components/DeleteConfirmationModal.vue';
 import { Head, router, usePage } from '@inertiajs/vue3';
 import { ref, computed, onMounted } from 'vue';
 import moment from 'moment';
@@ -32,6 +32,8 @@ const isEditMode = ref(false);
 const selectedTask = ref(null);
 const selectedComment = ref(null);
 const isLoaded = ref(false);
+const confirmDeleteModal = ref(false)
+const taskToDelete = ref(null)
 
 onMounted(() => {
   setTimeout(() => {
@@ -48,10 +50,20 @@ const handleBack = () => {
   router.get(route('task.list'));
 };
 
-const handleDelete = () => {
-  if (confirm('Are you sure you want to delete this task?')) {
-    router.delete(route('task.destroy', props.task.id));
-  }
+const openDeleteModal = (task) => {
+  taskToDelete.value = task;
+  confirmDeleteModal.value = true;
+}
+
+const closeDeleteModal = () => {
+  taskToDelete.value = null;
+  confirmDeleteModal.value = false
+}
+
+const handleConfirmDelete = () => {
+  router.delete(route('task.destroy', taskToDelete.value.id), {
+    onSuccess: () => closeDeleteModal(),
+  });
 };
 
 const handleEdit = () => {
@@ -202,7 +214,7 @@ const visibleButtons = computed(() => {
     buttons.push({ action: 'edit', icon: Pen, handler: handleEdit, text: 'Edit' });
   }
   if (['other', 'pm', 'co'].includes(role.value)) {
-    buttons.push({ action: 'delete', icon: Trash, handler: handleDelete, text: 'Delete' });
+    buttons.push({ action: 'delete', icon: Trash, handler: () => openDeleteModal(props.task), text: 'Delete' });
   }
   if (
     (['pm', 'pg', 'ds'].includes(role.value) && [props.task?.programmer, props.task?.designer].some(arr => arr?.includes(id.value))) ||
@@ -545,6 +557,14 @@ const visibleButtons = computed(() => {
         </div>
       </div>
     </div>
+
+    <DeleteConfirmationModal
+      :show="confirmDeleteModal"
+      title="Delete Task"
+      :message="`Are you sure want to delete task ${taskToDelete?.issue}`"
+      @close="closeDeleteModal"
+      @confirm="handleConfirmDelete"
+    />
   </div>
 </template>
 

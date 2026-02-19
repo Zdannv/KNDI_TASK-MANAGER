@@ -1,7 +1,6 @@
 <script>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 
-// 1. Layout Persistent
 export default { layout: AuthenticatedLayout };
 </script>
 
@@ -12,6 +11,7 @@ import Pen from '@/Components/Icon/Pen.vue';
 import Trash from '@/Components/Icon/Trash.vue'; 
 import Pagination from '@/Components/Pagination.vue';
 import ClientForm from '@/Components/Form/Client.vue';
+import DeleteConfirmationModal from '@/Components/DeleteConfirmationModal.vue';
 import { Head, router, usePage } from '@inertiajs/vue3';
 import { ref, computed, onMounted } from 'vue';
 
@@ -19,6 +19,8 @@ const openForm = ref(false);
 const isEditMode = ref(false);
 const selectedClient = ref(null);
 const isLoaded = ref(false);
+const confirmDeleteModal = ref(false);
+const ownerToDelete = ref(null);
 
 onMounted(() => {
   setTimeout(() => {
@@ -41,10 +43,20 @@ const handleCloseForm = () => {
   selectedClient.value = null;
 };
 
-const handleDelete = (id) => {
-  if (confirm('Are you sure you want to delete this client?')) {
-    router.delete(route('client.destroy', id));
-  }
+const openDeleteModal = (owner) => {
+  ownerToDelete.value = owner;
+  confirmDeleteModal.value = true;
+};
+
+const closeDeleteModal = () => {
+  ownerToDelete.value = null;
+  confirmDeleteModal.value = false;
+};
+
+const handleConfirmDelete = () => {
+  router.delete(route('client.destroy', ownerToDelete.value.id), {
+    onSuccess: () => closeDeleteModal(),
+  });
 };
 
 const handleEdit = (id) => {
@@ -83,7 +95,7 @@ const getNameUser = (id) => {
             <h2 class="font-bold text-xl leading-tight text-gray-800 dark:text-slate-100 drop-shadow-sm">
               Project Owners
             </h2>
-            <p class="text-sm text-gray-500 dark:text-slate-400 mt-1">Manage client and project owner list.</p>
+            <p class="text-sm text-gray-500 dark:text-slate-400 mt-1">Manage project owner list.</p>
           </div>
           
           <div v-if="['other', 'pm', 'co'].includes(role)" class="flex justify-end">
@@ -126,7 +138,7 @@ const getNameUser = (id) => {
           <div class="relative z-10 -mb-[1px]">
              <div class="w-fit px-6 h-12 bg-white/40 dark:bg-slate-700/50 dark:to-slate-800/60 backdrop-blur-xl border-t border-l border-r border-white/40 dark:border-white/20 rounded-t-lg shadow-sm relative flex items-center gap-3">
                 <Build class="w-5 h-5 text-primary-600 dark:text-primary-400 drop-shadow-sm" />
-                <span class="font-bold text-gray-800 dark:text-slate-100 text-sm tracking-wide shadow-black drop-shadow-sm">Client List</span>
+                <span class="font-bold text-gray-800 dark:text-slate-100 text-sm tracking-wide shadow-black drop-shadow-sm">Project Owner List</span>
                 <div class="absolute -bottom-[1px] left-0 right-0 h-[2px] bg-white/40 dark:bg-slate-800/80 z-20"></div>
              </div>
           </div>
@@ -179,13 +191,13 @@ const getNameUser = (id) => {
                         @click.prevent="handleEdit(owner.id)"
                         class="p-1.5 rounded-lg text-primary-600 dark:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-500/10 transition tooltip-trigger" title="Edit"
                       >
-                        <Pen class="w-4 h-4" />
+                        <Pen class="w-5 h-5" />
                       </button>
                       <button
-                        @click.prevent="handleDelete(owner.id)"
+                        @click.prevent="openDeleteModal(owner)"
                         class="p-1.5 rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition tooltip-trigger" title="Delete"
                       >
-                        <Trash class="w-4 h-4" />
+                        <Trash class="w-5 h-5" />
                       </button>
                     </div>
                   </td>
@@ -202,6 +214,14 @@ const getNameUser = (id) => {
 
       </div>
     </div>
+
+    <DeleteConfirmationModal 
+      :show="confirmDeleteModal"
+      title="Delete Project Owner"
+      :message="`Are you sure want to delete project owner ${ownerToDelete?.name}`"
+      @close="closeDeleteModal"
+      @confirm="handleConfirmDelete"
+    />
   </div>
 </template>
 

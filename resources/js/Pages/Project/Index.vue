@@ -1,7 +1,6 @@
 <script>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 
-// 1. Layout Persistent
 export default { layout: AuthenticatedLayout };
 </script>
 
@@ -12,6 +11,7 @@ import Pen from '@/Components/Icon/Pen.vue';
 import Trash from '@/Components/Icon/Trash.vue'; 
 import Pagination from '@/Components/Pagination.vue';
 import ProjectForm from '@/Components/Form/Project.vue';
+import DeleteConfirmationModal from '@/Components/DeleteConfirmationModal.vue';
 import { Head, router, usePage } from '@inertiajs/vue3';
 import { ref, computed, onMounted } from 'vue';
 
@@ -19,6 +19,8 @@ const openForm = ref(false);
 const isEditMode = ref(false);
 const selectedProject = ref(null);
 const isLoaded = ref(false);
+const confirmDeleteModal = ref(false);
+const projectToDelete = ref(null);
 
 onMounted(() => {
   setTimeout(() => {
@@ -46,10 +48,20 @@ const handleCloseForm = () => {
   selectedProject.value = null;
 };
 
-const handleDelete = (id) => {
-  if (confirm('Are you sure you want to delete this project?')) {
-    router.delete(route('project.destroy', { id, project_id: queryParams.value.project_owner_id }));
-  }
+const openDeleteModal = (project) => {
+  projectToDelete.value = project;
+  confirmDeleteModal.value = true;
+}
+
+const closeDeleteModal = () => {
+  projectToDelete.value = null;
+  confirmDeleteModal.value = false;
+}
+
+const handleConfirmDelete = () => {
+  router.delete(route('project.destroy', projectToDelete.value.id), {
+    onSuccess: () => closeDeleteModal(),
+  });
 };
 
 const handleEdit = (id) => {
@@ -167,7 +179,7 @@ const getNameUser = (id) => {
                       :href="route('task.list', { project_id: project.id })"
                       class="font-bold text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300 hover:underline decoration-primary-300 underline-offset-2 transition flex items-center gap-2"
                     >
-                      <Folder class="w-4 h-4 opacity-50" />
+                      <Folder class="w-5 h-5 opacity-50" />
                       {{ project.name }}
                     </a>
                   </td>
@@ -199,13 +211,13 @@ const getNameUser = (id) => {
                         @click.prevent="handleEdit(project.id)"
                         class="p-1.5 rounded-lg text-primary-600 dark:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-500/10 transition tooltip-trigger" title="Edit"
                       >
-                        <Pen class="w-4 h-4" />
+                        <Pen class="w-5 h-5" />
                       </button>
                       <button
-                        @click.prevent="handleDelete(project.id)"
+                        @click.prevent="openDeleteModal(project)"
                         class="p-1.5 rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition tooltip-trigger" title="Delete"
                       >
-                        <Trash class="w-4 h-4" />
+                        <Trash class="w-5 h-5" />
                       </button>
                     </div>
                   </td>
@@ -225,6 +237,14 @@ const getNameUser = (id) => {
 
       </div>
     </div>
+
+    <DeleteConfirmationModal
+      :show="confirmDeleteModal"
+      title="Delete Project"
+      :message="`Are you sure want to delete project ${projectToDelete?.name}`"
+      @close="closeDeleteModal"
+      @confirm="handleConfirmDelete"
+    />
   </div>
 </template>
 
