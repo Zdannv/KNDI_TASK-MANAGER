@@ -61,43 +61,45 @@ const cancel = () => {
 <template>
     <div class="space-y-6">
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Assign Task's Reviewer</h3>
-        <form @submit.prevent="submitForm" class="space-y-4">
-
-            <div>
-                <InputLabel value="Reviewers" />
-                <div v-for="(link, index) in form.reviewer" :key="form.reviewer[index]" class="mt-1 flex items-center gap-2">
-                    <SelectInput
-                        :id="'reviewer_' + index"
-                        v-model="form.reviewer[index]"
-                        :options="availableReviewers"
-                        :array="form.reviewer"
-                        label="name"
-                        valueKey="id"
-                        class="mt-1 block w-full"
-                        placeholder="Search or select a Reviewer..."
-                        :dark="true"
-                    />
+        <form @submit.prevent="submitForm" class="flex flex-col">
+            
+            <div class="max-h-[60vh] overflow-y-auto px-1 space-y-4 custom-scrollbar">
+                <div>
+                    <InputLabel value="Reviewers" />
+                    <div v-for="(link, index) in form.reviewer" :key="form.reviewer[index]" class="mt-1 flex items-center gap-2">
+                        <SelectInput
+                            :id="'reviewer_' + index"
+                            v-model="form.reviewer[index]"
+                            :options="availableReviewers"
+                            :array="form.reviewer"
+                            label="name"
+                            valueKey="id"
+                            class="mt-1 block w-full"
+                            placeholder="Search or select a Reviewer..."
+                            :dark="true"
+                        />
+                        <button
+                            type="button"
+                            @click="removeReviewer(index)"
+                            class="p-2.5 text-gray-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400 border border-gray-300 dark:border-white/10 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors bg-white/50 dark:bg-slate-800/50"
+                            title="Remove"
+                        >
+                            <Close class="w-4 h-4" />
+                        </button>
+                    </div>
+                    <InputError class="mt-2" :message="form.errors.reviewer" />
+                    
                     <button
                         type="button"
-                        @click="removeReviewer(index)"
-                        class="p-2.5 text-gray-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400 border border-gray-300 dark:border-white/10 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors bg-white/50 dark:bg-slate-800/50"
-                        title="Remove"
+                        @click="addReviewer"
+                        class="mt-2 px-3 py-1.5 text-sm font-bold text-white bg-green-600 rounded-md hover:bg-green-700 shadow-sm transition-colors flex items-center gap-1"
                     >
-                        <Close class="w-4 h-4" />
+                        <Plus class="w-3 h-3" /> Add Reviewer
                     </button>
                 </div>
-                <InputError class="mt-2" :message="form.errors.reviewer" />
-                
-                <button
-                    type="button"
-                    @click="addReviewer"
-                    class="mt-2 px-3 py-1.5 text-sm font-bold text-white bg-green-600 rounded-md hover:bg-green-700 shadow-sm transition-colors flex items-center gap-1"
-                >
-                    <Plus class="w-3 h-3" /> Add Reviewer
-                </button>
             </div>
 
-            <div class="flex justify-end gap-4 pt-2">
+            <div class="flex justify-end gap-4 pt-6 border-t border-gray-200 dark:border-slate-700 mt-4">
                 <button
                     type="button"
                     @click="cancel"
@@ -119,3 +121,19 @@ const cancel = () => {
         </form>
     </div>
 </template>
+
+<style scoped>
+.custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #4b5563;
+    border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #6b7280;
+}
+</style>
