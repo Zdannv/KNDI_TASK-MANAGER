@@ -157,10 +157,10 @@ const captureAndRecognize = async () => {
         }
 
     } catch (err) {
-        let errMessage = 'Unknown Error';
-        
+        // PERBAIKAN: Hanya update UI dan bunyikan suara jika ada respons 401
         if (err.response && err.response.status === 401) {
-            errMessage = err.response.data.message;
+            const errMessage = err.response.data.message || 'Unknown Error';
+            
             recognitionResult.value = {
                 status: 'error',
                 name: 'Unknown',
@@ -168,11 +168,11 @@ const captureAndRecognize = async () => {
                 type: attendanceType.value
             }
             console.log('catch...');
+
+            // Bunyikan suara error HANYA jika masuk kondisi 401 ini
+            const errorKey = `error-${errMessage}`;
+            playSound('error', errorKey);
         }
-        
-        // Buat kunci unik untuk pesan error agar tidak spam error yang sama
-        const errorKey = `error-${errMessage}`;
-        playSound('error', errorKey);
         
     } finally {
         isProcessing.value = false;
