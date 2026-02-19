@@ -234,7 +234,7 @@ const visibleButtons = computed(() => {
     <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-0 mt-8">
         <div
           class="flex flex-col md:flex-row justify-between px-6 py-4 items-start md:items-center gap-4 text-gray-800 dark:text-gray-200 
-                 bg-slate-800 dark:bg-gradient-to-b dark:from-slate-700/30 dark:to-slate-900/60 backdrop-blur-xl border border-white/40 dark:border-white/20 
+                 bg-white/40 dark:bg-slate-900/40 backdrop-blur-xl border border-white/40 dark:border-white/20 
                  shadow-lg rounded-lg transition-all duration-700 ease-out"
           :class="{ 'opacity-100': isLoaded, 'translate-y-8 opacity-0': !isLoaded }"
         >
@@ -299,31 +299,31 @@ const visibleButtons = computed(() => {
     </div>
 
     <div v-if="openCreateEditForm" class="fixed inset-0 z-[100] px-4 flex items-center justify-center bg-black/60 backdrop-blur-sm transition-opacity">
-      <div class="bg-white/90 dark:bg-gradient-to-b dark:from-slate-800 dark:to-slate-950 backdrop-blur-2xl border border-white/50 dark:border-white/10 rounded-lg shadow-2xl max-w-5xl w-full p-6 relative animate-in fade-in zoom-in duration-300 overflow-y-auto max-h-[90vh]">
+      <div class="bg-white/90 dark:bg-slate-900/95 backdrop-blur-2xl border border-white/50 dark:border-white/10 rounded-lg shadow-2xl max-w-5xl w-full p-6 relative animate-in fade-in zoom-in duration-300 overflow-y-auto max-h-[90vh]">
         <TaskCreateEditForm :task="selectedTask" :projects="projects" :projectId="task.project_id" :isEditMode="isEditMode" @close="handleCloseForm" />
       </div>
     </div>
 
     <div v-if="openAssignForm" class="fixed inset-0 z-[100] px-4 flex items-center justify-center bg-black/60 backdrop-blur-sm transition-opacity">
-      <div class="bg-white/90 dark:bg-gradient-to-b dark:from-slate-800 dark:to-slate-950 backdrop-blur-2xl border border-white/50 dark:border-white/10 rounded-lg shadow-2xl max-w-lg w-full p-6 relative animate-in fade-in zoom-in duration-200">
+      <div class="bg-white/90 dark:bg-slate-900/95 backdrop-blur-2xl border border-white/50 dark:border-white/10 rounded-lg shadow-2xl max-w-lg w-full p-6 relative animate-in fade-in zoom-in duration-200">
         <TaskAssignForm :task="selectedTask" :pl="users" :co="communicator" :pg="programmer" :ds="designer" @close="handleCloseForm" />
       </div>
     </div>
 
     <div v-if="openPrForm" class="fixed inset-0 z-[100] px-4 flex items-center justify-center bg-black/60 backdrop-blur-sm transition-opacity">
-      <div class="bg-white/90 dark:bg-gradient-to-b dark:from-slate-800 dark:to-slate-950 backdrop-blur-2xl border border-white/50 dark:border-white/10 rounded-lg shadow-2xl max-w-lg w-full p-6 relative animate-in fade-in zoom-in duration-200">
+      <div class="bg-white/90 dark:bg-slate-900/95 backdrop-blur-2xl border border-white/50 dark:border-white/10 rounded-lg shadow-2xl max-w-lg w-full p-6 relative animate-in fade-in zoom-in duration-200">
         <TaskPrForm :task="selectedTask" :pg="programmer" @close="handleCloseForm" />
       </div>
     </div>
 
     <div v-if="openCommentForm" class="fixed inset-0 z-[100] px-4 flex items-center justify-center bg-black/60 backdrop-blur-sm transition-opacity">
-      <div class="bg-white/90 dark:bg-gradient-to-b dark:from-slate-800 dark:to-slate-950 backdrop-blur-2xl border border-white/50 dark:border-white/10 rounded-lg shadow-2xl max-w-lg w-full p-6 relative animate-in fade-in zoom-in duration-200">
+      <div class="bg-white/90 dark:bg-slate-900/95 backdrop-blur-2xl border border-white/50 dark:border-white/10 rounded-lg shadow-2xl max-w-lg w-full p-6 relative animate-in fade-in zoom-in duration-200">
         <TaskCommentForm :task="selectedTask" @close="handleCloseForm" />
       </div>
     </div>
 
     <div v-if="openReplyForm" class="fixed inset-0 z-[100] px-4 flex items-center justify-center bg-black/60 backdrop-blur-sm transition-opacity">
-      <div class="bg-white/90 dark:bg-gradient-to-b dark:from-slate-800 dark:to-slate-950 backdrop-blur-2xl border border-white/50 dark:border-white/10 rounded-lg shadow-2xl max-w-lg w-full p-6 relative animate-in fade-in zoom-in duration-200">
+      <div class="bg-white/90 dark:bg-slate-900/95 backdrop-blur-2xl border border-white/50 dark:border-white/10 rounded-lg shadow-2xl max-w-lg w-full p-6 relative animate-in fade-in zoom-in duration-200">
         <TaskReplyForm :comment="selectedComment" @close="handleCloseForm" />
       </div>
     </div>
@@ -334,7 +334,7 @@ const visibleButtons = computed(() => {
     >
       <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-0">
         
-        <div class="bg-slate-900 dark:bg-gradient-to-b dark:from-slate-800/60 dark:to-slate-950/80 backdrop-blur-xl border border-white/40 dark:border-white/20 shadow-2xl rounded-lg overflow-hidden flex flex-col">
+        <div class="bg-white/40 dark:bg-slate-900/40 backdrop-blur-xl border border-white/40 dark:border-white/20 shadow-2xl rounded-lg overflow-hidden flex flex-col">
 
           <div class="p-8 border-b border-white/20 dark:border-white/5">
             <h3 class="text-lg font-bold text-gray-800 dark:text-slate-100 mb-6 flex items-center gap-2">
