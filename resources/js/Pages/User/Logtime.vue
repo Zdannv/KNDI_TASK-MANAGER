@@ -228,7 +228,7 @@ const closeDetailLogtime = () => {
       v-if="options"
       class="w-full pt-4 sm:pt-6 transition-all duration-500 ease-out"
       :class="{ 'translate-y-0 opacity-100': isLoaded, 'translate-y-12 opacity-0': !isLoaded }"
-    >Apakah Anda yakin ingin menghapus catatan waktu ini? Tindakan ini tidak dapat dibatalkan.
+    >
       <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-0">
         <div class="flex flex-col py-6 px-6 text-gray-800 dark:text-gray-200 
                     bg-white/40 dark:bg-slate-900/40 backdrop-blur-xl border border-white/40 dark:border-white/10 
