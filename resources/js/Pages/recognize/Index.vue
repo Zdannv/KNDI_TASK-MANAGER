@@ -14,9 +14,16 @@ const currentDate = ref('');
 let timeInterval;
 let scanInterval;
 
-// Variabel untuk menyimpan objek Audio
+// Variabel untuk menyimpan objek Audio dan statusnya
 let successAudio;
 let errorAudio;
+let audioUnlocked = false;
+
+// Objek untuk melacak riwayat pemutaran suara terakhir (Fitur Cooldown)
+let lastAudioPlay = {
+    key: null, // Menyimpan identitas/nama unik
+    time: 0    // Menyimpan timestamp terakhir diputar
+};
 
 const updateTime = () => {
     const now = new Date();
@@ -28,7 +35,31 @@ const updateTime = () => {
     });
 };
 
+// Fungsi untuk memancing izin browser memutar audio
+const unlockAudioBrowserPolicy = () => {
+    if (audioUnlocked) return;
+    try {
+        if (successAudio) {
+            successAudio.play().then(() => {
+                successAudio.pause();
+                successAudio.currentTime = 0;
+            }).catch(() => {});
+        }
+        if (errorAudio) {
+            errorAudio.play().then(() => {
+                errorAudio.pause();
+                errorAudio.currentTime = 0;
+            }).catch(() => {});
+        }
+        audioUnlocked = true;
+    } catch (e) {
+        console.log("Gagal unlock audio", e);
+    }
+};
+
 const toggleCamera = async () => {
+    unlockAudioBrowserPolicy();
+
     if (isCameraActive.value) stopCamera();
     else await startCamera();
 };
@@ -53,16 +84,34 @@ const stopCamera = () => {
     isCameraActive.value = false;
 };
 
-// Fungsi helper untuk memutar suara
-const playSound = (type) => {
+// Fungsi helper memutar suara dengan sistem cooldown 10 detik per identitas
+const playSound = (type, uniqueKey) => {
+    const now = Date.now();
+    
+    // Cek apakah key (nama/error) sama DAN belum lewat 10 detik (10.000 ms)
+    if (lastAudioPlay.key === uniqueKey && (now - lastAudioPlay.time) < 10000) {
+        return; // Hentikan fungsi di sini (suara tidak diputar / cooldown aktif)
+    }
+
     try {
         if (type === 'success' && successAudio) {
-            successAudio.currentTime = 0; // Reset ke awal agar bisa diputar cepat
-            successAudio.play().catch(e => console.log('Audio autoplay dicegah browser:', e));
+            successAudio.currentTime = 0;
+            const playPromise = successAudio.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(e => console.warn('Audio success dicegah browser:', e));
+            }
         } else if (type === 'error' && errorAudio) {
             errorAudio.currentTime = 0;
-            errorAudio.play().catch(e => console.log('Audio autoplay dicegah browser:', e));
+            const playPromise = errorAudio.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(e => console.warn('Audio error dicegah browser:', e));
+            }
         }
+
+        // Simpan data pemutaran ini sebagai data terakhir
+        lastAudioPlay.key = uniqueKey;
+        lastAudioPlay.time = now;
+
     } catch (err) {
         console.error('Gagal memutar suara:', err);
     }
@@ -89,7 +138,6 @@ const captureAndRecognize = async () => {
         });
 
         const res = response.data;
-
         const isSuccess = res.status === 'success';
 
         recognitionResult.value = {
@@ -99,26 +147,32 @@ const captureAndRecognize = async () => {
             type: attendanceType.value
         }
 
-        // Putar suara berdasarkan status dari response
+        // Buat kunci unik berdasarkan tipe dan nama untuk cooldown
+        const identityKey = `${isSuccess ? 'success' : 'error'}-${res.name || 'Gagal'}`;
+
         if (isSuccess) {
-            playSound('success');
+            playSound('success', identityKey);
         } else {
-            playSound('error');
+            playSound('error', identityKey);
         }
 
     } catch (err) {
+        let errMessage = 'Unknown Error';
+        
         if (err.response && err.response.status === 401) {
+            errMessage = err.response.data.message;
             recognitionResult.value = {
                 status: 'error',
                 name: 'Unknown',
-                message: err.response.data.message,
+                message: errMessage,
                 type: attendanceType.value
             }
             console.log('catch...');
         }
         
-        // Putar suara error jika terjadi catch (misal: 401 / sudah absen / wajah tidak dikenali)
-        playSound('error');
+        // Buat kunci unik untuk pesan error agar tidak spam error yang sama
+        const errorKey = `error-${errMessage}`;
+        playSound('error', errorKey);
         
     } finally {
         isProcessing.value = false;
@@ -126,7 +180,6 @@ const captureAndRecognize = async () => {
 };
 
 onMounted(() => {
-    // Inisialisasi audio di onMounted agar aman dari isu SSR (Server-Side Rendering)
     successAudio = new Audio('/backsounds/4maps.mp3');
     errorAudio = new Audio('/backsounds/prabowo-sorry-ye.mp3');
 
@@ -178,13 +231,13 @@ onBeforeUnmount(() => {
                     <div class="flex flex-col gap-4 h-full">
                         
                         <div class="bg-white p-2 rounded-2xl shadow-sm border border-gray-200 flex">
-                            <button @click="attendanceType = 'check_in'"
+                            <button @click="attendanceType = 'check_in'; unlockAudioBrowserPolicy();"
                                 class="flex-1 py-3 rounded-xl text-sm font-bold transition-all duration-200 flex items-center justify-center gap-2"
                                 :class="attendanceType === 'check_in' ? 'bg-indigo-600 text-white shadow-md transform scale-[1.02]' : 'text-gray-500 hover:bg-gray-50'">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414z" clip-rule="evenodd" /></svg>
                                 CHECK IN
                             </button>
-                            <button @click="attendanceType = 'check_out'"
+                            <button @click="attendanceType = 'check_out'; unlockAudioBrowserPolicy();"
                                 class="flex-1 py-3 rounded-xl text-sm font-bold transition-all duration-200 flex items-center justify-center gap-2"
                                 :class="attendanceType === 'check_out' ? 'bg-rose-600 text-white shadow-md transform scale-[1.02]' : 'text-gray-500 hover:bg-gray-50'">
                                 CHECK OUT
