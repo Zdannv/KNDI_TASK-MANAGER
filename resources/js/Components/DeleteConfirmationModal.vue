@@ -33,7 +33,7 @@ const emit = defineEmits(['close', 'confirm']);
             <div class="flex justify-center gap-4">
                 <button
                     @click="emit('close')"
-                    class="px-4 py-2 bg-gray-400 dark:bg-gray-700 text-white rounded-lg hover:bg-gray-200 transition"
+                    class="px-4 py-2 bg-white/40 dark:bg-gray-800 text-white rounded-lg hover:opacity-30 border border-white transition"
                 >
                     Cancel
                 </button>
