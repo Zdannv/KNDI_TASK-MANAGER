@@ -114,7 +114,7 @@ const resetFilter = () => {
         
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
             <div>
-                <h2 class="text-2xl font-bold text-gray-800 dark:text-slate-100 leading-tight">
+                <h2 class="text-2xl font-bold text-gray-800 dark:text-slate-100 leading-tight drop-shadow-sm">
                     Employee Attendance
                 </h2>
                 <p class="text-sm text-gray-500 dark:text-slate-400 mt-1">Monitor daily check-in and check-out records.</p>
@@ -123,7 +123,7 @@ const resetFilter = () => {
             <div class="flex flex-wrap gap-2">
                 <button 
                     @click="exportAttendance(false)" 
-                    class="inline-flex items-center px-4 py-2 bg-primary-600 border border-transparent rounded-lg font-semibold text-xs text-white uppercase tracking-widest hover:bg-primary-500 active:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150 shadow-sm"
+                    class="inline-flex items-center px-4 py-2 bg-primary-600 border border-transparent rounded-lg font-semibold text-xs text-white uppercase tracking-widest hover:bg-primary-500 active:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150 shadow-sm hover:scale-105"
                 >
                     <Download class="w-4 h-4 mr-2" />
                     Export All
@@ -131,7 +131,7 @@ const resetFilter = () => {
 
                 <button 
                     @click="exportAttendance(true)" 
-                    class="inline-flex items-center px-4 py-2 bg-emerald-600 border border-transparent rounded-lg font-semibold text-xs text-white uppercase tracking-widest hover:bg-emerald-500 active:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150 shadow-sm"
+                    class="inline-flex items-center px-4 py-2 bg-emerald-600 border border-transparent rounded-lg font-semibold text-xs text-white uppercase tracking-widest hover:bg-emerald-500 active:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150 shadow-sm hover:scale-105"
                 >
                     <Download2 class="w-4 h-4 mr-2" />
                     Summary
@@ -139,7 +139,7 @@ const resetFilter = () => {
             </div>
         </div>
 
-        <div class="relative z-20 bg-white/50 dark:bg-slate-900/40 backdrop-blur-xl p-4 rounded-xl shadow-sm border border-gray-200/50 dark:border-white/5 mb-6">
+        <div class="relative z-20 bg-white/50 dark:bg-slate-900/40 backdrop-blur-xl p-4 rounded-xl shadow-sm border border-gray-200/50 dark:border-white/10 mb-6">
             <div class="flex flex-col lg:flex-row gap-4 items-center justify-between">
                 
                 <div class="flex flex-1 flex-col md:flex-row gap-4 w-full">
@@ -173,7 +173,7 @@ const resetFilter = () => {
 
                 <button 
                     @click="resetFilter" 
-                    class="w-full md:w-auto px-4 py-2.5 bg-gray-100 text-gray-700 dark:bg-slate-700/50 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-slate-600/50 transition text-sm font-bold flex items-center justify-center gap-2 whitespace-nowrap border border-gray-200 dark:border-slate-600/50"
+                    class="w-full md:w-auto px-4 py-2.5 bg-gray-100 text-gray-700 dark:bg-slate-700/50 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-slate-600/50 transition text-sm font-bold flex items-center justify-center gap-2 whitespace-nowrap border border-gray-200 dark:border-slate-600/50 shadow-sm"
                 >
                     <Close class="w-4 h-4" />
                     Reset Filter
@@ -183,9 +183,9 @@ const resetFilter = () => {
 
         <div class="bg-white/40 dark:bg-slate-900/40 backdrop-blur-xl border border-white/40 dark:border-white/20 shadow-xl rounded-xl relative z-0 overflow-hidden">
             
-            <div class="overflow-x-auto w-full">
+            <div class="overflow-x-auto w-full custom-scrollbar">
                 <table class="w-full min-w-[50rem] text-left dark:text-slate-200 table-auto border-collapse">
-                    <thead class="bg-white/90 dark:bg-slate-900/80 backdrop-blur-sm border-b border-white/20 dark:border-white/10">
+                    <thead class="bg-white/50 dark:bg-slate-900/80 backdrop-blur-md border-b border-white/20 dark:border-white/10">
                         <tr>
                             <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-xs uppercase tracking-wider">Date / Time</th>
                             <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-xs uppercase tracking-wider">Employee</th>
@@ -196,14 +196,14 @@ const resetFilter = () => {
                     <tbody class="divide-y divide-white/20 dark:divide-white/5">
                         
                         <template v-for="(group, date) in groupedAttendances" :key="date">
-                            <tr class="bg-primary-50/50 dark:bg-primary-500/10 backdrop-blur-sm">
+                            <tr class="bg-primary-50/50 dark:bg-primary-500/10 backdrop-blur-sm border-t border-white/20 dark:border-white/10">
                                 <td class="py-3 px-5" colspan="3">
                                     <span class="inline-flex items-center px-3 py-1 rounded-full bg-primary-100/50 dark:bg-primary-500/20 text-primary-700 dark:text-primary-300 text-xs font-bold border border-primary-200/50 dark:border-primary-500/30">
                                         {{ date }}
                                     </span>
                                 </td>
                                 <td class="py-3 px-5 text-right">
-                                    <span class="text-[10px] font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wide bg-white/50 dark:bg-slate-900/60 px-2 py-1 rounded">
+                                    <span class="text-[10px] font-bold text-gray-500 dark:text-slate-300 uppercase tracking-wide bg-white/50 dark:bg-slate-900/60 border border-gray-200 dark:border-white/5 shadow-sm px-2 py-1 rounded">
                                         Total: {{ group.count }}
                                     </span>
                                 </td>
@@ -215,27 +215,27 @@ const resetFilter = () => {
                                 </td>
                                 <td class="p-5">
                                     <div class="flex items-center gap-3">
-                                        <div class="w-8 h-8 rounded-full bg-gradient-to-br from-primary-100 to-primary-50 dark:from-slate-700 dark:to-slate-800 flex items-center justify-center text-xs font-bold text-primary-600 dark:text-primary-400 border border-primary-100/50 dark:border-slate-600 shadow-sm">
+                                        <div class="w-8 h-8 rounded-full bg-white/60 dark:bg-slate-800/50 flex items-center justify-center text-xs font-bold text-primary-600 dark:text-primary-400 border border-primary-100/50 dark:border-slate-700/50 shadow-sm backdrop-blur-sm">
                                             {{ item.user.name.charAt(0).toUpperCase() }}
                                         </div>
                                         <div>
                                             <div class="font-bold text-gray-800 dark:text-slate-200 text-sm group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
                                                 {{ item.user.name }}
                                             </div>
-                                            <div class="text-xs text-gray-500 dark:text-gray-500">{{ item.user.email }}</div>
+                                            <div class="text-xs text-gray-500 dark:text-slate-400">{{ item.user.email }}</div>
                                         </div>
                                     </div>
                                 </td>
                                 
                                 <td class="p-5">
-                                    <span class="inline-flex items-center px-2.5 py-1 rounded-md bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 text-xs font-bold border border-emerald-100 dark:border-emerald-500/20">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-md bg-emerald-50/80 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 text-xs font-bold border border-emerald-100/80 dark:border-emerald-500/20 backdrop-blur-sm">
                                         {{ formatTime(item.check_in_time) }}
                                     </span>
                                 </td>
 
                                 <td class="p-5 text-right">
                                     <div v-if="item.check_out_time">
-                                        <span class="inline-flex items-center px-2.5 py-1 rounded-md bg-rose-50 dark:bg-rose-500/10 text-rose-700 dark:text-rose-400 text-xs font-bold border border-rose-100 dark:border-rose-500/20">
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-md bg-rose-50/80 dark:bg-rose-500/10 text-rose-700 dark:text-rose-400 text-xs font-bold border border-rose-100/80 dark:border-rose-500/20 backdrop-blur-sm">
                                             {{ formatTime(item.check_out_time) }}
                                         </span>
                                     </div>
@@ -303,9 +303,9 @@ const resetFilter = () => {
     color: #e2e8f0 !important;
 }
 
-::-webkit-scrollbar { height: 6px; width: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background-color: rgba(156, 163, 175, 0.3); border-radius: 10px; }
-::-webkit-scrollbar-thumb:hover { background-color: rgba(156, 163, 175, 0.5); }
-:global(.dark) ::-webkit-scrollbar-thumb { background-color: rgba(255, 255, 255, 0.1); }
+.custom-scrollbar::-webkit-scrollbar { height: 6px; width: 6px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background-color: rgba(156, 163, 175, 0.3); border-radius: 10px; }
+.custom-scrollbar::-webkit-scrollbar-thumb:hover { background-color: rgba(156, 163, 175, 0.5); }
+:global(.dark) .custom-scrollbar::-webkit-scrollbar-thumb { background-color: rgba(255, 255, 255, 0.1); }
 </style>
