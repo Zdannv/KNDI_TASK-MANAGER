@@ -21,12 +21,15 @@ import Download2 from '@/Components/Icon/Download2.vue';
 import Modal from '@/Components/Modal.vue';
 import Trash from '@/Components/Icon/Trash.vue';
 import Detail from '@/Components/Icon/Detail.vue';
+import DeleteConfirmationModal from '@/Components/DeleteConfirmationModal.vue';
 
 const showButtons = ref(false);
 const openForm = ref(false);
 const isLoaded = ref(false);
 const selectedLogtime = ref(null);
 const showDetailLogtime = ref(false);
+const confirmDeleteModal = ref(false);
+const itemToDelete = ref(null);
 
 onMounted(() => {
   setTimeout(() => {
@@ -66,10 +69,20 @@ const handleCloseForm = () => {
   openForm.value = false;
 };
 
-const handleDelete = (id) => {
-  if (confirm('Are you sure you want to delete this logtime?')) {
-    router.delete(route('logtime.destroy', id));
-  }
+const openDeleteModal = (id) => {
+  itemToDelete.value = id;
+  confirmDeleteModal.value = true;
+}
+
+const closeDeleteModal = () => {
+  itemToDelete.value = null;
+  confirmDeleteModal.value = false;
+}
+
+const handleConfirmDelete = (id) => {
+  router.delete(route('logtime.destroy', itemToDelete.value), {
+    onSuccess: () => closeDeleteModal(),
+  })
 };
 
 const props = defineProps({
@@ -215,7 +228,7 @@ const closeDetailLogtime = () => {
       v-if="options"
       class="w-full pt-4 sm:pt-6 transition-all duration-500 ease-out"
       :class="{ 'translate-y-0 opacity-100': isLoaded, 'translate-y-12 opacity-0': !isLoaded }"
-    >
+    >Apakah Anda yakin ingin menghapus catatan waktu ini? Tindakan ini tidak dapat dibatalkan.
       <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-0">
         <div class="flex flex-col py-6 px-6 text-gray-800 dark:text-gray-200 
                     bg-white/40 dark:bg-gradient-to-b dark:from-slate-700/30 dark:to-slate-900/60 backdrop-blur-xl border border-white/40 dark:border-white/10 
@@ -327,12 +340,17 @@ const closeDetailLogtime = () => {
                       <div class="flex justify-center gap-8">
                         <button
                           @click="openDetailLogtime(value)"
-                          class="text-primary-600 dark:text-primary-400 font-medium hover:underline text-sm"
+                          class="p-1.5 rounded-lg text-primary-600 dark:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/30 transition tooltip-trigger"
+                          title="Detail"
                         >
-                          <Detail class="w-6 h-6" />
+                          <Detail class="w-5 h-5" />
                         </button>
-                        <button @click.prevent="handleDelete(value.id)" class="text-red-600 dark:text-red-400 font-medium hover:underline text-sm">
-                          <Trash class="w-6 h-6" />
+                        <button 
+                          @click.prevent="openDeleteModal(value.id)" 
+                          class="p-1.5 rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 transition tooltip-trigger"
+                          title="Delete"
+                        >
+                          <Trash class="w-5 h-5" />
                         </button>
                       </div>
                     </td>
@@ -400,6 +418,14 @@ const closeDetailLogtime = () => {
         </div>
     </div>
   </Modal>
+
+  <DeleteConfirmationModal 
+    :show="confirmDeleteModal"
+    title="Delete Log Time"
+    message="Are you sure want to delete this logtime?"
+    @close="closeDeleteModal"
+    @confirm="handleConfirmDelete"
+  />
   </div> 
 </template>
 
