@@ -1,7 +1,6 @@
 <script>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 
-// 1. Layout Persistent
 export default { layout: AuthenticatedLayout };
 </script>
 
@@ -12,6 +11,7 @@ import Pen from '@/Components/Icon/Pen.vue';
 import Trash from '@/Components/Icon/Trash.vue'; 
 import Pagination from '@/Components/Pagination.vue';
 import ProjectForm from '@/Components/Form/Project.vue';
+import DeleteConfirmationModal from '@/Components/DeleteConfirmationModal.vue';
 import { Head, router, usePage } from '@inertiajs/vue3';
 import { ref, computed, onMounted } from 'vue';
 
@@ -19,6 +19,8 @@ const openForm = ref(false);
 const isEditMode = ref(false);
 const selectedProject = ref(null);
 const isLoaded = ref(false);
+const confirmDeleteModal = ref(false);
+const projectToDelete = ref(null);
 
 onMounted(() => {
   setTimeout(() => {
@@ -46,10 +48,20 @@ const handleCloseForm = () => {
   selectedProject.value = null;
 };
 
-const handleDelete = (id) => {
-  if (confirm('Are you sure you want to delete this project?')) {
-    router.delete(route('project.destroy', { id, project_id: queryParams.value.project_owner_id }));
-  }
+const openDeleteModal = (project) => {
+  projectToDelete.value = project;
+  confirmDeleteModal.value = true;
+}
+
+const closeDeleteModal = () => {
+  projectToDelete.value = null;
+  confirmDeleteModal.value = false;
+}
+
+const handleConfirmDelete = () => {
+  router.delete(route('project.destroy', projectToDelete.value.id), {
+    onSuccess: () => closeDeleteModal(),
+  });
 };
 
 const handleEdit = (id) => {
@@ -81,7 +93,7 @@ const getNameUser = (id) => {
     <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-0 mt-8">
         <div
           class="flex justify-between px-6 py-4 items-center text-gray-800 dark:text-gray-200 
-                 bg-white/40 dark:bg-gradient-to-b dark:from-slate-700/30 dark:to-slate-900/60 backdrop-blur-xl border border-white/40 dark:border-white/20 
+                 bg-white/40 dark:bg-slate-900/40 backdrop-blur-xl border border-white/40 dark:border-white/20 
                  shadow-lg rounded-lg transition-all duration-1000 ease-out"
           :class="{ 'translate-y-0 opacity-100': isLoaded, 'translate-y-8 opacity-0': !isLoaded }"
         >
@@ -115,7 +127,7 @@ const getNameUser = (id) => {
 
     <div v-if="openForm" class="fixed inset-0 z-50 px-4 flex items-center justify-center bg-black/60 backdrop-blur-sm transition-opacity">
       <div
-        class="bg-white/90 dark:bg-gradient-to-b dark:from-slate-800/95 dark:to-slate-950/95 backdrop-blur-2xl border border-white/50 dark:border-white/10 rounded-lg shadow-2xl max-w-lg w-full p-6 relative animate-in fade-in zoom-in duration-300"
+        class="bg-white/90 dark:bg-slate-900/95 backdrop-blur-2xl border border-white/50 dark:border-white/10 rounded-lg shadow-2xl max-w-lg w-full p-6 relative animate-in fade-in zoom-in duration-300"
       >
         <ProjectForm
           :project="selectedProject"
@@ -136,19 +148,19 @@ const getNameUser = (id) => {
         >
 
           <div class="relative z-10 -mb-[1px]">
-             <div class="w-fit px-6 h-12 bg-white/40 dark:bg-slate-700/50 dark:to-slate-800/60 backdrop-blur-xl border-t border-l border-r border-white/40 dark:border-white/20 rounded-t-lg shadow-sm relative flex items-center gap-3">
+             <div class="w-fit px-6 h-12 bg-white/40 dark:bg-slate-900/60 backdrop-blur-xl border-t border-l border-r border-white/40 dark:border-white/20 rounded-t-lg shadow-sm relative flex items-center gap-3">
                 <Folder class="w-5 h-5 text-primary-600 dark:text-primary-400 drop-shadow-sm" />
                 <span class="font-bold text-gray-800 dark:text-slate-100 text-sm tracking-wide shadow-black drop-shadow-sm">Projects Data</span>
-                <div class="absolute -bottom-[1px] left-0 right-0 h-[2px] bg-white/40 dark:bg-slate-800/80 z-20"></div>
+                <div class="absolute -bottom-[1px] left-0 right-0 h-[2px] bg-white/40 dark:bg-slate-900/80 z-20"></div>
              </div>
           </div>
 
           <div
-            class="w-full overflow-x-auto bg-white/40 dark:bg-gradient-to-b dark:from-slate-800/60 dark:to-slate-950/80 backdrop-blur-xl border border-white/40 dark:border-white/20 shadow-xl rounded-b-lg rounded-tr-lg relative z-0"
+            class="w-full overflow-x-auto bg-white/40 dark:bg-slate-900/40 backdrop-blur-xl border border-white/40 dark:border-white/20 shadow-xl rounded-b-lg rounded-tr-lg relative z-0"
           >
             <table class="w-full text-left dark:text-slate-200 table-auto border-collapse">
               <thead>
-                <tr class="bg-white/50 dark:bg-slate-800/90 backdrop-blur-md border-b border-white/20 dark:border-white/10">
+                <tr class="bg-white/50 dark:bg-slate-900/80 backdrop-blur-md border-b border-white/20 dark:border-white/10">
                   <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">ID</th>
                   <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Name</th>
                   <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Project Owner</th>
@@ -167,7 +179,7 @@ const getNameUser = (id) => {
                       :href="route('task.list', { project_id: project.id })"
                       class="font-bold text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300 hover:underline decoration-primary-300 underline-offset-2 transition flex items-center gap-2"
                     >
-                      <Folder class="w-4 h-4 opacity-50" />
+                      <Folder class="w-5 h-5 opacity-50" />
                       {{ project.name }}
                     </a>
                   </td>
@@ -199,13 +211,13 @@ const getNameUser = (id) => {
                         @click.prevent="handleEdit(project.id)"
                         class="p-1.5 rounded-lg text-primary-600 dark:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-500/10 transition tooltip-trigger" title="Edit"
                       >
-                        <Pen class="w-4 h-4" />
+                        <Pen class="w-5 h-5" />
                       </button>
                       <button
-                        @click.prevent="handleDelete(project.id)"
+                        @click.prevent="openDeleteModal(project)"
                         class="p-1.5 rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition tooltip-trigger" title="Delete"
                       >
-                        <Trash class="w-4 h-4" />
+                        <Trash class="w-5 h-5" />
                       </button>
                     </div>
                   </td>
@@ -225,6 +237,14 @@ const getNameUser = (id) => {
 
       </div>
     </div>
+
+    <DeleteConfirmationModal
+      :show="confirmDeleteModal"
+      title="Delete Project"
+      :message="`Are you sure want to delete project ${projectToDelete?.name}`"
+      @close="closeDeleteModal"
+      @confirm="handleConfirmDelete"
+    />
   </div>
 </template>
 

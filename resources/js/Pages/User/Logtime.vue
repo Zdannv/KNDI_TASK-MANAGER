@@ -21,12 +21,15 @@ import Download2 from '@/Components/Icon/Download2.vue';
 import Modal from '@/Components/Modal.vue';
 import Trash from '@/Components/Icon/Trash.vue';
 import Detail from '@/Components/Icon/Detail.vue';
+import DeleteConfirmationModal from '@/Components/DeleteConfirmationModal.vue';
 
 const showButtons = ref(false);
 const openForm = ref(false);
 const isLoaded = ref(false);
 const selectedLogtime = ref(null);
 const showDetailLogtime = ref(false);
+const confirmDeleteModal = ref(false);
+const itemToDelete = ref(null);
 
 onMounted(() => {
   setTimeout(() => {
@@ -66,10 +69,20 @@ const handleCloseForm = () => {
   openForm.value = false;
 };
 
-const handleDelete = (id) => {
-  if (confirm('Are you sure you want to delete this logtime?')) {
-    router.delete(route('logtime.destroy', id));
-  }
+const openDeleteModal = (id) => {
+  itemToDelete.value = id;
+  confirmDeleteModal.value = true;
+}
+
+const closeDeleteModal = () => {
+  itemToDelete.value = null;
+  confirmDeleteModal.value = false;
+}
+
+const handleConfirmDelete = () => {
+  router.delete(route('logtime.destroy', itemToDelete.value), {
+    onSuccess: () => closeDeleteModal(),
+  })
 };
 
 const props = defineProps({
@@ -154,7 +167,7 @@ const closeDetailLogtime = () => {
     <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-0 mt-8">
         <div
           class="flex justify-between px-6 py-4 items-center text-gray-800 dark:text-gray-200 
-                 bg-white/40 dark:bg-gradient-to-b dark:from-slate-700/30 dark:to-slate-900/60 backdrop-blur-xl border border-white/40 dark:border-white/20 
+                 bg-white/40 dark:bg-slate-900/40 backdrop-blur-xl border border-white/40 dark:border-white/20 
                  shadow-lg rounded-lg transition-all duration-1000 ease-out"
           :class="{ 'translate-y-0 opacity-100': isLoaded, 'translate-y-8 opacity-0': !isLoaded }"
         >
@@ -206,7 +219,7 @@ const closeDetailLogtime = () => {
     </div>
 
     <div v-if="openForm" class="fixed inset-0 z-50 px-4 flex items-center justify-center bg-black/60 backdrop-blur-sm transition-opacity">
-      <div class="bg-white/90 dark:bg-gradient-to-b dark:from-slate-800/90 dark:to-slate-950 backdrop-blur-2xl border border-white/50 dark:border-white/10 rounded-lg shadow-2xl max-w-lg w-full p-6 relative animate-in fade-in zoom-in duration-300">
+      <div class="bg-white/90 dark:bg-slate-900/95 backdrop-blur-2xl border border-white/50 dark:border-white/10 rounded-lg shadow-2xl max-w-lg w-full p-6 relative animate-in fade-in zoom-in duration-300">
         <LogtimeForm :tasks="tasks" @close="handleCloseForm" />
       </div>
     </div>
@@ -215,10 +228,10 @@ const closeDetailLogtime = () => {
       v-if="options"
       class="w-full pt-4 sm:pt-6 transition-all duration-500 ease-out"
       :class="{ 'translate-y-0 opacity-100': isLoaded, 'translate-y-12 opacity-0': !isLoaded }"
-    >
+    >Apakah Anda yakin ingin menghapus catatan waktu ini? Tindakan ini tidak dapat dibatalkan.
       <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-0">
         <div class="flex flex-col py-6 px-6 text-gray-800 dark:text-gray-200 
-                    bg-white/40 dark:bg-gradient-to-b dark:from-slate-700/30 dark:to-slate-900/60 backdrop-blur-xl border border-white/40 dark:border-white/10 
+                    bg-white/40 dark:bg-slate-900/40 backdrop-blur-xl border border-white/40 dark:border-white/10 
                     shadow-lg rounded-lg font-medium">
           <div class="flex flex-col sm:flex-row gap-4 pb-4 border-b border-gray-200/50 dark:border-white/5 mb-4">
             <div class="w-full sm:w-1/3">
@@ -273,73 +286,76 @@ const closeDetailLogtime = () => {
         <div class="flex flex-col items-start">
             
             <div class="relative z-10 -mb-[1px]">
-                <div class="w-fit px-6 h-12 bg-white/40 dark:bg-slate-700/50 dark:to-slate-800/60 backdrop-blur-xl border-t border-l border-r border-white/40 dark:border-white/20 rounded-t-lg shadow-sm relative flex items-center gap-3">
+                <div class="w-fit px-6 h-12 bg-white/40 dark:bg-slate-900/60 backdrop-blur-xl border-t border-l border-r border-white/40 dark:border-white/20 rounded-t-lg shadow-sm relative flex items-center gap-3">
                     <Clock class="w-5 h-5 text-primary-600 dark:text-primary-400 drop-shadow-sm" />
                     <span class="font-bold text-gray-800 dark:text-slate-100 text-sm tracking-wide shadow-black drop-shadow-sm">Time Logs</span>
-                    <div class="absolute -bottom-[1px] left-0 right-0 h-[2px] bg-white/40 dark:bg-slate-800/80 z-20"></div>
+                    <div class="absolute -bottom-[1px] left-0 right-0 h-[2px] bg-white/40 dark:bg-slate-900/80 z-20"></div>
                 </div>
             </div>
 
             <div
             :class="{ 'sm:max-h-[39rem]': options, 'max-h-[49rem]': !options }"
-            class="w-full overflow-x-auto bg-white/40 dark:bg-gradient-to-b dark:from-slate-800/60 dark:to-slate-950/80 backdrop-blur-xl border border-white/40 dark:border-white/20 shadow-xl rounded-b-lg rounded-tr-lg relative z-0 flex flex-col"
+            class="w-full overflow-x-auto bg-white/40 dark:bg-slate-900/40 backdrop-blur-xl border border-white/40 dark:border-white/20 shadow-xl rounded-b-lg rounded-tr-lg relative z-0 flex flex-col"
             >
-            <table class="w-full min-w-[40rem] text-left dark:text-white table-auto">
-                <thead class="bg-gray-200 dark:bg-gray-700 border-b-2 border-gray-300">
-                <tr class="bg-primary-100 dark:bg-gray-700">
-                    <th class="p-4 rounded-tl-none"><p class="text-sm opacity-70">Date</p></th>
-                    <th class="p-4"><p class="text-sm opacity-70">Issue</p></th>
-                    <th class="p-4"><p class="text-sm opacity-70">Ticket</p></th>
-                    <th class="p-4"><p class="text-sm opacity-70">Description</p></th>
-                    <th class="p-4"><p class="text-sm opacity-70">Time used</p></th>
-                    <th v-if="['other', 'co'].includes(role)" class="p-4 text-center rounded-tr-lg"><p class="text-sm opacity-70 uppercase tracking-widest">Action</p></th>
+            <table class="w-full min-w-[40rem] text-left dark:text-slate-200 table-auto border-collapse">
+                <thead class="bg-white/50 dark:bg-slate-900/80 backdrop-blur-md border-b border-white/20 dark:border-white/10">
+                <tr>
+                    <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Date</th>
+                    <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Issue</th>
+                    <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Ticket</th>
+                    <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Description</th>
+                    <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Time used</th>
+                    <th v-if="['other', 'co'].includes(role)" class="p-5 text-center font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Action</th>
                 </tr>
                 </thead>
                 <tbody class="divide-y divide-white/20 dark:divide-white/5">
                 <template v-for="(group, date) in groupedLogtimes" :key="date">
-                    <tr class="bg-primary-50 dark:bg-slate-800 border-t border-gray-300">
-                    <td class="py-2 px-4 italic font-bold text-primary-700 dark:text-primary-400" colspan="3">{{ date }}</td>
-                    <td></td>
-                    <td class="py-2 px-4">
-                        <p class="font-bold text-blue-gray-900">{{ group.totalTime }} h</p>
-                    </td>
-                    <td v-if="['other', 'co'].includes(role)" class="py-2 px-4"></td>
+                    <tr class="bg-primary-50/50 dark:bg-primary-500/10 backdrop-blur-sm border-t border-white/20 dark:border-white/10">
+                      <td class="py-2 px-5 font-bold text-primary-700 dark:text-primary-400" colspan="3">{{ date }}</td>
+                      <td></td>
+                      <td class="py-2 px-5">
+                          <span class="inline-flex items-center px-2.5 py-1 rounded-md bg-white/50 dark:bg-slate-900/60 font-bold text-gray-800 dark:text-gray-200 border border-white/40 dark:border-white/10 shadow-sm">{{ group.totalTime }} h</span>
+                      </td>
+                      <td v-if="['other', 'co'].includes(role)" class="py-2 px-5"></td>
                     </tr>
-                    <tr v-for="value in group.items" :key="value.id" class="border-t border-gray-200 hover:bg-white/50 dark:hover:bg-slate-800/50 transition-colors">
-                    <td class="p-4 text-sm">{{ formatDate(value.date) }}</td>
-                    <td class="p-4">
-                        <a :href="route('task.show', value.task.id)" class="text-sm font-bold text-primary-600 dark:text-primary-400 hover:underline">
+                    <tr v-for="value in group.items" :key="value.id" class="border-t border-white/20 dark:border-white/5 hover:bg-white/30 dark:hover:bg-white/5 transition duration-200">
+                    <td class="p-5 align-middle text-sm text-gray-500 dark:text-slate-400">{{ formatDate(value.date) }}</td>
+                    <td class="p-5 align-middle">
+                        <a :href="route('task.show', value.task.id)" class="text-sm font-bold text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300 hover:underline decoration-primary-300 underline-offset-2 transition">
                         {{ value.task.issue }}
                         </a>
                     </td>
-                    <td class="p-5">
-                        <a :href="'//' + value.task.ticket_link" target="_blank" class="text-sm text-primary-600 dark:text-primary-400 hover:underline">
+                    <td class="p-5 align-middle">
+                        <a :href="'//' + value.task.ticket_link" target="_blank" class="text-sm text-primary-600 dark:text-primary-400 hover:underline truncate block max-w-[200px]">
                         {{ value.task.ticket_link }}
                         </a>
                     </td>
-                    <td class="p-4 max-w-[200px]">
-                      <div class="truncate" :title="value.description">
+                    <td class="p-5 align-middle max-w-[200px]">
+                      <div class="truncate text-sm text-gray-600 dark:text-slate-400" :title="value.description">
                         {{ value.description || '-' }}
                       </div>
                     </td>
-                    <td class="p-4 text-sm">{{ parseFloat(value.time_used) }} h</td>
-                    <td v-if="['other', 'co'].includes(role)" class="p-4">
-                      <div class="flex justify-center gap-8">
+                    <td class="p-5 align-middle text-sm text-gray-700 dark:text-slate-200 font-medium">{{ parseFloat(value.time_used) }} h</td>
+                    <td v-if="['other', 'co'].includes(role)" class="p-5 align-middle">
+                      <div class="flex justify-center gap-4">
                         <button
                           @click="openDetailLogtime(value)"
-                          class="text-primary-600 dark:text-primary-400 font-medium hover:underline text-sm"
+                          class="p-1.5 rounded-lg text-primary-600 dark:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-500/10 transition tooltip-trigger" title="Detail"
                         >
-                          <Detail class="w-6 h-6" />
+                          <Detail class="w-5 h-5" />
                         </button>
-                        <button @click.prevent="handleDelete(value.id)" class="text-red-600 dark:text-red-400 font-medium hover:underline text-sm">
-                          <Trash class="w-6 h-6" />
+                        <button 
+                          @click.prevent="handleDelete(value.id)" 
+                          class="p-1.5 rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition tooltip-trigger" title="Delete"
+                        >
+                          <Trash class="w-5 h-5" />
                         </button>
                       </div>
                     </td>
                     </tr>
                 </template>
                 <tr v-if="logtimes.data.length === 0">
-                    <td colspan="5" class="p-12 text-center text-gray-400 dark:text-gray-500 italic">No logtimes found.</td>
+                    <td colspan="6" class="p-12 text-center text-gray-400 dark:text-gray-500 italic">No logtimes found.</td>
                 </tr>
                 </tbody>
             </table>
@@ -355,37 +371,35 @@ const closeDetailLogtime = () => {
     </div>
 
   <Modal :show="showDetailLogtime" @close="closeDetailLogtime" max-width="2xl">
-    <div class="p-6 bg-white dark:bg-slate-800"> 
-        <div class="flex justify-between items-center mb-4">
-            <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">
+    <div class="p-8 bg-white/90 dark:bg-slate-900/95 backdrop-blur-xl border border-white/50 dark:border-white/10 rounded-lg shadow-2xl relative"> 
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100 drop-shadow-sm">
                 Logtime Details
             </h2>
         </div>
 
         <div class="space-y-4">
-            <div class="border-b pb-2 dark:border-gray-700">
-                <label class="block text-sm font-bold uppercase text-gray-500 dark:text-white">Date</label>
-                <p class="text-gray-800 dark:text-white">{{ formatDate(selectedLogtime?.date) }}</p>
+            <div class="border-b border-gray-200/50 dark:border-white/10 pb-3">
+                <label class="block text-xs font-bold uppercase text-gray-500 dark:text-slate-400 mb-1 tracking-wider">Date</label>
+                <p class="text-gray-800 dark:text-slate-200 font-medium">{{ formatDate(selectedLogtime?.date) }}</p>
             </div>
             
-            <div class="border-b pb-2 dark:border-gray-700">
-                <label class="block text-sm font-bold uppercase text-gray-500 dark:text-white">Ticket Link</label>
-                <a :href="'//' + selectedLogtime?.task.ticket_link" target="_blank" class="text-primary-600 dark:text-primary-400 hover:underline break-all">
+            <div class="border-b border-gray-200/50 dark:border-white/10 pb-3">
+                <label class="block text-xs font-bold uppercase text-gray-500 dark:text-slate-400 mb-1 tracking-wider">Ticket Link</label>
+                <a :href="'//' + selectedLogtime?.task.ticket_link" target="_blank" class="text-primary-600 dark:text-primary-400 hover:underline break-all font-medium">
                     {{ selectedLogtime?.task.ticket_link }}
                 </a>
             </div>
             
-            <div class="border-b pb-2 dark:border-gray-700">
-                <label class="block text-sm font-bold uppercase text-gray-500 dark:text-white">Time Used</label>
-                <p class="text-gray-800 dark:text-gray-200">{{ selectedLogtime?.time_used }} h</p>
+            <div class="border-b border-gray-200/50 dark:border-white/10 pb-3">
+                <label class="block text-xs font-bold uppercase text-gray-500 dark:text-slate-400 mb-1 tracking-wider">Time Used</label>
+                <p class="text-gray-800 dark:text-slate-200 font-medium">{{ selectedLogtime?.time_used }} h</p>
             </div>
 
             <div>
-                <label class="block text-sm font-bold uppercase text-gray-500 dark:text-white">Description</label>
-                <div class="max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
-                  <p class="text-gray-800 dark:text-gray-200 whitespace-pre-wrap leading-relaxed">
-                    {{ selectedLogtime?.description || '-' }}
-                  </p>
+                <label class="block text-xs font-bold uppercase text-gray-500 dark:text-slate-400 mb-1 tracking-wider">Description</label>
+                <div class="p-4 rounded-lg bg-white/50 dark:bg-slate-800/40 border border-white/40 dark:border-white/10 text-gray-700 dark:text-slate-300 text-sm whitespace-pre-wrap leading-relaxed shadow-inner max-h-[250px] overflow-y-auto custom-scrollbar">
+                    {{ selectedLogtime?.description || 'No description provided.' }}
                 </div>
             </div>
         </div>
@@ -393,13 +407,21 @@ const closeDetailLogtime = () => {
         <div class="mt-8 flex justify-end">
             <button 
                 @click="closeDetailLogtime"
-                class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition shadow-sm"
+                class="px-4 py-2 bg-gray-100/50 dark:bg-slate-700/50 text-gray-800 dark:text-gray-200 rounded-lg hover:bg-gray-200/50 dark:hover:bg-slate-600/50 border border-gray-200/50 dark:border-slate-600/50 backdrop-blur-sm transition shadow-sm font-bold text-sm"
             >
                 Close
             </button>
         </div>
     </div>
   </Modal>
+
+  <DeleteConfirmationModal 
+    :show="confirmDeleteModal"
+    title="Delete Log Time"
+    message="Are you sure want to delete this logtime?"
+    @close="closeDeleteModal"
+    @confirm="handleConfirmDelete"
+  />
   </div> 
 </template>
 
@@ -445,7 +467,6 @@ const closeDetailLogtime = () => {
 .custom-scrollbar {
   scrollbar-gutter: stable;
   scrollbar-width: thin;
-  /* Hapus scrollbar-color yang lama agar mengikuti pseudo element di bawah */
 }
 .custom-scrollbar::-webkit-scrollbar {
   height: 6px;

@@ -14,6 +14,7 @@ import Book from '@/Components/Icon/Book.vue';
 import Trash from '@/Components/Icon/Trash.vue'; 
 import SkillForm from '@/Components/Form/Skill.vue';
 import SelectInput from '@/Components/SelectInput.vue';
+import DeleteConfirmationModal from '@/Components/DeleteConfirmationModal.vue';
 import { Head, router, usePage } from '@inertiajs/vue3';
 import { ref, computed, watch, onMounted } from 'vue';
 import moment from 'moment';
@@ -22,6 +23,8 @@ import Close from '@/Components/Icon/Close.vue';
 const showButtons = ref(false);
 const openForm = ref(false);
 const isLoaded = ref(false);
+const confirmDeleteModal = ref(false)
+const skillToDelete = ref(null)
 
 onMounted(() => {
   setTimeout(() => {
@@ -52,10 +55,20 @@ const handleCloseForm = () => {
   openForm.value = false;
 };
 
-const handleDelete = (id) => {
-  if (confirm('Are you sure you want to delete this skill?')) {
-    router.delete(route('skill.destroy', id));
-  }
+const openDeleteModal = (skill) => {
+  skillToDelete.value = skill;
+  confirmDeleteModal.value = true;
+}
+
+const closeDeleteModal = () => {
+  skillToDelete.value = null;
+  confirmDeleteModal.value = false;
+}
+
+const handleConfirmDelete = (id) => {
+  router.delete(route('skill.destroy', skillToDelete.value.id), {
+    onSuccess: () => closeDeleteModal(),
+  });
 };
 
 const props = defineProps({
@@ -95,7 +108,7 @@ watch(id, (newValue) => {
     <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-0">
         <div
           class="flex justify-between px-6 py-4 items-center text-gray-800 dark:text-gray-200 
-                 bg-white/40 dark:bg-gradient-to-b dark:from-slate-700/30 dark:to-slate-900/60 backdrop-blur-xl border border-white/40 dark:border-white/20 
+                 bg-white/40 dark:bg-slate-900/40 backdrop-blur-xl border border-white/40 dark:border-white/20 
                  shadow-lg rounded-lg transition-all duration-1000 ease-out"
           :class="{ 'translate-y-0 opacity-100': isLoaded, 'translate-y-8 opacity-0': !isLoaded }"
         >
@@ -155,7 +168,7 @@ watch(id, (newValue) => {
     </button>
 
     <div v-if="openForm" class="fixed inset-0 z-50 px-4 flex items-center justify-center bg-black/60 backdrop-blur-sm transition-opacity">
-      <div class="bg-white/90 dark:bg-gradient-to-b dark:from-slate-800/90 dark:to-slate-950 backdrop-blur-2xl border border-white/50 dark:border-white/10 rounded-lg shadow-2xl max-w-lg w-full p-6 relative animate-in fade-in zoom-in duration-300">
+      <div class="bg-white/90 dark:bg-slate-900/95 backdrop-blur-2xl border border-white/50 dark:border-white/10 rounded-lg shadow-2xl max-w-lg w-full p-6 relative animate-in fade-in zoom-in duration-300">
         <SkillForm @close="handleCloseForm" />
       </div>
     </div>
@@ -167,11 +180,11 @@ watch(id, (newValue) => {
     >
       <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-0">
         <div class="flex flex-col py-6 px-6 text-gray-800 dark:text-gray-200 
-                    bg-white/40 dark:bg-gradient-to-b dark:from-slate-700/30 dark:to-slate-900/60 backdrop-blur-xl border border-white/40 dark:border-white/10 
+                    bg-white/40 dark:bg-slate-900/40 backdrop-blur-xl border border-white/40 dark:border-white/10 
                     shadow-lg rounded-lg font-medium">
-          <div class="flex flex-col sm:flex-row gap-4 pb-4 border-b border-gray-200/50 dark:border-white/5 mb-4">
+          <div class="flex flex-col sm:flex-row justify-between items-center gap-2 pb-4 border-b border-gray-200/50 dark:border-white/5 mb-4">
              <div class="w-full sm:w-1/2">
-                <label class="text-xs font-bold text-gray-500 dark:text-slate-400 mb-1 block uppercase">Filter User</label>
+                <label class="text-sm font-bold text-gray-500 dark:text-slate-400 mb-1 block uppercase">Filter User</label>
                 <SelectInput
                   id="user"
                   v-model="id"
@@ -183,22 +196,22 @@ watch(id, (newValue) => {
                   :dark="true"
                 />
             </div>
-          </div>
-          <div class="hidden sm:flex justify-end gap-3">
-            <button
-              @click="exportSkill"
-              class="flex items-center gap-2 px-3 py-2 text-sm font-bold rounded-lg bg-primary-50/50 hover:bg-primary-100/50 text-primary-700 dark:bg-primary-900/30 dark:hover:bg-primary-900/50 dark:text-primary-300 transition-colors border border-primary-200/50 dark:border-primary-800/50"
-            >
-              <Download class="w-4 h-4" />
-              <span>{{ id ? 'Export Data' : 'Export All' }}</span>
-            </button>
-            <button
-              @click="() => router.get(route('skill.list'))"
-              class="flex items-center gap-2 px-3 py-2 text-sm font-bold rounded-lg bg-gray-100/50 hover:bg-gray-200/50 text-gray-600 dark:bg-slate-700/50 dark:hover:bg-slate-600/50 dark:text-slate-300 transition-colors border border-gray-200/50 dark:border-slate-600/50"
-            >
-              <Close class="w-4 h-4" />
-              <span>Reset</span>
-            </button>
+            <div class="hidden sm:flex justify-end gap-3">
+              <button
+                @click="exportSkill"
+                class="flex items-center gap-2 h-12 px-3 py-2 text-sm font-bold rounded-lg bg-primary-50/50 hover:bg-primary-100/50 text-primary-700 dark:bg-primary-900/30 dark:hover:bg-primary-900/50 dark:text-primary-300 transition-colors border border-primary-200/50 dark:border-primary-800/50"
+              >
+                <Download class="w-4 h-4" />
+                <span>{{ id ? 'Export Data' : 'Export All' }}</span>
+              </button>
+              <button
+                @click="() => router.get(route('skill.list'))"
+                class="flex items-center gap-2 h-12 px-3 py-2 text-sm font-bold rounded-lg bg-gray-100/50 hover:bg-gray-200/50 text-gray-600 dark:bg-slate-700/50 dark:hover:bg-slate-600/50 dark:text-slate-300 transition-colors border border-gray-200/50 dark:border-slate-600/50"
+              >
+                <Close class="w-4 h-4" />
+                <span>Reset</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -213,16 +226,16 @@ watch(id, (newValue) => {
         <div class="flex flex-col items-start">
             
             <div class="relative z-10 -mb-[1px]">
-                <div class="w-fit px-6 h-12 bg-white/40 dark:bg-slate-700/50 dark:to-slate-800/60 backdrop-blur-xl border-t border-l border-r border-white/40 dark:border-white/20 rounded-t-lg shadow-sm relative flex items-center gap-3">
+                <div class="w-fit px-6 h-12 bg-white/40 dark:bg-slate-900/60 backdrop-blur-xl border-t border-l border-r border-white/40 dark:border-white/20 rounded-t-lg shadow-sm relative flex items-center gap-3">
                     <Book class="w-5 h-5 text-primary-600 dark:text-primary-400 drop-shadow-sm" />
                     <span class="font-bold text-gray-800 dark:text-slate-100 text-sm tracking-wide shadow-black drop-shadow-sm">Skills List</span>
-                    <div class="absolute -bottom-[1px] left-0 right-0 h-[2px] bg-white/40 dark:bg-slate-800/80 z-20"></div>
+                    <div class="absolute -bottom-[1px] left-0 right-0 h-[2px] bg-white/40 dark:bg-slate-900/80 z-20"></div>
                 </div>
             </div>
 
-            <div class="w-full overflow-x-auto bg-white/40 dark:bg-gradient-to-b dark:from-slate-800/60 dark:to-slate-950/80 backdrop-blur-xl border border-white/40 dark:border-white/20 shadow-xl rounded-b-lg rounded-tr-lg relative z-0">
+            <div class="w-full overflow-x-auto bg-white/40 dark:bg-slate-900/40 backdrop-blur-xl border border-white/40 dark:border-white/20 shadow-xl rounded-b-lg rounded-tr-lg relative z-0">
             <table class="w-full text-left dark:text-slate-200 table-auto border-collapse">
-                <thead class="sticky top-0 z-20 bg-white/50 dark:bg-slate-800/90 backdrop-blur-md border-b border-white/20 dark:border-white/10">
+                <thead class="sticky top-0 z-20 bg-white/50 dark:bg-slate-900/80 backdrop-blur-md border-b border-white/20 dark:border-white/10">
                 <tr>
                     <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">
                       Skill Name
@@ -249,11 +262,11 @@ watch(id, (newValue) => {
                     </td>
                     <td class="p-5 align-middle text-center">
                         <button
-                        @click.prevent="handleDelete(value.id)"
+                        @click.prevent="openDeleteModal(value)"
                         class="p-1.5 rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 transition tooltip-trigger inline-flex"
                         title="Delete"
                         >
-                          <Trash class="w-4 h-4" />
+                          <Trash class="w-5 h-5" />
                         </button>
                     </td>
                 </tr>
@@ -267,6 +280,14 @@ watch(id, (newValue) => {
 
       </div>
     </div>
+
+    <DeleteConfirmationModal
+      :show="confirmDeleteModal"
+      title="Delete Skill"
+      :message="`Are you sure want to delete ${skillToDelete?.skill} skill`"
+      @close="closeDeleteModal"
+      @confirm="handleConfirmDelete"
+    />
   </div>
 </template>
 

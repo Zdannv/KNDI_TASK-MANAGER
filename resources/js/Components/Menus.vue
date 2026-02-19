@@ -39,6 +39,7 @@ const visibleMenuItems = computed(() => rawMenuItems.value.filter(item => item.s
 
 // 2. Logic Active Index (Reactive)
 const activeIndex = computed(() => {
+    const url = page.url; 
     return visibleMenuItems.value.findIndex(item => {
         if (Array.isArray(item.pattern)) {
             return item.pattern.some(p => route().current(p));
@@ -66,25 +67,24 @@ watch(activeIndex, (newVal, oldVal) => {
 </script>
 
 <template>
-    <div class="relative flex flex-col gap-2 overflow-visible">
+    <div class="relative flex flex-col gap-2">
         
         <div
-            class="absolute z-0 bg-gradient-to-r from-white/95 to-white/70 dark:from-primary-600/40 dark:to-transparent backdrop-blur-md border border-white/40 dark:border-white/10 shadow-lg"
+            class="absolute left-0 z-0 bg-gradient-to-r from-white/95 to-white/70 dark:from-primary-600 dark:to-transparent backdrop-blur-md border border-white/40 dark:border-white/10 shadow-lg"
             :class="[
-                'h-[50px] transform-gpu transition-all duration-300 ease-in-out',
+                'h-[50px] transform-gpu transition-all',
+                'duration-300 ease-in-out', 
+
                 activeIndex === -1 ? 'opacity-0 scale-90' : 'opacity-100',
-                
-                sidebarOpen 
-                    ? 'w-[calc(100%-16px)] ml-4 rounded-l-full' 
-                    : 'w-[50px] left-1/2 -translate-x-1/2 rounded-full',
+                sidebarOpen ? 'w-full ml-4' : 'w-[calc(100%-24px)] mx-3',
                 
                 isMoving 
                     ? 'scale-y-[0.4] scale-x-[0.4] rounded-full opacity-80'
-                    : 'scale-y-100 scale-x-100',
+                    : 'scale-y-100 scale-x-100 rounded-l-full rounded-r-none opacity-100',
             ]"
             :style="{
                 transformOrigin: 'center', 
-                top: `${activeIndex * (ITEM_HEIGHT + GAP)}px`
+                transform: `translateY(${activeIndex * (ITEM_HEIGHT + GAP)}px)`
             }"
         >
         </div>
@@ -95,8 +95,8 @@ watch(activeIndex, (newVal, oldVal) => {
                 class="group relative z-10 flex items-center h-[50px] font-medium no-underline transition-colors duration-200"
                 :class="[
                     index === activeIndex
-                        ? 'text-primary-900 dark:text-primary-300 font-bold' 
-                        : 'text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-primary-200' 
+                        ? 'text-[#0d1b3e] dark:text-primary-300 font-bold' 
+                        : 'text-slate-400 hover:text-white dark:text-slate-500 dark:hover:text-primary-200' 
                 ]"
             >
                 <div 
@@ -110,25 +110,19 @@ watch(activeIndex, (newVal, oldVal) => {
                 </div>
 
                 <span 
-                    v-if="sidebarOpen" 
+                    v-show="sidebarOpen" 
                     class="whitespace-nowrap transition-opacity duration-300 delay-75"
+                    :class="sidebarOpen ? 'opacity-100' : 'opacity-0 w-0 overflow-hidden'"
                 >
                     {{ item.label }}
                 </span>
 
                 <div
                     v-if="!sidebarOpen"
-                    class="absolute left-[65px] top-1/2 -translate-y-1/2 px-3 py-1.5 
-                           bg-slate-800 dark:bg-primary-500 
-                           text-white dark:text-primary-950
-                           text-xs font-bold
-                           rounded-md shadow-2xl border border-white/10
-                           opacity-0 group-hover:opacity-100 group-hover:translate-x-2 translate-x-0
-                           transition-all duration-200 pointer-events-none whitespace-nowrap z-[9999]"
+                    class="absolute left-[calc(100%+10px)] top-1/2 -translate-y-1/2 bg-[#0d1b3e]/90 dark:bg-slate-900/95 backdrop-blur-md text-white text-sm font-bold px-3 py-1.5 rounded-none opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap shadow-xl z-50 border border-white/20 dark:border-white/10"
                 >
                     {{ item.label }}
-                    <div class="absolute top-1/2 -left-1 -translate-y-1/2 border-4 border-transparent 
-                                border-r-slate-800 dark:border-r-primary-500"></div>
+                    <div class="absolute top-1/2 -left-1 -translate-y-1/2 border-4 border-transparent border-r-[#0d1b3e]/90 dark:border-r-slate-900/95"></div>
                 </div>
             </Link>
         </template>
@@ -136,11 +130,6 @@ watch(activeIndex, (newVal, oldVal) => {
 </template>
 
 <style scoped>
-/* Pastikan tidak ada parent yang memotong konten */
-:deep(.relative) {
-    overflow: visible !important;
-}
-
 .relative {
     user-select: none;
 }

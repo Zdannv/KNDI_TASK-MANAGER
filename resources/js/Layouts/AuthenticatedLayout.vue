@@ -120,7 +120,7 @@ const getInitials = (name) => {
 </script>
 
 <template>
-    <div class="min-h-screen bg-gradient-to-b from-[#F2F5FA] to-[#e0e7ff] dark:from-[#1e293b] dark:via-[#0f172a] dark:to-[#020617] font-sans text-slate-600 dark:text-slate-300 relative selection:bg-primary-500 selection:text-white transition-colors duration-500">
+    <div class="min-h-screen bg-gradient-to-b from-[#F2F5FA] to-[#e0e7ff] dark:bg-[url('/background/dark_theme.jpg')] dark:bg-cover dark:bg-center dark:bg-fixed dark:bg-no-repeat font-sans text-slate-600 dark:text-slate-300 relative selection:bg-primary-500 selection:text-white transition-colors duration-500">
         <Head :title="title" />
 
         <nav class="md:hidden fixed top-0 left-0 w-full bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-white/10 z-50 shadow-sm">
@@ -190,7 +190,7 @@ const getInitials = (name) => {
             }"
         >
             <header class="hidden md:flex h-24 items-center justify-between px-4 sticky top-0 z-40 transition-colors duration-300
-                bg-[#F2F5FA] dark:bg-[#1e293b] border-b border-gray-200 dark:border-white/5 shadow-sm">
+                bg-[#F2F5FA] dark:bg-[#1e293b]/50 dark:backdrop-blur-md border-b border-gray-200 dark:border-white/5 shadow-sm">
                 <div>
                     <h1 class="text-3xl font-bold text-[#0d1b3e] dark:text-slate-100 tracking-tight">
                         Hello, {{ user.name.split(' ')[0] }}!
@@ -240,7 +240,7 @@ const getInitials = (name) => {
             </div>
 
             <div class="px-6 pb-6 flex flex-col h-full relative">
-                <h2 class="text-lg font-bold text-[#0d1b3e] dark:text-white mb-8 mt-2 uppercase tracking-widest text-xs opacity-50">User Profile</h2>
+                <h2 class="text-lg font-bold text-[#0d1b3e] dark:text-white mb-8 mt-2 uppercase tracking-widest opacity-50">User Profile</h2>
 
                 <div class="flex flex-col items-center mb-8 w-full">
                     <div class="relative group cursor-pointer mb-6" @click="openAvatarModal">

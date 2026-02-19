@@ -1,7 +1,6 @@
 <p>Task: {{ $task->issue }}</p>
 <p>Reviewer: {{ $reviewer->name }} &lt;{{ $reviewer->email }}&gt;</p>
 @if(!empty($reply->pr_links))
-<p>PR Links:</p>
 <ul>
 @foreach($reply->pr_links as $link)
     <li><a href="//{{ $link }}">{{ $link }}</a></li>

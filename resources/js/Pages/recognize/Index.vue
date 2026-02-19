@@ -14,6 +14,10 @@ const currentDate = ref('');
 let timeInterval;
 let scanInterval;
 
+// Variabel untuk menyimpan objek Audio
+let successAudio;
+let errorAudio;
+
 const updateTime = () => {
     const now = new Date();
     currentTime.value = now.toLocaleTimeString('us-EN', {
@@ -49,6 +53,21 @@ const stopCamera = () => {
     isCameraActive.value = false;
 };
 
+// Fungsi helper untuk memutar suara
+const playSound = (type) => {
+    try {
+        if (type === 'success' && successAudio) {
+            successAudio.currentTime = 0; // Reset ke awal agar bisa diputar cepat
+            successAudio.play().catch(e => console.log('Audio autoplay dicegah browser:', e));
+        } else if (type === 'error' && errorAudio) {
+            errorAudio.currentTime = 0;
+            errorAudio.play().catch(e => console.log('Audio autoplay dicegah browser:', e));
+        }
+    } catch (err) {
+        console.error('Gagal memutar suara:', err);
+    }
+};
+
 const captureAndRecognize = async () => {
     if (!isCameraActive.value || isProcessing.value || !videoRef.value) return;
 
@@ -71,12 +90,22 @@ const captureAndRecognize = async () => {
 
         const res = response.data;
 
+        const isSuccess = res.status === 'success';
+
         recognitionResult.value = {
-            status: res.status === 'success' ? 'success' : 'error',
+            status: isSuccess ? 'success' : 'error',
             name: res.name || "Gagal",
             message: res.message,
             type: attendanceType.value
         }
+
+        // Putar suara berdasarkan status dari response
+        if (isSuccess) {
+            playSound('success');
+        } else {
+            playSound('error');
+        }
+
     } catch (err) {
         if (err.response && err.response.status === 401) {
             recognitionResult.value = {
@@ -85,15 +114,22 @@ const captureAndRecognize = async () => {
                 message: err.response.data.message,
                 type: attendanceType.value
             }
-
             console.log('catch...');
         }
+        
+        // Putar suara error jika terjadi catch (misal: 401 / sudah absen / wajah tidak dikenali)
+        playSound('error');
+        
     } finally {
         isProcessing.value = false;
     }
 };
 
 onMounted(() => {
+    // Inisialisasi audio di onMounted agar aman dari isu SSR (Server-Side Rendering)
+    successAudio = new Audio('/backsounds/4maps.mp3');
+    errorAudio = new Audio('/backsounds/prabowo-sorry-ye.mp3');
+
     updateTime();
     timeInterval = setInterval(updateTime, 1000);
     scanInterval = setInterval(() => {
@@ -130,14 +166,14 @@ onBeforeUnmount(() => {
 
                 <div class="text-right">
                     <div class="text-2xl font-mono font-bold text-gray-800 leading-none">{{ currentTime }}</div>
-                    <div class="text-xs text-gray-500 font-medium uppercase mt-1">{{ currentDate }}</div>
+                    <div class="text-sm text-gray-500 font-medium uppercase mt-1">{{ currentDate }}</div>
                 </div>
             </div>
         </header>
 
         <main class="flex-grow flex items-center justify-center p-6">
             <div class="w-full max-w-6xl">
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 h-[600px]">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:h-[600px]">
                     
                     <div class="flex flex-col gap-4 h-full">
                         
@@ -156,7 +192,7 @@ onBeforeUnmount(() => {
                             </button>
                         </div>
 
-                        <div class="flex-grow bg-slate-900 rounded-3xl shadow-lg border border-gray-200 overflow-hidden relative group flex flex-col items-center justify-center isolate">
+                        <div class="flex-grow min-h-[400px] lg:min-h-0 bg-slate-900 rounded-3xl shadow-lg border border-gray-200 overflow-hidden relative group flex flex-col items-center justify-center isolate">
                             <video v-show="isCameraActive" ref="videoRef" autoplay playsinline muted 
                                 class="absolute inset-0 w-full h-full object-cover transform scale-x-[-1]"></video>
 
@@ -175,7 +211,7 @@ onBeforeUnmount(() => {
                             <button 
                                 v-if="isCameraActive"
                                 @click="toggleCamera"
-                                class="absolute top-4 right-4 z-50 bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-red-500/80 hover:border-red-500 px-4 py-2 rounded-full text-xs font-bold shadow-lg transition-all flex items-center gap-2 group"
+                                class="absolute top-4 right-4 z-50 bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-red-500/80 hover:border-red-500 px-4 py-2 rounded-full text-sm font-bold shadow-lg transition-all flex items-center gap-2 group"
                             >
                                 <span class="w-2 h-2 rounded-full bg-red-500 group-hover:bg-white transition-colors animate-pulse"></span>
                                 Matikan
@@ -188,7 +224,7 @@ onBeforeUnmount(() => {
                         </div>
                     </div>
 
-                    <div class="bg-white rounded-3xl shadow-xl border border-gray-100 flex flex-col items-center justify-center p-8 text-center relative overflow-hidden">
+                    <div class="bg-white rounded-3xl shadow-xl border border-gray-100 flex flex-col items-center justify-center p-8 text-center relative overflow-hidden min-h-[300px] lg:min-h-0">
                         <div class="absolute top-0 w-full h-2 bg-gradient-to-r from-indigo-500 to-purple-600"></div>
                         
                         <transition mode="out-in" enter-active-class="transition duration-300 ease-out" enter-from-class="opacity-0 translate-y-4" enter-to-class="opacity-100 translate-y-0" leave-active-class="transition duration-200 ease-in" leave-from-class="opacity-100 translate-y-0" leave-to-class="opacity-0 translate-y-4">
@@ -218,14 +254,14 @@ onBeforeUnmount(() => {
                                 </div>
 
                                 <div class="w-full">
-                                    <h2 class="text-5xl font-black text-gray-900 mb-3 tracking-tight">{{ recognitionResult.name }}</h2>
+                                    <h2 class="text-3xl md:text-5xl font-black text-gray-900 mb-3 tracking-tight">{{ recognitionResult.name }}</h2>
                                     
                                     <div class="inline-flex items-center px-6 py-3 rounded-2xl text-lg font-bold border shadow-sm"
                                         :class="recognitionResult.status === 'success' ? 'bg-green-50 text-green-700 border-green-200' : 'bg-red-50 text-red-700 border-red-200'">
                                         {{ recognitionResult.message }}
                                     </div>
                                     
-                                    <p class="text-xs text-gray-400 mt-6 uppercase tracking-widest font-semibold">
+                                    <p class="text-sm text-gray-400 mt-6 uppercase tracking-widest font-semibold">
                                         Status Terakhir • {{ recognitionResult.type === 'check_in' ? 'Masuk' : 'Pulang' }}
                                     </p>
                                 </div>

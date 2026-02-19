@@ -1,5 +1,6 @@
 <script>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import Trash from '@/Components/Icon/Trash.vue';
 
 // 1. Layout Persistent
 export default { layout: AuthenticatedLayout };
@@ -14,6 +15,7 @@ import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue'; 
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
+import DeleteConfirmationModal from '@/Components/DeleteConfirmationModal.vue';
 import { Head, router, useForm } from '@inertiajs/vue3';
 import { ref, onMounted, computed } from 'vue';
 
@@ -26,6 +28,8 @@ const isEditMode = ref(false);
 const isLoaded = ref(false);
 const showPassword = ref(false);
 const showConfirmPassword = ref(false);
+const confirmDeleteModal = ref(false)
+const userToDelete = ref(null)
 
 const form = useForm({
   id: null,
@@ -81,10 +85,20 @@ const handleEdit = (id) => {
   }
 };
 
-const handleDelete = (id) => {
-  if (confirm('Are you sure you want to delete this user?')) {
-    router.delete(route('user.destroy', id));
-  }
+const openDeleteModal = (user) => {
+  userToDelete.value = user;
+  confirmDeleteModal.value = true;
+};
+
+const closeDeleteModal = () => {
+  userToDelete.value = null;
+  confirmDeleteModal.value = false;
+};
+
+const handleConfirmDelete = () => {
+  router.delete(route('user.destroy', userToDelete.value.id), {
+    onSuccess: () => closeDeleteModal(),
+  })
 };
 
 const handleSubmit = () => {
@@ -130,7 +144,7 @@ const formatRole = (role) => {
     <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-0 mt-8">
         <div
           class="flex justify-between px-6 py-4 items-center text-gray-800 dark:text-gray-200 
-                 bg-white/40 dark:bg-gradient-to-b dark:from-slate-700/50 dark:to-slate-800/60 backdrop-blur-xl border border-white/40 dark:border-white/20 
+                 bg-white/40 dark:bg-slate-900/40 backdrop-blur-xl border border-white/40 dark:border-white/20 
                  shadow-lg rounded-lg transition-all duration-1000 ease-out"
           :class="{ 'translate-y-0 opacity-100': isLoaded, 'translate-y-8 opacity-0': !isLoaded }"
         >
@@ -159,7 +173,7 @@ const formatRole = (role) => {
     </button>
 
     <div v-if="openForm" class="fixed inset-0 z-[100] px-4 flex items-center justify-center bg-black/60 backdrop-blur-sm transition-opacity">
-      <div class="bg-white/90 dark:bg-gradient-to-b dark:from-slate-800/90 dark:to-slate-950 backdrop-blur-2xl border border-white/50 dark:border-white/10 rounded-lg shadow-2xl max-w-lg w-full p-8 relative animate-in fade-in zoom-in duration-300">
+      <div class="bg-white/90 dark:bg-slate-900/95 backdrop-blur-2xl border border-white/50 dark:border-white/10 rounded-lg shadow-2xl max-w-lg w-full p-8 relative animate-in fade-in zoom-in duration-300">
         
         <div class="flex justify-between items-center mb-6">
           <div>
@@ -168,7 +182,7 @@ const formatRole = (role) => {
               </h2>
               <p class="text-sm text-gray-500 dark:text-slate-400">Fill in the details below.</p>
           </div>
-          <button @click="handleCloseForm" class="p-2 bg-gray-100 dark:bg-slate-800 rounded-full text-gray-400 hover:text-red-500 transition-colors">
+          <button @click="handleCloseForm" class="p-2 bg-gray-100 dark:bg-slate-800/80 rounded-full text-gray-400 hover:text-red-500 transition-colors">
             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
           </button>
         </div>
@@ -176,20 +190,20 @@ const formatRole = (role) => {
         <form @submit.prevent="handleSubmit" class="space-y-5">
           <div>
             <InputLabel for="name" value="Full Name" />
-            <TextInput id="name" type="text" class="mt-1 block w-full bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm dark:border-white/10 dark:text-white" v-model="form.name" required autofocus placeholder="John Doe" />
+            <TextInput id="name" type="text" class="mt-1 block w-full bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm dark:border-white/10 dark:text-white" v-model="form.name" required autofocus placeholder="John Doe" />
             <InputError class="mt-2" :message="form.errors.name" />
           </div>
 
           <div>
             <InputLabel for="email" value="Email Address" />
-            <TextInput id="email" type="email" class="mt-1 block w-full bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm dark:border-white/10 dark:text-white" v-model="form.email" required placeholder="name@company.com" />
+            <TextInput id="email" type="email" class="mt-1 block w-full bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm dark:border-white/10 dark:text-white" v-model="form.email" required placeholder="name@company.com" />
             <InputError class="mt-2" :message="form.errors.email" />
           </div>
 
           <div>
             <InputLabel for="role" value="Role" />
             <div class="relative">
-                <select id="role" v-model="form.role" class="mt-1 block w-full border-gray-300 dark:border-white/10 bg-white/50 dark:bg-slate-900/50 dark:text-slate-200 focus:border-primary-500 focus:ring-primary-500 rounded-lg shadow-sm backdrop-blur-sm transition cursor-pointer py-2.5">
+                <select id="role" v-model="form.role" class="mt-1 block w-full border-gray-300 dark:border-white/10 bg-white/50 dark:bg-slate-800/50 dark:text-slate-200 focus:border-primary-500 focus:ring-primary-500 rounded-lg shadow-sm backdrop-blur-sm transition cursor-pointer py-2.5">
                   <option value="pm">Project Manager</option>
                   <option value="pg">Programmer</option>
                   <option value="ds">Designer</option>
@@ -218,7 +232,7 @@ const formatRole = (role) => {
             <div class="relative">
               <InputLabel for="password" :value="isEditMode ? 'Password (Optional)' : 'Password'" />
               <div class="relative mt-1">
-                <TextInput id="password" :type="showPassword ? 'text' : 'password'" class="block w-full pr-10 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm dark:border-white/10 dark:text-white" v-model="form.password" :required="!isEditMode" placeholder="••••••••" />
+                <TextInput id="password" :type="showPassword ? 'text' : 'password'" class="block w-full pr-10 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm dark:border-white/10 dark:text-white" v-model="form.password" :required="!isEditMode" placeholder="••••••••" />
                 <button type="button" @click="showPassword = !showPassword" class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-primary-500 transition">
                   <svg v-if="!showPassword" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
                   <svg v-else class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" /></svg>
@@ -230,7 +244,7 @@ const formatRole = (role) => {
             <div class="relative">
               <InputLabel for="password_confirmation" value="Confirm Password" />
               <div class="relative mt-1">
-                <TextInput id="password_confirmation" :type="showConfirmPassword ? 'text' : 'password'" class="block w-full pr-10 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm dark:border-white/10 dark:text-white" v-model="form.password_confirmation" :required="!isEditMode && form.password" placeholder="••••••••" />
+                <TextInput id="password_confirmation" :type="showConfirmPassword ? 'text' : 'password'" class="block w-full pr-10 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm dark:border-white/10 dark:text-white" v-model="form.password_confirmation" :required="!isEditMode && form.password" placeholder="••••••••" />
                 <button type="button" @click="showConfirmPassword = !showConfirmPassword" class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-primary-500 transition">
                   <svg v-if="!showConfirmPassword" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
                   <svg v-else class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" /></svg>
@@ -260,19 +274,19 @@ const formatRole = (role) => {
         >
 
           <div class="relative z-10 -mb-[1px]">
-             <div class="w-fit px-6 h-12 bg-white/40 dark:bg-slate-700/50 dark:to-slate-800/60 backdrop-blur-xl border-t border-l border-r border-white/40 dark:border-white/20 rounded-t-lg shadow-sm relative flex items-center gap-3">
+             <div class="w-fit px-6 h-12 bg-white/40 dark:bg-slate-900/60 backdrop-blur-xl border-t border-l border-r border-white/40 dark:border-white/20 rounded-t-lg shadow-sm relative flex items-center gap-3">
                 <User class="w-5 h-5 text-primary-600 dark:text-primary-400 drop-shadow-sm" />
                 <span class="font-bold text-gray-800 dark:text-slate-100 text-sm tracking-wide shadow-black drop-shadow-sm">All Users Data</span>
-                <div class="absolute -bottom-[1px] left-0 right-0 h-[2px] bg-white/40 dark:bg-slate-800/80 z-20"></div>
+                <div class="absolute -bottom-[1px] left-0 right-0 h-[2px] bg-white/40 dark:bg-slate-900/80 z-20"></div>
              </div>
           </div>
           
           <div
-            class="w-full overflow-x-auto bg-white/40 dark:bg-gradient-to-b dark:from-slate-800/60 dark:to-slate-950/80 backdrop-blur-xl border border-white/40 dark:border-white/20 shadow-xl rounded-b-lg rounded-tr-lg relative z-0"
+            class="w-full overflow-x-auto bg-white/40 dark:bg-slate-900/40 backdrop-blur-xl border border-white/40 dark:border-white/20 shadow-xl rounded-b-lg rounded-tr-lg relative z-0"
           >
             <table class="w-full text-left dark:text-slate-200 table-auto border-collapse">
               <thead>
-                <tr class="bg-white/50 dark:bg-slate-800/90 backdrop-blur-md border-b border-white/20 dark:border-white/10">
+                <tr class="bg-white/50 dark:bg-slate-900/80 backdrop-blur-md border-b border-white/20 dark:border-white/10">
                   <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">No</th>
                   <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Name</th>
                   <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Email</th>
@@ -311,10 +325,12 @@ const formatRole = (role) => {
                             <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
                           </svg>
                       </button>
-                      <button @click="handleDelete(user.id)" class="p-1.5 rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 transition tooltip-trigger" title="Delete">
-                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-                          </svg>
+                      <button 
+                        @click.prevent="openDeleteModal(user)" 
+                        class="p-1.5 rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 transition tooltip-trigger" 
+                        title="Delete"
+                      >
+                        <Trash class="w-5 h-5" />
                       </button>
                     </div>
                   </td>
@@ -331,12 +347,17 @@ const formatRole = (role) => {
 
       </div>
     </div>
-
+    <DeleteConfirmationModal
+      :show="confirmDeleteModal"
+      title="Delete User"
+      :message="`Are you sure you want to delete user ${userToDelete?.name}?`"
+      @close="closeDeleteModal"
+      @confirm="handleConfirmDelete"
+    />
   </div>
 </template>
 
 <style scoped>
-/* Scrollbar Default (Light Mode) */
 .custom-scrollbar::-webkit-scrollbar {
   height: 6px;
   width: 6px;
@@ -346,16 +367,16 @@ const formatRole = (role) => {
   background: transparent; 
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: rgba(156, 163, 175, 0.5); /* Abu-abu untuk Light Mode */
+  background-color: rgba(156, 163, 175, 0.5);
   border-radius: 10px;
 }
+
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background-color: rgba(156, 163, 175, 0.8);
 }
 
-/* Scrollbar Dark Mode */
 :global(.dark) .custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: rgba(255, 255, 255, 0.1); /* Putih transparan untuk Dark Mode */
+  background-color: rgba(255, 255, 255, 0.1);
 }
 :global(.dark) .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background-color: rgba(255, 255, 255, 0.2);

@@ -176,7 +176,7 @@ class AttendanceController extends Controller
                 $imageRaw = explode(',', $imageRaw)[1];
             }
 
-            $response = Http::timeout(5)->post("http://{$host}:{$port}/attendance", [
+            $response = Http::post("http://{$host}:{$port}/attendance", [
                 'image' => $imageBase64,
                 'users' => $userData, 
             ]);
