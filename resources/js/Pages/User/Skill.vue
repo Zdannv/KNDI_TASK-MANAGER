@@ -14,6 +14,7 @@ import Book from '@/Components/Icon/Book.vue';
 import Trash from '@/Components/Icon/Trash.vue'; 
 import SkillForm from '@/Components/Form/Skill.vue';
 import SelectInput from '@/Components/SelectInput.vue';
+import DeleteConfirmationModal from '@/Components/DeleteConfirmationModal.vue';
 import { Head, router, usePage } from '@inertiajs/vue3';
 import { ref, computed, watch, onMounted } from 'vue';
 import moment from 'moment';
@@ -22,6 +23,8 @@ import Close from '@/Components/Icon/Close.vue';
 const showButtons = ref(false);
 const openForm = ref(false);
 const isLoaded = ref(false);
+const confirmDeleteModal = ref(false)
+const skillToDelete = ref(null)
 
 onMounted(() => {
   setTimeout(() => {
@@ -52,10 +55,20 @@ const handleCloseForm = () => {
   openForm.value = false;
 };
 
-const handleDelete = (id) => {
-  if (confirm('Are you sure you want to delete this skill?')) {
-    router.delete(route('skill.destroy', id));
-  }
+const openDeleteModal = (skill) => {
+  skillToDelete.value = skill;
+  confirmDeleteModal.value = true;
+}
+
+const closeDeleteModal = () => {
+  skillToDelete.value = null;
+  confirmDeleteModal.value = false;
+}
+
+const handleConfirmDelete = (id) => {
+  router.delete(route('skill.destroy', skillToDelete.value.id), {
+    onSuccess: () => closeDeleteModal(),
+  });
 };
 
 const props = defineProps({
@@ -249,11 +262,11 @@ watch(id, (newValue) => {
                     </td>
                     <td class="p-5 align-middle text-center">
                         <button
-                        @click.prevent="handleDelete(value.id)"
+                        @click.prevent="openDeleteModal(value)"
                         class="p-1.5 rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 transition tooltip-trigger inline-flex"
                         title="Delete"
                         >
-                          <Trash class="w-4 h-4" />
+                          <Trash class="w-5 h-5" />
                         </button>
                     </td>
                 </tr>
@@ -267,6 +280,14 @@ watch(id, (newValue) => {
 
       </div>
     </div>
+
+    <DeleteConfirmationModal
+      :show="confirmDeleteModal"
+      title="Delete Skill"
+      :message="`Are you sure want to delete ${skillToDelete?.skill} skill`"
+      @close="closeDeleteModal"
+      @confirm="handleConfirmDelete"
+    />
   </div>
 </template>
 

@@ -79,7 +79,7 @@ const closeDeleteModal = () => {
   confirmDeleteModal.value = false;
 }
 
-const handleConfirmDelete = (id) => {
+const handleConfirmDelete = () => {
   router.delete(route('logtime.destroy', itemToDelete.value), {
     onSuccess: () => closeDeleteModal(),
   })
@@ -300,7 +300,7 @@ const closeDetailLogtime = () => {
             <table class="w-full min-w-[40rem] text-left dark:text-white table-auto">
                 <thead class="bg-gray-200 dark:bg-gray-700 border-b-2 border-gray-300">
                 <tr class="bg-primary-100 dark:bg-gray-700">
-                    <th class="p-4 rounded-tl-none"><p class="text-sm opacity-70">Date</p></th>
+                    <th class="p-4 rounconfirmDeleteModalded-tl-none"><p class="text-sm opacity-70">Date</p></th>
                     <th class="p-4"><p class="text-sm opacity-70">Issue</p></th>
                     <th class="p-4"><p class="text-sm opacity-70">Ticket</p></th>
                     <th class="p-4"><p class="text-sm opacity-70">Description</p></th>
