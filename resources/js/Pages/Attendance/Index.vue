@@ -139,7 +139,7 @@ const resetFilter = () => {
             </div>
         </div>
 
-        <div class="relative z-20 bg-white/50 dark:bg-slate-800/50 backdrop-blur-xl p-4 rounded-xl shadow-sm border border-gray-200/50 dark:border-white/5 mb-6">
+        <div class="relative z-20 bg-white/50 dark:bg-slate-900/40 backdrop-blur-xl p-4 rounded-xl shadow-sm border border-gray-200/50 dark:border-white/5 mb-6">
             <div class="flex flex-col lg:flex-row gap-4 items-center justify-between">
                 
                 <div class="flex flex-1 flex-col md:flex-row gap-4 w-full">
@@ -173,7 +173,7 @@ const resetFilter = () => {
 
                 <button 
                     @click="resetFilter" 
-                    class="w-full md:w-auto px-4 py-2.5 bg-gray-100 text-gray-700 dark:bg-slate-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-slate-600 transition text-sm font-bold flex items-center justify-center gap-2 whitespace-nowrap border border-gray-200 dark:border-slate-600"
+                    class="w-full md:w-auto px-4 py-2.5 bg-gray-100 text-gray-700 dark:bg-slate-700/50 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-slate-600/50 transition text-sm font-bold flex items-center justify-center gap-2 whitespace-nowrap border border-gray-200 dark:border-slate-600/50"
                 >
                     <Close class="w-4 h-4" />
                     Reset Filter
@@ -181,11 +181,11 @@ const resetFilter = () => {
             </div>
         </div>
 
-        <div class="bg-white/40 dark:bg-gradient-to-b dark:from-slate-800/60 dark:to-slate-950/80 backdrop-blur-xl border border-white/40 dark:border-white/20 shadow-xl rounded-xl relative z-0 overflow-hidden">
+        <div class="bg-white/40 dark:bg-slate-900/40 backdrop-blur-xl border border-white/40 dark:border-white/20 shadow-xl rounded-xl relative z-0 overflow-hidden">
             
             <div class="overflow-x-auto w-full">
                 <table class="w-full min-w-[50rem] text-left dark:text-slate-200 table-auto border-collapse">
-                    <thead class="bg-white/90 dark:bg-slate-900/95 backdrop-blur-sm border-b border-white/20 dark:border-white/10">
+                    <thead class="bg-white/90 dark:bg-slate-900/80 backdrop-blur-sm border-b border-white/20 dark:border-white/10">
                         <tr>
                             <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-xs uppercase tracking-wider">Date / Time</th>
                             <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-xs uppercase tracking-wider">Employee</th>
@@ -203,13 +203,13 @@ const resetFilter = () => {
                                     </span>
                                 </td>
                                 <td class="py-3 px-5 text-right">
-                                    <span class="text-[10px] font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wide bg-white/50 dark:bg-slate-800/50 px-2 py-1 rounded">
+                                    <span class="text-[10px] font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wide bg-white/50 dark:bg-slate-900/60 px-2 py-1 rounded">
                                         Total: {{ group.count }}
                                     </span>
                                 </td>
                             </tr>
 
-                            <tr v-for="item in group.items" :key="item.id" class="hover:bg-white/50 dark:hover:bg-slate-800/40 transition duration-200 group">
+                            <tr v-for="item in group.items" :key="item.id" class="hover:bg-white/50 dark:hover:bg-white/5 transition duration-200 group">
                                 <td class="p-5 text-sm text-gray-500 dark:text-slate-400 font-medium">
                                     {{ formatDate(item.check_in_time) }}
                                 </td>
@@ -280,7 +280,7 @@ const resetFilter = () => {
 }
 
 :deep(.dark) .dp__input {
-  background-color: rgba(30, 41, 59, 0.5) !important; 
+  background-color: rgba(15, 23, 42, 0.4) !important; 
   border-color: rgba(255, 255, 255, 0.1) !important;
   color: #f1f5f9 !important;
 }
@@ -292,7 +292,8 @@ const resetFilter = () => {
 }
 
 :deep(.dark) .dp__menu {
-  background-color: #1e293b !important;
+  background-color: rgba(15, 23, 42, 0.9) !important;
+  backdrop-filter: blur(12px);
   border: 1px solid rgba(255,255,255,0.1);
 }
 
