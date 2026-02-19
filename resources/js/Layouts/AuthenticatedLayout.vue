@@ -240,7 +240,7 @@ const getInitials = (name) => {
             </div>
 
             <div class="px-6 pb-6 flex flex-col h-full relative">
-                <h2 class="text-lg font-bold text-[#0d1b3e] dark:text-white mb-8 mt-2 uppercase tracking-widest text-xs opacity-50">User Profile</h2>
+                <h2 class="text-lg font-bold text-[#0d1b3e] dark:text-white mb-8 mt-2 uppercase tracking-widest opacity-50">User Profile</h2>
 
                 <div class="flex flex-col items-center mb-8 w-full">
                     <div class="relative group cursor-pointer mb-6" @click="openAvatarModal">
