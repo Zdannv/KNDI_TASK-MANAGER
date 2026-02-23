@@ -96,7 +96,7 @@ const onLeave = () => {
                     : 'opacity-90',
 
                 sidebarOpen 
-                    ? 'w-[calc(100%-24px)] left-4 rounded-l-full rounded-r-none' 
+                    ? 'w-[calc(100%-16px)] left-4 rounded-l-full rounded-r-none' 
                     : 'w-[50px] left-1/2 -translate-x-1/2 rounded-full',
 
                 isMoving 
