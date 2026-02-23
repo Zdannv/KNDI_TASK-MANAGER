@@ -1,6 +1,7 @@
 <script>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Trash from '@/Components/Icon/Trash.vue';
+import { data } from 'autoprefixer';
 
 // 1. Layout Persistent
 export default { layout: AuthenticatedLayout };
@@ -104,20 +105,17 @@ const handleConfirmDelete = () => {
 const handleSubmit = () => {
   if (isPasswordMismatch.value) return;
 
-  if (isEditMode.value) {
-    form.post(route('user.update', form.id), {
-      onSuccess: () => {
-        handleCloseForm()
-      },
-      onParams: (params) => {
-        params._method = 'put'
-      },
-    });
-  } else {
-    form.post(route('user.store'), {
-      onSuccess: () => handleCloseForm(),
-    });
-  }
+  const url = isEditMode.value
+              ? route('user.update', form.id)
+              : route('user.store')
+
+  form.transform((data) => ({
+    ...data,
+    _method: isEditMode.value ? 'put' : 'post'
+  })).post(url, {
+    preserveScroll: true,
+    onSuccess: () => handleCloseForm()
+  });
 };
 
 const handleFileChange = (e) => {
@@ -219,7 +217,7 @@ const formatRole = (role) => {
             <input
               type="file"
               id="face_photo"
-              class="mt-1 block w-full text-sm text-slate-500 file:mr-4 file:py-4 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+              class="mt-1 block w-full text-sm text-slate-500 file:mr-4 file:py-4 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-[#2876BC] file:text-white hover:file:bg-indigo-100"
               @input="form.face_photo = $event.target.files[0]"
               @change="handleFileChange"
               accept="image/*"
