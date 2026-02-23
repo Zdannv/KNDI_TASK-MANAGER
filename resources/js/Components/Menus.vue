@@ -63,6 +63,24 @@ watch(activeIndex, (newVal, oldVal) => {
         }, 300); 
     }
 });
+
+// 4. Logic Tooltip via Teleport
+const hoveredMenu = ref(null);
+const tooltipPos = ref({ top: 0, left: 110 }); // Default left disesuaikan dengan lebar sidebar tertutup + padding
+
+const onHover = (event, label) => {
+    if (props.sidebarOpen) return;
+    
+    // Ambil koordinat elemen yang dihover
+    const rect = event.currentTarget.getBoundingClientRect();
+    // Set posisi tengah elemen secara vertikal
+    tooltipPos.value.top = rect.top + (rect.height / 2);
+    hoveredMenu.value = label;
+};
+
+const onLeave = () => {
+    hoveredMenu.value = null;
+};
 </script>
 
 <template>
@@ -97,6 +115,8 @@ watch(activeIndex, (newVal, oldVal) => {
         <template v-for="(item, index) in visibleMenuItems" :key="index">
             <Link
                 :href="route(item.route)"
+                @mouseenter="(e) => onHover(e, item.label)"
+                @mouseleave="onLeave"
                 class="group relative z-10 flex items-center h-[50px] font-medium no-underline transition-all duration-300"
                 :class="[
                     index === activeIndex
@@ -134,16 +154,20 @@ watch(activeIndex, (newVal, oldVal) => {
                 >
                     {{ item.label }}
                 </span>
-
-                <!-- <div
-                    v-if="!sidebarOpen"
-                    class="absolute left-[calc(100%+10px)] top-1/2 -translate-y-1/2 bg-[#0d1b3e]/90 dark:bg-slate-900/95 backdrop-blur-md text-white text-sm font-bold px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-200 pointer-events-none whitespace-nowrap shadow-xl z-50 border border-white/20 dark:border-white/10"
-                >
-                    {{ item.label }}
-                    <div class="absolute top-1/2 -left-1 -translate-y-1/2 border-4 border-transparent border-r-[#0d1b3e]/90 dark:border-r-slate-900/95"></div>
-                </div> -->
             </Link>
         </template>
+        
+        <Teleport to="body">
+            <div
+                v-if="hoveredMenu && !sidebarOpen"
+                class="fixed bg-[#0d1b3e]/90 dark:bg-slate-900/95 backdrop-blur-md text-white text-sm font-bold px-3 py-1.5 rounded-lg pointer-events-none whitespace-nowrap shadow-xl z-[9999] border border-white/20 dark:border-white/10 transition-opacity duration-200"
+                :style="{ top: tooltipPos.top + 'px', left: tooltipPos.left + 'px', transform: 'translateY(-50%)' }"
+            >
+                {{ hoveredMenu }}
+                <div class="absolute top-1/2 -left-1 -translate-y-1/2 border-4 border-transparent border-r-[#0d1b3e]/90 dark:border-r-slate-900/95"></div>
+            </div>
+        </Teleport>
+
     </div>
 </template>
 
