@@ -190,7 +190,7 @@ const getInitials = (name) => {
             }"
         >
             <header class="hidden md:flex h-24 items-center justify-between px-4 sticky top-0 z-40 transition-colors duration-300
-                bg-[#F2F5FA] dark:bg-[#1e293b]/50 dark:backdrop-blur-md border-b border-gray-200 dark:border-white/5 shadow-sm">
+                bg-white/80 dark:bg-slate-900/80 dark:backdrop-blur-md border-b border-gray-200 dark:border-white/5 shadow-sm">
                 <div>
                     <h1 class="text-3xl font-bold text-[#0d1b3e] dark:text-slate-100 tracking-tight">
                         Hello, {{ user.name.split(' ')[0] }}!
