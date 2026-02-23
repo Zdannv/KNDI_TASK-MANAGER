@@ -170,7 +170,7 @@ const getInitials = (name) => {
                 
                 <button 
                     @click="openMenus = !openMenus" 
-                    class="text-gray-300 hover:text-white transition focus:outline-none p-2 rounded-none hover:bg-white/10"
+                    class="text-gray-300 hover:text-white transition focus:outline-none p-2 rounded-none"
                 >
                     <Hamburger :show="openMenus" />
                 </button>
