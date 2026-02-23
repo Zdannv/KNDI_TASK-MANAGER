@@ -2,7 +2,6 @@
 import { computed, ref, watch } from "vue";
 import { Link, usePage } from "@inertiajs/vue3";
 
-// Import Icons
 import User from "@/Components/Icon/User.vue";
 import Build from "@/Components/Icon/Build.vue";
 import Folder from "@/Components/Icon/Folder.vue";
@@ -70,13 +69,13 @@ watch(activeIndex, (newVal, oldVal) => {
     <div class="relative flex flex-col gap-2">
         
         <div
-            class="absolute z-0 bg-gradient-to-r from-white/95 to-white/70 dark:from-primary-700 dark:to-transparent backdrop-blur-md border border-white/40 dark:border-white/10 shadow-lg"
+            class="absolute z-0 bg-gradient-to-r from-white/100 to-white/100 dark:from-primary-600 dark:to-primary-600 backdrop-blur-md border border-white/40 dark:border-white/10 shadow-lg"
             :class="[
                 'h-[50px] transform-gpu transition-all duration-300 ease-in-out', 
 
                 activeIndex === -1 
-                    ? 'opacity-0 scale-90' 
-                    : 'opacity-100',
+                    ? 'opacity-00 scale-90' 
+                    : 'opacity-90',
 
                 sidebarOpen 
                     ? 'w-[calc(100%-24px)] left-4 rounded-l-full rounded-r-none' 
@@ -98,17 +97,30 @@ watch(activeIndex, (newVal, oldVal) => {
         <template v-for="(item, index) in visibleMenuItems" :key="index">
             <Link
                 :href="route(item.route)"
-                class="group relative z-10 flex items-center h-[50px] font-medium no-underline transition-colors duration-200"
+                class="group relative z-10 flex items-center h-[50px] font-medium no-underline transition-all duration-300"
                 :class="[
                     index === activeIndex
-                        ? 'text-[#0d1b3e] dark:text-primary-300 font-bold' 
-                        : 'text-slate-400 hover:text-white dark:text-slate-500 dark:hover:text-primary-200' 
+                        ? 'text-[#0d1b3e] dark:text-white/80 font-bold' 
+                        : 'text-slate-400 hover:text-white dark:text-slate-500 dark:hover:text-white/80',
+
+                    index !== activeIndex 
+                        ? [
+                            'hover:bg-white/10 dark:hover:bg-gray-800',
+                            sidebarOpen 
+                                ? 'w-[calc(100%-24px)] ml-4 rounded-l-full rounded-r-none' 
+                                : 'w-[50px] mx-auto rounded-full justify-center'
+                        ]
+                        : [
+                            sidebarOpen ? 'ml-4' : 'mx-auto justify-center'
+                        ]
                 ]"
             >
                 <div 
-                    class="flex items-center justify-center shrink-0 transition-all duration-300"
+                    class="flex items-center justify-center shrink-0 transition-all duration-300 text-gray-400"
                     :class="[
-                        index === activeIndex ? 'scale-110 text-primary-600 dark:text-primary-400' : 'group-hover:scale-110',
+                        index === activeIndex 
+                        ? 'scale-110 text-primary-600 dark:text-white/80' 
+                        : 'group-hover:scale-110',
                         sidebarOpen ? 'ml-9 mr-3' : 'w-full'
                     ]"
                 >
@@ -123,13 +135,13 @@ watch(activeIndex, (newVal, oldVal) => {
                     {{ item.label }}
                 </span>
 
-                <div
+                <!-- <div
                     v-if="!sidebarOpen"
-                    class="absolute left-[calc(100%+10px)] top-1/2 -translate-y-1/2 bg-[#0d1b3e]/90 dark:bg-slate-900/95 backdrop-blur-md text-white text-sm font-bold px-3 py-1.5 rounded-none opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap shadow-xl z-50 border border-white/20 dark:border-white/10"
+                    class="absolute left-[calc(100%+10px)] top-1/2 -translate-y-1/2 bg-[#0d1b3e]/90 dark:bg-slate-900/95 backdrop-blur-md text-white text-sm font-bold px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-200 pointer-events-none whitespace-nowrap shadow-xl z-50 border border-white/20 dark:border-white/10"
                 >
                     {{ item.label }}
                     <div class="absolute top-1/2 -left-1 -translate-y-1/2 border-4 border-transparent border-r-[#0d1b3e]/90 dark:border-r-slate-900/95"></div>
-                </div>
+                </div> -->
             </Link>
         </template>
     </div>
