@@ -344,7 +344,7 @@ const visibleButtons = computed(() => {
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div class="space-y-4">
                 <div class="grid grid-cols-3 gap-2">
-                    <span class="text-sm font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wide">Client</span>
+                    <span class="text-sm font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wide">Project Owner</span>
                     <span class="col-span-2 text-sm font-medium text-gray-800 dark:text-slate-200">{{ project.client?.name || '-' }}</span>
                 </div>
                 <div class="grid grid-cols-3 gap-2">
@@ -527,7 +527,7 @@ const visibleButtons = computed(() => {
                                     target="_blank"
                                     class="flex flex-cols"
                                   >
-                                    <span class="flex items-center gap-1">
+                                    <span class="flex items-center gap-1 hover:underline">
                                       <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
                                       </svg>
