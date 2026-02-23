@@ -160,14 +160,13 @@ const resetFilter = () => {
               <div class="w-full sm:w-1/2 xl:w-72">
                  <label class="text-[10px] font-bold text-gray-500 dark:text-slate-400 mb-1 block uppercase tracking-wider">Date Range</label>
                  <Datepicker
-                    v-model="dates"
-                    range
-                    dark
-                    placeholder="Select Date Range"
-                    :enable-time-picker="false"
-                    @update:model-value="handleDateChange"
-                    input-class-name="glass-datepicker"
-                    :clearable="true"
+                  v-model="dates"
+                  range
+                  placeholder="Select Range Dates"
+                  :enable-time-picker="false"
+                  @update:model-value="handleDateChange"
+                  input-class-name="glass-datepicker"
+                  :clearable="true"
                 />
               </div>
               <div class="w-full sm:w-1/2 xl:w-72">
