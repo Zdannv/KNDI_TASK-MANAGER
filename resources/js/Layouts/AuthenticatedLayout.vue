@@ -150,7 +150,7 @@ const getInitials = (name) => {
         </nav>
 
         <nav 
-            class="hidden md:flex fixed top-4 left-4 bottom-4 z-50 transition-all duration-500 shadow-2xl flex-col rounded-none overflow-hidden border border-white/20 dark:border-white/10" 
+            class="hidden md:flex fixed top-4 left-4 bottom-4 z-50 transition-all duration-500 shadow-2xl flex-col rounded-none border border-white/20 dark:border-white/10" 
             :class="[
                 openMenus ? 'w-72' : 'w-24',
                 showProfilePanel ? '-translate-x-[200%]' : 'translate-x-0',
@@ -176,7 +176,7 @@ const getInitials = (name) => {
                 </button>
             </div>
 
-            <div class="flex-1 overflow-y-auto py-6 no-scrollbar relative z-10">
+            <div class="flex-1 overflow-y-auto overflow-x-visible py-6 no-scrollbar relative z-10">
                 <Menus :sidebarOpen="openMenus" />
             </div>
         </nav>
