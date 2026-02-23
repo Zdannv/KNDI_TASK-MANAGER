@@ -70,21 +70,27 @@ watch(activeIndex, (newVal, oldVal) => {
     <div class="relative flex flex-col gap-2">
         
         <div
-            class="absolute left-0 z-0 bg-gradient-to-r from-white/95 to-white/70 dark:from-primary-600 dark:to-transparent backdrop-blur-md border border-white/40 dark:border-white/10 shadow-lg"
+            class="absolute z-0 bg-gradient-to-r from-white/95 to-white/70 dark:from-primary-700 dark:to-transparent backdrop-blur-md border border-white/40 dark:border-white/10 shadow-lg"
             :class="[
-                'h-[50px] transform-gpu transition-all',
-                'duration-300 ease-in-out', 
+                'h-[50px] transform-gpu transition-all duration-300 ease-in-out', 
 
-                activeIndex === -1 ? 'opacity-0 scale-90' : 'opacity-100',
-                sidebarOpen ? 'w-full ml-4' : 'w-[calc(100%-24px)] mx-3',
-                
+                activeIndex === -1 
+                    ? 'opacity-0 scale-90' 
+                    : 'opacity-100',
+
+                sidebarOpen 
+                    ? 'w-[calc(100%-24px)] left-4 rounded-l-full rounded-r-none' 
+                    : 'w-[50px] left-1/2 -translate-x-1/2 rounded-full',
+
                 isMoving 
-                    ? 'scale-y-[0.4] scale-x-[0.4] rounded-full opacity-80'
-                    : 'scale-y-100 scale-x-100 rounded-l-full rounded-r-none opacity-100',
+                    ? 'scale-[0.4] rounded-full opacity-80'
+                    : 'scale-100 opacity-100',
             ]"
             :style="{
                 transformOrigin: 'center', 
-                transform: `translateY(${activeIndex * (ITEM_HEIGHT + GAP)}px)`
+                transform: sidebarOpen 
+                    ? `translateY(${activeIndex * (ITEM_HEIGHT + GAP)}px)` 
+                    : `translate(calc(-50%), ${activeIndex * (ITEM_HEIGHT + GAP)}px)`
             }"
         >
         </div>
