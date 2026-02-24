@@ -24,7 +24,7 @@ const userRole = computed(() => page.props.auth.user.role);
 const rawMenuItems = computed(() => [
     { label: "Dashboard", route: "dashboard", icon: News, show: ["other", "pm"].includes(userRole.value), pattern: "dashboard" },
     { label: "Users", route: "user.list", icon: User, show: ["other", "pm"].includes(userRole.value), pattern: "user.list" },
-    { label: "Project Owner", route: "client.list", icon: Build, show: ["other", "pm", "co"].includes(userRole.value), pattern: "client.list" },
+    { label: "Project Owner", route: "projectOwner.list", icon: Build, show: ["other", "pm", "co"].includes(userRole.value), pattern: "projectOwner.list" },
     { label: "Projects", route: "project.list", icon: Folder, show: true, pattern: "project.list" },
     { label: "Tasks", route: "task.list", icon: Document, show: true, pattern: ["task.list", "task.show"] },
     { label: "Logtime", route: "logtime.list", icon: Clock, show: true, pattern: "logtime.list" },

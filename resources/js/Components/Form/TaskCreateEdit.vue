@@ -13,7 +13,7 @@ const emit = defineEmits(['close']);
 
 const props = defineProps({
     task: {},
-    projects: {}, // Pastikan dari controller sudah 'with("client")'
+    projects: {},
     users: {}, 
     projectId: '',
     isEditMode: Boolean,
@@ -28,13 +28,10 @@ const formatDate = (date) => {
     return moment(date).format('DD MMMM YYYY');
 };
 
-// Computed Property untuk mengambil Nama Client secara dinamis
-const displayedClientName = computed(() => {
-    // Cari project yang sedang dipilih di dropdown
+const displayedProjectOwnerName = computed(() => {
     const selectedProject = props.projects?.find(p => p.id === form.project_id);
     
-    // Ambil nama clientnya, atau return '-' jika tidak ketemu
-    return selectedProject?.client?.name || '-';
+    return selectedProject?.projectOwner?.name || '-';
 });
 
 const initialLinks = props.isEditMode && Array.isArray(props.task?.related_links)
@@ -48,7 +45,6 @@ const form = useForm({
     ticket_link: props.task?.ticket_link || '',
     related_links: initialLinks,
     description: props.task?.description || '',
-    // Format YYYY-MM-DD wajib untuk input type="date"
     start_date: props.task?.start_date ? moment(props.task?.start_date).format('YYYY-MM-DD') : undefined,
     due_date: props.task?.due_date ? moment(props.task?.due_date).format('YYYY-MM-DD') : undefined,
     _method: props.isEditMode ? 'PUT' : undefined,
@@ -111,9 +107,9 @@ const types = [
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <div class="mb-4">
-                                <InputLabel value="Client" class="text-sm font-medium text-gray-600 dark:text-gray-400" />
+                                <InputLabel value="ProjectOwner" class="text-sm font-medium text-gray-600 dark:text-gray-400" />
                                 <p class="text-gray-400 dark:text-gray-500 font-medium py-1 italic select-none">
-                                    {{ displayedClientName }}
+                                    {{ displayedProjectOwnerName }}
                                 </p>
                             </div>
                             
@@ -124,7 +120,7 @@ const types = [
                             </div>
                             <div class="mb-4">
                                 <InputLabel value="Issue" class="text-sm font-medium text-gray-600 dark:text-gray-400" />
-                                <TextInput v-model="form.issue" class="mt-1 block w-full bg-slate-50/50 dark:bg-slate-900/50 border-gray-300 dark:border-gray-700 rounded-md text-sm font-medium" />
+                                <TextInput v-model="form.issue" class="mt-1 block w-full text-black dark:text-white bg-white dark:bg-slate-900/50  rounded-md text-sm font-medium" />
                                 <InputError :message="form.errors.issue" />
                             </div>
                             <div class="mb-4">
@@ -141,12 +137,12 @@ const types = [
                         <div>
                             <div class="mb-4">
                                 <InputLabel value="Start Date" class="text-sm font-medium text-gray-600 dark:text-gray-400" />
-                                <input type="date" v-model="form.start_date" class="mt-1 block w-full bg-slate-50/50 dark:bg-slate-900/50 border-gray-300 dark:border-gray-700 rounded-md text-sm font-medium dark:text-white" />
+                                <input type="date" v-model="form.start_date" class="mt-1 block w-full bg-white dark:bg-slate-900/50 rounded-md text-sm font-medium dark:text-white" />
                                 <InputError :message="form.errors.start_date" />
                             </div>
                             <div class="mb-4">
                                 <InputLabel value="Due Date" class="text-sm font-medium text-gray-600 dark:text-gray-400" />
-                                <input type="date" v-model="form.due_date" class="mt-1 block w-full bg-slate-50/50 dark:bg-slate-900/50 border-gray-300 dark:border-gray-700 rounded-md text-sm font-medium dark:text-white" />
+                                <input type="date" v-model="form.due_date" class="mt-1 block w-full bg-white dark:bg-slate-900/50 rounded-md text-sm font-medium dark:text-white" />
                                 <InputError :message="form.errors.due_date" />
                             </div>
                             <div v-if="isEditMode" class="mb-4 opacity-60">
@@ -166,19 +162,19 @@ const types = [
                     <div class="space-y-6">
                         <div class="mb-4">
                             <InputLabel value="Description" class="text-sm font-medium text-gray-600 dark:text-gray-400" />
-                            <textarea v-model="form.description" rows="3" class="mt-1 block w-full bg-slate-50/50 dark:bg-slate-900/50 border-gray-300 dark:border-gray-700 rounded-md text-sm font-medium dark:text-white resize-none shadow-inner"></textarea>
+                            <textarea v-model="form.description" rows="3" class="mt-1 block w-full bg-white dark:bg-slate-900/50  dark:border-gray-700 rounded-md text-sm font-medium dark:text-white resize-none shadow-inner"></textarea>
                             <InputError :message="form.errors.description" />
                         </div>
                         <div class="mb-4">
                             <InputLabel value="Ticket Link" class="text-sm font-medium text-gray-600 dark:text-gray-400" />
-                            <TextInput v-model="form.ticket_link" class="mt-1 block w-full bg-slate-50/50 dark:bg-slate-900/50 border-gray-300 dark:border-gray-700 rounded-md text-sm font-medium text-primary-600" />
+                            <TextInput v-model="form.ticket_link" class="mt-1 block w-full bg-white dark:bg-slate-900/50 text-primary-400 dark:border-gray-700 rounded-md text-sm font-medium underline" />
                             <InputError :message="form.errors.ticket_link" />
                         </div>
                         <div class="mb-4">
                             <InputLabel value="Related Links" class="text-sm font-medium text-gray-600 dark:text-gray-400" />
                             <div class="space-y-3 mt-2">
                                 <div v-for="(link, index) in form.related_links" :key="index" class="flex items-center group">
-                                    <TextInput v-model="form.related_links[index]" class="block w-full bg-slate-50/50 border-gray-300 rounded-md text-sm text-primary-600" />
+                                    <TextInput v-model="form.related_links[index]" class="block w-full bg-white dark:bg-slate-900/50 border-gray-700 rounded-md text-sm text-primary-400 underline" />
                                     <button type="button" @click="removeRelatedLink(index)" class="ml-3 text-gray-400 hover:text-red-500 transition-colors">
                                         <Close class="w-4 h-4" />
                                     </button>

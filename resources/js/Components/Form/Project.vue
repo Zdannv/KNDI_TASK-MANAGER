@@ -73,7 +73,7 @@ const cancel = () => {
                     label="name"
                     valueKey="id"
                     class="mt-1 block w-full"
-                    placeholder="Search or select a client..."
+                    placeholder="Search or select a project owner..."
                     :dark="true"
                 />
                 <InputError class="mt-2" :message="form.errors.project_owner_id" />

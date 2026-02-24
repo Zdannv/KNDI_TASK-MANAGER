@@ -17,7 +17,7 @@ const form = useForm({
 });
 
 const submitForm = () => {
-    const routeName = props.isEditMode ? 'client.update' : 'client.store';
+    const routeName = props.isEditMode ? 'projectOwner.update' : 'projectOwner.store';
     const routeParams = props.isEditMode ? props.projectOwners.id : undefined;
 
     form.post(route(routeName, routeParams), {

@@ -22,7 +22,7 @@ const props = defineProps({
     },
     placeholder: {
         type: String,
-        default: 'Search or select a client...',
+        default: 'Search or select a project owner...',
     },
     array: {
         type: Array,
@@ -95,8 +95,8 @@ defineExpose({ focus: () => input.value.focus() });
         <input
             ref="input"
             type="text"
-            :class="{'dark:bg-gray-800 dark:border-gray-500 dark:text-gray-100': dark}"
-            class="rounded-md border-gray-500 shadow-sm w-full"
+            :class="{' dark:border-gray-500 dark:text-gray-100': dark}"
+            class="rounded-md border-gray-500 shadow-sm w-full text-gray-800  dark:text-white dark:bg-slate-900"
             v-model="search"
             @focus="handleFocus"
             @blur="handleBlur"
@@ -114,7 +114,7 @@ defineExpose({ focus: () => input.value.focus() });
                 v-for="option in filteredOptions"
                 :key="option[valueKey]"
                 @click="selectOption(option)"
-                class="px-4 py-2 text-sm text-gray-900 dark:text-gray-200 hover:bg-indigo-100 dark:hover:bg-indigo-900 cursor-pointer"
+                class="px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-indigo-100 dark:hover:bg-slate-500/30 cursor-pointer"
             >
                 {{ option[label] }}
             </div>

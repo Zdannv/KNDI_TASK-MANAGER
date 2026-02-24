@@ -209,7 +209,7 @@ const getNameUser = (id) => {
                     <div class="flex gap-3 justify-center items-center">
                       <button
                         @click.prevent="handleEdit(project.id)"
-                        class="p-1.5 rounded-lg text-primary-600 dark:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-500/10 transition tooltip-trigger" title="Edit"
+                        class="p-1.5 rounded-lg text-amber-600 dark:text-amber-400 hover:bg-primary-50 dark:hover:bg-primary-500/10 transition tooltip-trigger" title="Edit"
                       >
                         <Pen class="w-5 h-5" />
                       </button>

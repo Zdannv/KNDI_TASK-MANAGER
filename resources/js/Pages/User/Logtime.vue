@@ -442,43 +442,15 @@ const closeDetailLogtime = () => {
 
 <style scoped>
 :deep(.dp__input) {
-  background-color: rgba(255, 255, 255, 0.4);
+  background-color: #ffffff;
   backdrop-filter: blur(8px);
-  border-color: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
   border-radius: 0.5rem;
   height: 42px;
   font-size: 0.875rem;
   font-weight: 500;
 }
 
-/* Ganti Border Color saat hover ke warna primary (#2876bc) */
-:deep(.dp__input):hover {
-    border-color: #2876bc;
-}
-
-:deep(.dark .dp__input) {
-  background-color: rgba(15, 23, 42, 0.5); 
-  border-color: rgba(255, 255, 255, 0.1);
-  color: #f1f5f9;
-}
-
-:deep(.dp__menu) {
-  background-color: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(12px);
-  border-radius: 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-:deep(.dark .dp__menu) {
-  background-color: rgba(30, 41, 59, 0.95);
-  border-color: rgba(255, 255, 255, 0.1);
-}
-
-:deep(.dark .dp__cell_inner), :deep(.dark .dp__month_year_select), :deep(.dark .dp__calendar_header_item) {
-    color: #e2e8f0;
-}
-
-/* Perbaikan Scrollbar: Visible di Light Mode */
 .custom-scrollbar {
   scrollbar-gutter: stable;
   scrollbar-width: thin;

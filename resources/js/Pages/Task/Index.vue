@@ -227,7 +227,7 @@ const handleSearch = () => {
                           class="flex items-center gap-1 text-sm font-bold text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300 hover:underline decoration-primary-300 underline-offset-2 transition"
                         >
                           {{ task.issue }}
-                          <externalLink class="w-3 h-3 opacity-50" />
+                          <externalLink class="w-4 h-4 text-primary-600" />
                         </a>
 
                         <div v-if="task.is_git_automated" 

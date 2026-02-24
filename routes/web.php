@@ -32,10 +32,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/skill/{id}', [SkillController::class, 'destroy'])->name('skill.destroy');
     Route::get('/skill/export', [SkillController::class, 'export'])->name('skill.export')->middleware('role:other,co');
 
-    Route::get('/project-owner', [ProjectOwnerController::class, 'index'])->name('client.list')->middleware('role:other,pm,co');
-    Route::post('/project-owner', [ProjectOwnerController::class, 'store'])->name('client.store')->middleware('role:other,pm,co');
-    Route::put('/project-owner/{id}', [ProjectOwnerController::class, 'update'])->name('client.update')->middleware('role:other,pm,co');
-    Route::delete('/project-owner/{id}', [ProjectOwnerController::class, 'destroy'])->name('client.destroy')->middleware('role:other,pm,co');
+    Route::get('/project-owner', [ProjectOwnerController::class, 'index'])->name('projectOwner.list')->middleware('role:other,pm,co');
+    Route::post('/project-owner', [ProjectOwnerController::class, 'store'])->name('projectOwner.store')->middleware('role:other,pm,co');
+    Route::put('/project-owner/{id}', [ProjectOwnerController::class, 'update'])->name('projectOwner.update')->middleware('role:other,pm,co');
+    Route::delete('/project-owner/{id}', [ProjectOwnerController::class, 'destroy'])->name('projectOwner.destroy')->middleware('role:other,pm,co');
 
     Route::get('/project', [ProjectController::class, 'index'])->name('project.list');
     Route::post('/project', [ProjectController::class, 'store'])->name('project.store')->middleware('role:other,pm,co');

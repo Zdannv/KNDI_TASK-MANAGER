@@ -10,14 +10,14 @@ import Build from '@/Components/Icon/Build.vue';
 import Pen from '@/Components/Icon/Pen.vue';   
 import Trash from '@/Components/Icon/Trash.vue'; 
 import Pagination from '@/Components/Pagination.vue';
-import ClientForm from '@/Components/Form/Client.vue';
+import ProjectOwnerForm from '@/Components/Form/ProjectOwner.vue';
 import DeleteConfirmationModal from '@/Components/DeleteConfirmationModal.vue';
 import { Head, router, usePage } from '@inertiajs/vue3';
 import { ref, computed, onMounted } from 'vue';
 
 const openForm = ref(false);
 const isEditMode = ref(false);
-const selectedClient = ref(null);
+const selectedProjectOwner = ref(null);
 const isLoaded = ref(false);
 const confirmDeleteModal = ref(false);
 const ownerToDelete = ref(null);
@@ -33,14 +33,14 @@ const role = computed(() => page.props.auth.user.role);
 
 const handleOpenForm = () => {
   isEditMode.value = false;
-  selectedClient.value = null;
+  selectedProjectOwner.value = null;
   openForm.value = true;
 };
 
 const handleCloseForm = () => {
   openForm.value = false;
   isEditMode.value = false;
-  selectedClient.value = null;
+  selectedProjectOwner.value = null;
 };
 
 const openDeleteModal = (owner) => {
@@ -54,7 +54,7 @@ const closeDeleteModal = () => {
 };
 
 const handleConfirmDelete = () => {
-  router.delete(route('client.destroy', ownerToDelete.value.id), {
+  router.delete(route('projectOwner.destroy', ownerToDelete.value.id), {
     onSuccess: () => closeDeleteModal(),
   });
 };
@@ -63,7 +63,7 @@ const handleEdit = (id) => {
   const projectOwner = props.projectOwners.data.find(c => c.id === id);
   if (projectOwner) {
     isEditMode.value = true;
-    selectedClient.value = projectOwner;
+    selectedProjectOwner.value = projectOwner;
     openForm.value = true;
   }
 };
@@ -123,7 +123,7 @@ const getNameUser = (id) => {
       <div
         class="bg-white/90 dark:bg-slate-900/95 backdrop-blur-2xl border border-white/50 dark:border-white/10 rounded-lg shadow-2xl max-w-lg w-full p-6 relative animate-in fade-in zoom-in duration-300"
       >
-        <ClientForm :projectOwners="selectedClient" :isEditMode="isEditMode" @close="handleCloseForm" />
+        <ProjectOwnerForm :projectOwners="selectedProjectOwner" :isEditMode="isEditMode" @close="handleCloseForm" />
       </div>
     </div>
 
@@ -138,7 +138,7 @@ const getNameUser = (id) => {
           <div class="relative z-10 -mb-[1px]">
              <div class="w-fit px-6 h-12 bg-white/40 dark:bg-slate-900/60 backdrop-blur-xl border-t border-l border-r border-white/40 dark:border-white/20 rounded-t-lg shadow-sm relative flex items-center gap-3">
                 <Build class="w-5 h-5 text-primary-600 dark:text-primary-400 drop-shadow-sm" />
-                <span class="font-bold text-gray-800 dark:text-slate-100 text-sm tracking-wide shadow-black drop-shadow-sm">Client List</span>
+                <span class="font-bold text-gray-800 dark:text-slate-100 text-sm tracking-wide shadow-black drop-shadow-sm">Project Owner List</span>
                 <div class="absolute -bottom-[1px] left-0 right-0 h-[2px] bg-white/40 dark:bg-slate-900/80 z-20"></div>
              </div>
           </div>
@@ -189,7 +189,7 @@ const getNameUser = (id) => {
                     <div class="flex gap-3 justify-center items-center">
                       <button
                         @click.prevent="handleEdit(owner.id)"
-                        class="p-1.5 rounded-lg text-primary-600 dark:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-500/10 transition tooltip-trigger" title="Edit"
+                        class="p-1.5 rounded-lg text-amber-600 dark:text-amber-400 hover:bg-primary-50 dark:hover:bg-primary-500/10 transition tooltip-trigger" title="Edit"
                       >
                         <Pen class="w-5 h-5" />
                       </button>
