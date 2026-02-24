@@ -345,7 +345,7 @@ const visibleButtons = computed(() => {
               <div class="space-y-4">
                 <div class="grid grid-cols-3 gap-2">
                     <span class="text-sm font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wide">Project Owner</span>
-                    <span class="col-span-2 text-sm font-medium text-gray-800 dark:text-slate-200">{{ project.client?.name || '-' }}</span>
+                    <span class="col-span-2 text-sm font-medium text-gray-800 dark:text-slate-200">{{ project.project_owner?.name || '-' }}</span>
                 </div>
                 <div class="grid grid-cols-3 gap-2">
                     <span class="text-sm font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wide">Project</span>
@@ -420,7 +420,7 @@ const visibleButtons = computed(() => {
                         <div>
                             <label class="text-sm font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wide block mb-1">Ticket Link</label>
                             <a :href="'//' + task.ticket_link" target="_blank" class="text-sm font-medium text-primary-600 dark:text-primary-400 hover:underline break-all flex items-center gap-1">
-                                {{ task.ticket_link }} <span class="text-[10px]">↗</span>
+                                {{ task.ticket_link }} ↗
                             </a>
                         </div>
                         <div>
@@ -428,7 +428,7 @@ const visibleButtons = computed(() => {
                             <div v-if="task.related_links?.length > 0" class="space-y-1">
                                 <div v-for="link in task.related_links" :key="link">
                                     <a :href="'//' + link" target="_blank" class="text-sm font-medium text-primary-600 dark:text-primary-400 hover:underline break-all flex items-center gap-1">
-                                        {{ link }} <span class="text-[10px]">↗</span>
+                                        {{ link }} ↗
                                     </a>
                                 </div>
                             </div>
