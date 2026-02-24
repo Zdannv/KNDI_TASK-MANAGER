@@ -4,6 +4,11 @@
 
 ## Start running on local using docker & sail
 
+Sebelum menjalankan perintah-perintah di bawah, sangat disarankan untuk membuat alias agar Anda cukup mengetikkan `sail` (sebagai ganti dari `./vendor/bin/sail`). Jalankan perintah ini di terminal Anda:
+
+```bash
+alias sail='[ -f sail ] && sh sail || sh vendor/bin/sail'
+
 ```bash
 cp .env.example .env
 docker run --rm \
