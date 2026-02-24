@@ -4,11 +4,6 @@
 
 ## Start running on local using docker & sail
 
-Sebelum menjalankan perintah-perintah di bawah, sangat disarankan untuk membuat alias agar Anda cukup mengetikkan `sail` (sebagai ganti dari `./vendor/bin/sail`). Jalankan perintah ini di terminal Anda:
-
-```bash
-alias sail='[ -f sail ] && sh sail || sh vendor/bin/sail'
-
 ```bash
 cp .env.example .env
 docker run --rm \
@@ -17,6 +12,12 @@ docker run --rm \
   -w /var/www/html \
   laravelsail/php83-composer:latest \
   composer install --ignore-platform-reqs
+
+## Sebelum menjalankan perintah-perintah di bawah, sangat disarankan untuk membuat alias agar Anda cukup mengetikkan `sail` (sebagai ganti dari `./vendor/bin/sail`). Jalankan perintah ini di terminal Anda:
+
+```bash
+alias sail='[ -f sail ] && sh sail || sh vendor/bin/sail'
+
 sail up -d  
 sail npm i
 sail artisan key:generate
