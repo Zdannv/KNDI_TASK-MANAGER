@@ -188,38 +188,40 @@ const handleSearch = () => {
             class="w-full bg-white/40 dark:bg-slate-900/40 backdrop-blur-xl border border-white/40 dark:border-white/20 shadow-xl rounded-b-lg rounded-tr-lg relative z-0 flex flex-col overflow-hidden"
           >
             <div class="overflow-x-auto custom-scrollbar">
-              <table class="w-full text-left dark:text-slate-200 table-auto min-w-[1100px] border-collapse">
+              <table class="w-full text-left dark:text-slate-200 table-auto border-collapse">
                 <thead>
                   <tr class="bg-white/50 dark:bg-slate-900/80 backdrop-blur-md border-b border-white/20 dark:border-white/10">
-                    <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Type</th>
-                    <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Assign</th>
-                    <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Issue</th>
-                    <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Project</th>
-                    <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Ticket</th>
-                    <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Start date</th>
-                    <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Due date</th>
-                    <th v-if="['other', 'pm', 'co'].includes(role)" class="p-5 text-center font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">
+                    <th class="px-4 py-3 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider whitespace-nowrap">Type</th>
+                    <th class="px-4 py-3 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider whitespace-nowrap">Assign</th>
+                    <th class="px-4 py-3 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider whitespace-nowrap">Issue</th>
+                    <th class="px-4 py-3 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider whitespace-nowrap">Project</th>
+                    <th class="px-4 py-3 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider whitespace-nowrap">Ticket</th>
+                    <th class="px-4 py-3 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider whitespace-nowrap">Start date</th>
+                    <th class="px-4 py-3 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider whitespace-nowrap">Due date</th>
+                    <th v-if="['other', 'pm', 'co'].includes(role)" class="px-4 py-3 text-center font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider whitespace-nowrap">
                       Is Active
                     </th>
-                    <th class="p-5 text-center font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Actions</th>
+                    <th class="px-4 py-3 text-center font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider whitespace-nowrap">Actions</th>
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-white/20 dark:divide-white/5">
                   <tr v-for="task in tasks.data" :key="task.id" class="hover:bg-white/30 dark:hover:bg-primary-500/10 transition duration-200">
-                    <td class="p-5 align-middle text-sm font-medium">{{ task.type }}</td>
-                    <td class="p-5 align-middle min-w-[200px] text-sm">
-                      <div class="flex flex-wrap gap-1">
+                    <td class="px-4 py-3 align-middle text-sm font-medium whitespace-nowrap">{{ task.type }}</td>
+                    
+                    <td class="px-4 py-3 align-middle text-sm min-w-[180px]">
+                      <div class="grid grid-cols-2 gap-1.5">
                            <span v-for="(id, idx) in [...(task.programmer || []), ...(task.designer || []), ...(task.communicator || [])]" 
                               :key="idx"
-                              class="inline-block px-2 py-0.5 rounded-md bg-white/50 dark:bg-slate-800/40 border border-gray-200 dark:border-white/10 text-sm text-gray-700 dark:text-slate-300"
+                              class="block px-2 py-1 rounded-md bg-white/50 dark:bg-slate-800/40 border border-gray-200 dark:border-white/10 text-xs text-gray-700 dark:text-slate-300 text-center truncate"
+                              :title="users.find(u => u.id === id)?.name || id"
                            >
                               {{ users.find(u => u.id === id)?.name || id }}
                            </span>
-                           <span v-if="![...(task.programmer || []), ...(task.designer || []), ...(task.communicator || [])].length" class="text-gray-400 text-sm italic">-</span>
+                           <span v-if="![...(task.programmer || []), ...(task.designer || []), ...(task.communicator || [])].length" class="text-gray-400 text-sm italic col-span-2 text-center">-</span>
                       </div>
                     </td>
 
-                    <td class="p-5 min-w-[250px] align-middle">
+                    <td class="px-4 py-3 align-middle">
                       <div class="flex flex-col gap-1.5 items-start">
                         <a :href="route('task.show', task.id)" 
                           class="flex items-center gap-1 text-sm font-bold text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300 hover:underline decoration-primary-300 underline-offset-2 transition"
@@ -239,14 +241,14 @@ const handleSearch = () => {
                       </div>
                     </td>
 
-                    <td class="p-5 align-middle text-sm text-gray-700 dark:text-slate-200">{{ task.project?.name || '-' }}</td>
-                    <td class="p-5 align-middle">
+                    <td class="px-4 py-3 align-middle text-sm text-gray-700 dark:text-slate-200 whitespace-nowrap">{{ task.project?.name || '-' }}</td>
+                    <td class="px-4 py-3 align-middle">
                       <a :href="'//' + task.ticket_link" target="_blank" class="text-sm text-primary-600 dark:text-primary-400 hover:underline truncate block max-w-[200px]">
                         {{ task.ticket_link }}
                       </a>
                     </td>
-                    <td class="p-5 align-middle text-sm text-gray-500 dark:text-slate-400">{{ formatDate(task.start_date) }}</td>
-                    <td class="p-5 align-middle text-sm">
+                    <td class="px-4 py-3 align-middle text-sm text-gray-500 dark:text-slate-400 whitespace-nowrap">{{ formatDate(task.start_date) }}</td>
+                    <td class="px-4 py-3 align-middle text-sm whitespace-nowrap">
                       <span :class="[
                           'px-2 py-1 rounded-md text-sm font-bold border',
                           task.due_date && moment().startOf('day').isAfter(moment(task.due_date).startOf('day'))
@@ -257,13 +259,13 @@ const handleSearch = () => {
                       </span>
                     </td>
                     
-                    <td v-if="['other', 'pm', 'co'].includes(role)" class="p-5 align-middle">
+                    <td v-if="['other', 'pm', 'co'].includes(role)" class="px-4 py-3 align-middle">
                       <div class="flex justify-center">
                         <SwitchInput v-slot:default v-model="task.isActive" @update:modelValue="handleUpdateIsActive(task.id)" />
                       </div>
                     </td>
 
-                    <td class="p-5 align-middle">
+                    <td class="px-4 py-3 align-middle whitespace-nowrap">
                       <div class="flex items-center justify-center gap-3">
                         <button 
                           v-if="['other', 'pm'].includes(role)"
