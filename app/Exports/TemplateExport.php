@@ -10,7 +10,7 @@ class TemplateExport implements WithMultipleSheets
     {
         return [
             'users' => new TemplateUsersExport,
-            'clients' => new TemplateClientsExport,
+            'projectOwners' => new TemplateProjectOwnersExport,
             'projects' => new TemplateProjectsExport,
             'tasks' => new TemplateTasksExport,
         ];

@@ -6,12 +6,12 @@ use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithTitle;
 
-class TemplateClientsExport implements FromCollection, WithHeadings, WithTitle
+class TemplateProjectOwnersExport implements FromCollection, WithHeadings, WithTitle
 {
     public function collection()
     {
         return collect([
-            ['name' => 'example_client_name']
+            ['name' => 'example_projectOwner_name']
         ]);
     }
 
@@ -22,6 +22,6 @@ class TemplateClientsExport implements FromCollection, WithHeadings, WithTitle
 
     public function title(): string
     {
-        return 'clients';
+        return 'projectOwners';
     }
 }

@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Task;
+use App\Jobs\ProcessFaceRecognition;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Redis;
 use Inertia\Inertia;
 
 class UserController extends Controller
@@ -19,9 +21,12 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::orderBy('role', 'desc')
-            ->paginate(10)
-            ->withQueryString();
+        $users = \Cache::remember('users_page_' . request('page', 1), 1800, function() {
+            return User::orderBy('role', 'desc')
+                ->paginate(10)
+                ->withQueryString();
+        });
+
         return Inertia::render('User/Index', [
             'users' => $users
         ]);   
@@ -42,18 +47,20 @@ class UserController extends Controller
             'face_photo' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
-        $embedding = null;
-        if ($request->hasFile('face_photo')) {
-            $embedding = $this->getEmbeddingFromPhoto($request->file('face_photo'));
-        }
-
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'role' => $request->role,
             'password' => Hash::make($request->password),
-            'face_embedding' => $embedding
+            'face_embedding' => null
         ]);
+
+        if ($request->hasFile('face_photo')) {
+            $path = $request->file('face_photo')->store('temp_faces');
+            ProcessFaceRecognition::dispatch($user, $path);
+        }
+
+        \Cache::flush();
 
         Auth::user()->logs()->create([
             'target' => 'user',
@@ -81,6 +88,8 @@ class UserController extends Controller
 
         $validated = $request->validate($rules);
 
+        $user = User::findOrFail($id);
+
         $updateData = [
             'name' => $validated['name'],
             'email' => $validated['email'],
@@ -91,21 +100,22 @@ class UserController extends Controller
             $updateData['password'] = Hash::make($validated['password']);
         }
 
+        $user->update($updateData);
+
         if ($request->hasFile('face_photo')) {
-            $embedding = $this->getEmbeddingFromPhoto($request->file('face_photo'));
-            if ($embedding) {
-                $updateData['face_embedding'] = $embedding;
-            }
+            $path = $request->file('face_photo')->store('temp_faces');
+            ProcessFaceRecognition::dispatch($user, $path);
         }
 
-        $user = User::findOrFail($id);
-        $user->update($updateData);
+        \Cache::flush();
+
         Auth::user()->logs()->create([
             'target' => 'user',
             'description' => "[UPDATE] user {$user->name}",
         ]);
 
-        return redirect(route('user.list', absolute: false))->with('success', "User '{$user->name}' berhasil diperbarui!");
+        return redirect(route('user.list', absolute: false))
+            ->with('success', "User '{$user->name}' berhasil diperbarui! Foto sedang diproses di background.");
     }
 
     /**
@@ -134,39 +144,13 @@ class UserController extends Controller
 
         $user->delete();
 
+        \Cache::flush();
+
         Auth::user()->logs()->create([
             'target' => 'user',
             'description' => "[DELETE] user {$user->name}",
         ]);
 
         return redirect(route('user.list', absolute: false))->with('warning', "User '{$user->name}' berhasil dihapus!");
-    }
-    
-    private function getEmbeddingFromPhoto($file)
-    {
-        try {
-            $photo = fopen($file->getRealPath(), 'r');
-            $host = env('PYTHON_SERVICE');
-            $port = env('PYTHON_SERVICE_PORT');
-
-            $response = Http::attach(
-                'file', $photo, 'face.jpg'
-            )->post("http://{$host}:{$port}/registration");
-
-            if (is_resource($photo)) {
-                fclose($photo);
-            }
-
-            if ($response->successful() && $response->json('success')) {
-                return $response->json('embedding');
-            }
-
-            throw new \Exception($response->json('message') ?? "Wajah tidak terdetektsi");
-        } catch (\Exception $err) {
-            \Log::error("Face Embedding Error: " . $err->getMessage());
-            return null;
-        }   
-
-        return null;
     }
 }

@@ -10,7 +10,7 @@ class MultiSheetImport implements WithMultipleSheets
     {
         return [
             'users' => new UsersImport(),
-            'clients' => new ClientsImport(),
+            'projectOwners' => new ProjectOwnersImport(),
             'projects' => new ProjectsImport(),
             'tasks' => new TasksImport(),
         ];
