@@ -12,7 +12,7 @@ class TemplateProjectsExport implements FromCollection, WithHeadings, WithTitle
     {
         return collect([
             [
-                'client_id' => 1,
+                'projectOwner_id' => 1,
                 'name' => 'example_project_name',
             ]
         ]);
@@ -20,7 +20,7 @@ class TemplateProjectsExport implements FromCollection, WithHeadings, WithTitle
 
     public function headings(): array
     {
-        return ['client_id', 'name'];
+        return ['projectOwner_id', 'name'];
     }
 
     public function title(): string

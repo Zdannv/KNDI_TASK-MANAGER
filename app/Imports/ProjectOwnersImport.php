@@ -10,7 +10,7 @@ use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\SkipsEmptyRows;
 use Illuminate\Support\Facades\Auth;
 
-class ClientsImport implements ToModel, WithHeadingRow, WithValidation, WithChunkReading, SkipsEmptyRows
+class ProjectOwnersImport implements ToModel, WithHeadingRow, WithValidation, WithChunkReading, SkipsEmptyRows
 {
     public function chunkSize(): int
     {
@@ -26,7 +26,7 @@ class ClientsImport implements ToModel, WithHeadingRow, WithValidation, WithChun
 
     public function model(array $row)
     {
-        return new Client([
+        return new ProjectOwner([
             'name' => $row['name'],
             'creator' => Auth::id(),
             'updater' => Auth::id(),

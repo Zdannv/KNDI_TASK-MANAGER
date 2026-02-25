@@ -20,15 +20,21 @@ class ProjectsImport implements ToModel, WithHeadingRow, WithValidation, WithChu
     public function rules(): array
     {
         return [
-            'client_id' => 'required|numeric',
+            'projectOwner_id' => 'required|numeric',
             'name' => 'required|string|max:255',
         ];
     }
 
     public function model(array $row)
     {
+        $owner = ProjectOwner::where('name', $row['projectOwner_name'])->first();
+
+        if (!$owner) {
+            throw new \Exception("Project Owner Not Found: " . $row['projectOwner_name']);
+        }
+
         return new Project([
-            'client_id' => $row['client_id'],
+            'projectOwner_id' => $owner->id,
             'name' => $row['name'],
             'creator' => Auth::id(),
             'updater' => Auth::id(),
