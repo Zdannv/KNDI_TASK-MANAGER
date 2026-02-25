@@ -45,7 +45,7 @@ class ProjectOwnerController extends Controller
             'description' => "[CREATE] project owner {$projectOwner->name}",
         ]);
 
-        return redirect(route('client.list', absolute: false))->with('success', "Project owner '{$projectOwner->name}' berhasil dibuat!");
+        return redirect(route('projectOwner.list', absolute: false))->with('success', "Project owner '{$projectOwner->name}' berhasil dibuat!");
     }
 
     /**
@@ -68,11 +68,11 @@ class ProjectOwnerController extends Controller
             'description' => "[UPDATE] project owner {$ProjectOwner->name}",
         ]);
 
-        return redirect(route('client.list', absolute: false))->with('success', "Project owner '{$ProjectOwner->name}' berhasil diperbarui!");
+        return redirect(route('projectOwner.list', absolute: false))->with('success', "Project owner '{$ProjectOwner->name}' berhasil diperbarui!");
     }
 
     /**
-     * Delete the client's data.
+     * Delete the Project Owner's data.
      */
     public function destroy($id): RedirectResponse
     {
@@ -87,6 +87,6 @@ class ProjectOwnerController extends Controller
             'description' => "[SOFT DELETE] project owner {$ProjectOwner->name}",
         ]);
 
-        return redirect(route('client.list', absolute: false))->with('warning', "Project owner '{$ProjectOwner->name}' berhasil dihapus!");
+        return redirect(route('projectOwner.list', absolute: false))->with('warning', "Project owner '{$ProjectOwner->name}' berhasil dihapus!");
     }
 }
