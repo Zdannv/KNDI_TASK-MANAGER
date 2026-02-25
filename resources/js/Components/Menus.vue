@@ -87,7 +87,7 @@ const onLeave = () => {
     <div class="relative flex flex-col gap-2">
         
         <div
-            class="absolute z-0 bg-gradient-to-r from-white/100 to-white/100 dark:from-primary-600 dark:to-primary-600 backdrop-blur-md border border-white/40 dark:border-white/10 shadow-lg"
+            class="absolute z-0 bg-gradient-to-r from-white/100 to-white/100 dark:from-primary-600 dark:to-transparent backdrop-blur-md border border-white/40 dark:border-y-white/10 dark:border-l-white/10 dark:border-r-transparent shadow-lg"
             :class="[
                 'h-[50px] transform-gpu transition-all duration-300 ease-in-out', 
 
