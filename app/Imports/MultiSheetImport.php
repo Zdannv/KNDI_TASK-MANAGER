@@ -9,10 +9,10 @@ class MultiSheetImport implements WithMultipleSheets
     public function sheets(): array
     {
         return [
-            'users' => new UsersImport(),
-            'projectOwners' => new ProjectOwnersImport(),
-            'projects' => new ProjectsImport(),
-            'tasks' => new TasksImport(),
+            0 => new UsersImport(),
+            1 => new ProjectOwnersImport(),
+            2 => new ProjectsImport(),
+            3 => new TasksImport(),
         ];
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Imports;
 
 use App\Models\Project;
+use App\Models\ProjectOwner;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithValidation;
@@ -20,21 +21,27 @@ class ProjectsImport implements ToModel, WithHeadingRow, WithValidation, WithChu
     public function rules(): array
     {
         return [
-            'projectOwner_id' => 'required|numeric',
+            'projectowner_id' => 'required', 
             'name' => 'required|string|max:255',
         ];
     }
 
     public function model(array $row)
     {
-        $owner = ProjectOwner::where('name', $row['projectOwner_name'])->first();
+        $searchValue = $row['projectowner_id'];
+        
+        if (is_numeric($searchValue)) {
+            $owner = ProjectOwner::find($searchValue);
+        } else {
+            $owner = ProjectOwner::where('name', $searchValue)->first();
+        }
 
         if (!$owner) {
-            throw new \Exception("Project Owner Not Found: " . $row['projectOwner_name']);
+            throw new \Exception("Project Owner Not Found: " . $searchValue);
         }
 
         return new Project([
-            'projectOwner_id' => $owner->id,
+            'project_owner_id' => $owner->id, 
             'name' => $row['name'],
             'creator' => Auth::id(),
             'updater' => Auth::id(),

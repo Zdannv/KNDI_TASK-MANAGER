@@ -53,9 +53,11 @@ class ImportController extends Controller
             ]);
 
         } catch (\Throwable $th) {
+            $errorMessage = 'Import gagal: ' . $th->getMessage() . ' (File: ' . basename($th->getFile()) . ' Baris: ' . $th->getLine() . ')';
+            
             return back()
                 ->withInput()
-                ->with('error', 'Import gagal: ' . $th->getMessage());
+                ->with('error', $errorMessage);
         }
 
     }
