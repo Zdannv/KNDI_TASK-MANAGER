@@ -41,7 +41,6 @@ const initialLinks = props.isEditMode && Array.isArray(props.task?.related_links
 const form = useForm({
     project_id: props.task?.project_id || Number(props.projectId) || '',
     issue: props.task?.issue || '',
-    type: props.task?.type || '',
     ticket_link: props.task?.ticket_link || '',
     related_links: initialLinks,
     description: props.task?.description || '',
@@ -123,15 +122,6 @@ const types = [
                                 <TextInput v-model="form.issue" class="mt-1 block w-full text-black dark:text-white bg-white dark:bg-slate-900/50  rounded-md text-sm font-medium" />
                                 <InputError :message="form.errors.issue" />
                             </div>
-                            <div class="mb-4">
-                                <InputLabel value="Type" class="text-sm font-medium text-gray-600 dark:text-gray-400" />
-                                <SelectInput v-model="form.type" :options="types" label="name" valueKey="id" class="mt-1 block w-full bg-slate-50/50 dark:bg-slate-900/50 border-gray-300 dark:border-gray-700 rounded-md text-sm font-medium" />
-                                <InputError :message="form.errors.type" />
-                            </div>
-                            <div v-if="isEditMode" class="mb-4 opacity-60">
-                                <InputLabel value="Creator" class="text-sm font-medium text-gray-600 dark:text-gray-400" />
-                                <p class="text-gray-500 py-1 text-sm">{{ getNameUser(task.creator) }}</p>
-                            </div>
                         </div>
 
                         <div>
@@ -148,10 +138,6 @@ const types = [
                             <div v-if="isEditMode" class="mb-4 opacity-60">
                                 <InputLabel value="End Date" class="text-sm font-medium text-gray-600 dark:text-gray-400" />
                                 <p class="text-gray-500 py-1 text-sm">{{ formatDate(task.end_date) }}</p>
-                            </div>
-                            <div v-if="isEditMode" class="mb-4 opacity-60">
-                                <InputLabel value="Updater" class="text-sm font-medium text-gray-600 dark:text-gray-400" />
-                                <p class="text-gray-500 py-1 text-sm">{{ getNameUser(task.updater) }}</p>
                             </div>
                         </div>
                     </div>
