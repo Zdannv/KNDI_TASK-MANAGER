@@ -290,6 +290,7 @@ const formatRole = (role) => {
                   <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Name</th>
                   <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Email</th>
                   <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Role</th>
+                  <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Photo</th>
                   <th class="p-5 text-center font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Action</th>
                 </tr>
               </thead>
@@ -316,6 +317,18 @@ const formatRole = (role) => {
                      }" class="px-3 py-1 rounded-full text-xs font-bold border backdrop-blur-sm shadow-sm">
                         {{ formatRole(user.role) }}
                      </span>
+                  </td>
+                  <td 
+                    class="p-5 align-middle text-sm italic"
+                    :class="[
+                      user.face_embedding
+                        ? 'text-slate-500'
+                        : 'text-slate-100 font-bold'
+                    ]"
+                  >
+                    <span>
+                      {{ user.face_embedding ? 'Available' : 'Not Available' }}
+                    </span>
                   </td>
                   <td class="p-5 align-middle">
                     <div class="flex gap-3 justify-center items-center text-sm">
