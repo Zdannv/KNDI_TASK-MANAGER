@@ -191,7 +191,6 @@ const handleSearch = () => {
               <table class="w-full text-left dark:text-slate-200 table-auto border-collapse">
                 <thead>
                   <tr class="bg-white/50 dark:bg-slate-900/80 backdrop-blur-md border-b border-white/20 dark:border-white/10">
-                    <th class="px-4 py-3 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider whitespace-nowrap">Type</th>
                     <th class="px-4 py-3 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider whitespace-nowrap">Assign</th>
                     <th class="px-4 py-3 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider whitespace-nowrap">Issue</th>
                     <th class="px-4 py-3 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider whitespace-nowrap">Project</th>
@@ -206,7 +205,6 @@ const handleSearch = () => {
                 </thead>
                 <tbody class="divide-y divide-white/20 dark:divide-white/5">
                   <tr v-for="task in tasks.data" :key="task.id" class="hover:bg-white/30 dark:hover:bg-primary-500/10 transition duration-200">
-                    <td class="px-4 py-3 align-middle text-sm font-medium whitespace-nowrap">{{ task.type }}</td>
                     
                     <td class="px-4 py-3 align-middle text-sm min-w-[180px]">
                       <div class="grid grid-cols-2 gap-1.5">
