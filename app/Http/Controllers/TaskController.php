@@ -76,7 +76,6 @@ class TaskController extends Controller
         $request->validate([
             'project_id' => 'required',
             'issue' => 'required|string|max:255',
-            'type' => 'required|in:low,normal,high',
             'ticket_link' => 'required|string|max:255',
             'related_links' => 'array',
             'description' => 'nullable|string',
@@ -88,7 +87,6 @@ class TaskController extends Controller
 
         $task = $project->tasks()->create([
             'issue' => $request->issue,
-            'type' => $request->type,
             'ticket_link' => $request->ticket_link,
             'related_links' => !empty($request->related_links) ? $request->related_links : null,
             'description' => $request->description,
@@ -114,7 +112,6 @@ class TaskController extends Controller
         $request->validate([
             'project_id' => 'required',
             'issue' => 'required|string|max:255',
-            'type' => 'required|in:low,normal,high',
             'ticket_link' => 'required|string|max:255',
             'related_links' => 'array',
             'description' => 'nullable|string',
@@ -128,7 +125,6 @@ class TaskController extends Controller
         $task->update([
             'project_id' => $project->id,
             'issue' => $request->issue,
-            'type' => $request->type,
             'ticket_link' => $request->ticket_link,
             'related_links' => !empty($request->related_links) ? $request->related_links : null,
             'description' => $request->description,
