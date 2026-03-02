@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redis;
 use Inertia\Inertia;
 
 class ProjectOwnerController extends Controller
@@ -16,10 +17,16 @@ class ProjectOwnerController extends Controller
      */
     public function index()
     {
-        $projectOwners = ProjectOwner::where('isDeleted', false)
-            ->paginate(10)
-            ->withQueryString();
-        $users = User::get();
+        $projectOwners = \Cache::remember('project_owner_page_' . request('page', 1), 1800, function() {
+            return ProjectOwner::where('isDeleted', false)
+                ->paginate(10)
+                ->withQueryString();
+        });
+
+        $users = \Cache::remember('all_user_list', 1800, function() {
+            return User::all();
+        });
+
         return Inertia::render('ProjectOwner/Index', compact('projectOwners', 'users'));   
     }
 
@@ -39,6 +46,8 @@ class ProjectOwnerController extends Controller
             'creator' => Auth::id(),
             'updater' => Auth::id()
         ]);
+
+        \Cache::flush();
 
         Auth::user()->logs()->create([
             'target' => 'project owner',
@@ -63,6 +72,8 @@ class ProjectOwnerController extends Controller
             'updater' => Auth::id()
         ]);
 
+        \Cache::flush();
+
         Auth::user()->logs()->create([
             'target' => 'project owner',
             'description' => "[UPDATE] project owner {$ProjectOwner->name}",
@@ -81,6 +92,8 @@ class ProjectOwnerController extends Controller
             'isDeleted' => true,
             'updater' => Auth::id()
         ]);
+
+        \Cache::flush();
 
         Auth::user()->logs()->create([
             'target' => 'project owner',

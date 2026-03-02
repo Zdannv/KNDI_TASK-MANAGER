@@ -11,6 +11,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Redis;
 
 class ProcessFaceRecognition implements ShouldQueue
 {
@@ -59,6 +60,8 @@ class ProcessFaceRecognition implements ShouldQueue
                 $this->user->update([
                     'face_embedding' => $response->json('embedding')
                 ]);
+
+                \Cache::forget('all_users_list');
 
                 Log::info("Face Recognition Successfully at User: {$this->user->name}");
             } else {
