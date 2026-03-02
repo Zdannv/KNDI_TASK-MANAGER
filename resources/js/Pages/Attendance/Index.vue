@@ -312,72 +312,14 @@ const resetFilter = () => {
 </template>
 
 <style scoped>
-/* PERBAIKAN STYLING DATEPICKER */
 :deep(.dp__input) {
-  background-color: rgba(255, 255, 255, 0.4);
+  background-color: #ffffff;
   backdrop-filter: blur(8px);
-  border-color: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
   border-radius: 0.5rem;
   height: 42px;
   font-size: 0.875rem;
   font-weight: 500;
-  color: #374151; /* Text color untuk light mode */
-}
-
-/* Memaksa warna placeholder di light mode */
-:deep(.dp__input::placeholder) {
-  color: #6b7280 !important; /* gray-500 */
-  opacity: 1 !important;
-}
-
-:deep(.dp__input:hover) {
-    border-color: #2876bc;
-}
-
-/* --- TEMA DARK MODE --- */
-
-/* Background dan border input */
-:global(.dark) :deep(.dp__input) {
-  background-color: rgba(15, 23, 42, 0.5) !important; 
-  border-color: rgba(255, 255, 255, 0.1) !important;
-  color: #f1f5f9 !important;
-}
-
-/* Memaksa warna placeholder agar terang di dark mode */
-:global(.dark) :deep(.dp__input::placeholder) {
-  color: #cbd5e1 !important; /* slate-300: putih agak keabu-abuan agar jelas */
-  opacity: 1 !important;
-}
-
-/* Warna icon kalender di dalam input */
-:global(.dark) :deep(.dp__icon) {
-  color: #cbd5e1 !important;
-}
-
-/* --- Tampilan Menu Dropdown Kalender --- */
-:deep(.dp__menu) {
-  background-color: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(12px);
-  border-radius: 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-}
-
-:global(.dark) :deep(.dp__menu) {
-  background-color: rgba(30, 41, 59, 0.95) !important;
-  border-color: rgba(255, 255, 255, 0.1) !important;
-}
-
-/* Warna text di dalam kalender dark mode */
-:global(.dark) :deep(.dp__cell_inner), 
-:global(.dark) :deep(.dp__month_year_select), 
-:global(.dark) :deep(.dp__calendar_header_item) {
-    color: #e2e8f0 !important;
-}
-
-:global(.dark) :deep(.dp__cell_inner:hover) {
-    background-color: rgba(255, 255, 255, 0.1) !important;
-    color: #ffffff !important;
 }
 
 /* Custom Scrollbar Universal */

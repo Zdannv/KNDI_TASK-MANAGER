@@ -20,7 +20,6 @@ return new class extends Migration
             $table->json('programmer')->nullable();
             $table->json('designer')->nullable();
             $table->json('reviewer')->nullable();
-            $table->enum('type', ['high', 'normal', 'low']);
             $table->string('ticket_link');
             $table->json('related_links')->nullable();
             $table->text('description')->nullable();

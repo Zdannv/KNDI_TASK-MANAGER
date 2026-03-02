@@ -18,7 +18,6 @@ class Task extends Model
         'programmer',
         'designer',
         'reviewer',
-        'type',
         'ticket_link',
         'related_links',
         'description',

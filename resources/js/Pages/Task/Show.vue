@@ -254,11 +254,7 @@ const visibleButtons = computed(() => {
                 {{ task.issue }}
                 </h2>
                 <div class="flex items-center gap-2 mt-1 text-sm font-medium text-gray-500 dark:text-slate-400">
-                    <span class="px-2 py-0.5 rounded-md bg-primary-50/50 dark:bg-primary-900/30 border border-primary-100/50 dark:border-primary-800/30 text-primary-600 dark:text-primary-400 uppercase tracking-wider">
-                        {{ task.type }}
-                    </span>
-                    <span>&bull;</span>
-                    <span>{{ project.name }}</span>
+                  <span>{{ project.name }}</span>
                 </div>
             </div>
           </div>

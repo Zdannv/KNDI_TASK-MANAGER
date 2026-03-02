@@ -44,7 +44,7 @@ class UserController extends Controller
             'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
             'role' => ['required', 'in:other,pm,pg,co,ds'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'face_photo' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'face_photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
         $user = User::create([

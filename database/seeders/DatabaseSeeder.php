@@ -158,7 +158,6 @@ class DatabaseSeeder extends Seeder
             'communicator' => [$tasya->id],
             'programmer' => [$leo->id],
             'designer' => [$aries->id],
-            'type' => 'normal',
             'ticket_link' => 'https://task.new.dev.newsmart.jp/issues/17879',
             'related_links' => ['https://www.fujifilm.com/jp/ja/business/signage/digital-signage/mora'],
             'description' => 'description signage',
@@ -174,7 +173,6 @@ class DatabaseSeeder extends Seeder
             'communicator' => [$tasya->id],
             'programmer' => [$wawan->id, $farkhan->id],
             'reviewer' => [$trisno->id],
-            'type' => 'high',
             'ticket_link' => 'https://task.new.dev.newsmart.jp/issues/17663',
             'related_links' => ['https://task.new.dev.newsmart.jp/issues/17663', 'https://task.new.dev.newsmart.jp/issues/17663'],
             'description' => 'Lorem ipsum dolor sit amet...',
@@ -183,10 +181,9 @@ class DatabaseSeeder extends Seeder
             'updater' => $tasya->id
         ]);
 
-        Task::create([
+        $task3 = Task::create([
             'project_id' => $nc->id,
             'issue' => 'delete config',
-            'type' => 'high',
             'ticket_link' => 'https://task.new.dev.newsmart.jp/issues/17663',
             'related_links' => ['https://task.new.dev.newsmart.jp/issues/17663', 'https://task.new.dev.newsmart.jp/issues/17663'],
             'description' => 'Lorem ipsum dolor sit amet...',
