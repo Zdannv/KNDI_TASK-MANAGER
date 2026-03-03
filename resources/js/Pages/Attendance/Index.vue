@@ -140,7 +140,7 @@ const resetFilter = () => {
             :class="{ 'translate-y-0 opacity-100': isLoaded, 'translate-y-8 opacity-0': !isLoaded }"
         >
             <div>
-                <h3 class="font-bold text-gray-800 dark:text-slate-100 drop-shadow-sm">Status Fitur Absensi (Manager Only)</h3>
+                <h3 class="font-bold text-gray-800 dark:text-slate-100 drop-shadow-sm">Status Fitur Absensi</h3>
                 <p class="text-sm text-gray-500 dark:text-slate-400 mt-1">Jika dinonaktifkan, role selain Other tidak akan bisa melihat atau mengakses halaman dan fitur absensi ini.</p>
             </div>
             
