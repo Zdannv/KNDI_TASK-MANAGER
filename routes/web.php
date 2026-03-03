@@ -66,15 +66,20 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/import', [ImportController::class, 'store'])->name('import.store')->middleware('role:other,co');
     Route::get('/import/template', [ImportController::class, 'template'])->name('import.template')->middleware('role:other,co');
 
-    Route::get('/attendance', [AttendanceController::class, 'index'])->name('attendance')->middleware('role:other');
-    Route::get('/attendance/export', [AttendanceController::class, 'export'])->name('attendance.export')->middleware('role:other');
+    // Menambahkan check.attendance ke menu utama absensi
+    Route::get('/attendance', [AttendanceController::class, 'index'])->name('attendance')->middleware(['role:other', 'check.attendance']);
+    Route::get('/attendance/export', [AttendanceController::class, 'export'])->name('attendance.export')->middleware(['role:other', 'check.attendance']);
 });
 
+// Menambahkan check.attendance ke halaman face recognition
 Route::get('/recognize', function () {
     return Inertia::render('recognize/Index');
-})->name('attendance.recognize');
+})->name('attendance.recognize')->middleware('check.attendance');
 
-Route::post('/attendance/store', [AttendanceController::class, 'store'])->name('attendance.store');
+// Menambahkan check.attendance ke proses simpan absensi
+Route::post('/attendance/store', [AttendanceController::class, 'store'])->name('attendance.store')->middleware('check.attendance');
+
+// Tombol toggle ini dibiarkan tanpa check.attendance karena Manager butuh rute ini untuk menyalakannya kembali
 Route::post('/attendance/toggle', [AttendanceController::class, 'toggleStatus'])->name('attendance.toggle');
 
 Route::middleware('auth')->group(function () {
