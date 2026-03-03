@@ -69,7 +69,6 @@ const paddedTasks = computed(() => {
                 <table class="w-full text-left dark:text-slate-200 table-auto border-collapse">
                   <thead class="sticky top-0 bg-white/50 dark:bg-slate-900/80 z-10 backdrop-blur-md border-b border-white/20 dark:border-white/10">
                     <tr class="text-sm uppercase tracking-wider text-gray-600 dark:text-slate-400">
-                      <th class="p-4 whitespace-nowrap font-semibold">Type</th>
                       <th class="p-4 whitespace-nowrap min-w-[200px] font-semibold">Assign</th>
                       <th class="p-4 whitespace-nowrap font-semibold">Project</th>
                       <th class="p-4 whitespace-nowrap font-semibold">Issue</th>
@@ -92,7 +91,6 @@ const paddedTasks = computed(() => {
                       </template>
 
                       <template v-else>
-                        <td class="p-4 align-middle text-sm font-medium">{{ task.type }}</td>
                         <td class="p-4 align-middle text-sm">
                           <template v-if="task.programmer?.length || task.designer?.length || task.communicator?.length">
                             <div class="flex flex-wrap gap-1">
