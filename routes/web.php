@@ -75,6 +75,7 @@ Route::get('/recognize', function () {
 })->name('attendance.recognize');
 
 Route::post('/attendance/store', [AttendanceController::class, 'store'])->name('attendance.store');
+Route::post('/attendance/toggle', [AttendanceController::class, 'toggleStatus'])->name('attendance.toggle');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
