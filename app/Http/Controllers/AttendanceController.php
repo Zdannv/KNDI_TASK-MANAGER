@@ -9,10 +9,29 @@ use Illuminate\Support\Facades\Http;
 use Inertia\Inertia;
 use Carbon\Carbon;
 use App\Exports\AttendanceMultiSheetExport;
+use Illuminate\Support\Facades\Cache;
 use Maatwebsite\Excel\Facades\Excel;
 
 class AttendanceController extends Controller
 {
+    public function toggleStatus(Request $request)
+{
+    // Pastikan hanya role other yang bisa melakukan ini
+    if (auth()->user()->role !== 'other') {
+        abort(403, 'Unauthorized action.');
+    }
+
+    $request->validate([
+        'is_enabled' => 'required|boolean',
+    ]);
+
+    // Simpan status di Cache secara permanen
+    Cache::forever('attendance_enabled', $request->is_enabled);
+
+    $status = $request->is_enabled ? 'diaktifkan' : 'dinonaktifkan';
+    
+    return back()->with('success', "Fitur absensi berhasil $status.");
+}
     public function index(Request $request)
     {
         $query = $request->query();
