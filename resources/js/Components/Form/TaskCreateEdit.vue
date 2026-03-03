@@ -51,7 +51,7 @@ const form = useForm({
 
 const submitForm = () => {
     form.related_links = form.related_links.filter(link => link.trim() !== '');
-    const routeName = props.isEditMode ? 'task.editData' : 'task.store';
+    const routeName = props.isEditMode ? 'task.update' : 'task.store';
     const routeParams = props.isEditMode ? props.task.id : undefined;
 
     form.post(route(routeName, routeParams), {
