@@ -12,6 +12,9 @@ class Attendance extends Model
         'check_in_confidence',
         'check_out_time',
         'check_out_confidence',
+        'address',
+        'latitude',
+        'longitude',
     ];
 
     public function user()
