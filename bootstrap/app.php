@@ -18,6 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'role' => \App\Http\Middleware\RoleRequest::class,
+            'check.attendance' => \App\Http\Middleware\CheckAttendanceStatus::class, 
         ]);
 
         $middleware->redirectGuestsTo(fn () => route('welcome'));
