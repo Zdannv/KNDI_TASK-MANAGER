@@ -64,6 +64,7 @@ onMounted(() => {
                 Kelola project, tugas, waktu kerja, skill karyawan, dan impor data secara efisien dalam satu platform terintegrasi.
             </p>
             <Link
+              v-if="$page.props.attendance_enabled"
               href="/recognize"
               class="inline-block px-8 py-3 bg-[#D12025] hover:bg-[#b01b1f] text-white text-sm font-extrabold rounded-full transition-all shadow-lg shadow-black/20"
             >
