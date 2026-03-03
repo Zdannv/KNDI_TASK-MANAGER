@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Redis;
 use Inertia\Inertia;
 use Carbon\Carbon;
 use App\Exports\AttendanceMultiSheetExport;
