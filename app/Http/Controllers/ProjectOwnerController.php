@@ -15,15 +15,18 @@ class ProjectOwnerController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $projectOwners = \Cache::remember('project_owner_page_' . request('page', 1), 1800, function() {
+        $page = $request->query('page', 1);
+        $cacheKey = "project_owner_list_{$page}";
+
+        $projectOwners = \Cache::remember($cacheKey, 1800, function() {
             return ProjectOwner::where('isDeleted', false)
                 ->paginate(10)
                 ->withQueryString();
         });
 
-        $users = \Cache::remember('all_user_list', 1800, function() {
+        $users = \Cache::remember('all_users_list', 1800, function() {
             return User::all();
         });
 
