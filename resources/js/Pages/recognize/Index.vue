@@ -11,18 +11,19 @@ const recognitionResult = ref(null);
 const isProcessing = ref(false);
 const currentTime = ref('');
 const currentDate = ref('');
+const latitude = ref(null)
+const longitude = ref(null)
+const locationStatus = ref("Belum mengambil lokasi")
 let timeInterval;
 let scanInterval;
 
-// Variabel untuk menyimpan objek Audio dan statusnya
 let successAudio;
 let errorAudio;
 let audioUnlocked = false;
 
-// Objek untuk melacak riwayat pemutaran suara terakhir (Fitur Cooldown)
 let lastAudioPlay = {
-    key: null, // Menyimpan identitas/nama unik
-    time: 0    // Menyimpan timestamp terakhir diputar
+    key: null,
+    time: 0
 };
 
 const updateTime = () => {
@@ -35,7 +36,6 @@ const updateTime = () => {
     });
 };
 
-// Fungsi untuk memancing izin browser memutar audio
 const unlockAudioBrowserPolicy = () => {
     if (audioUnlocked) return;
     try {
@@ -57,6 +57,34 @@ const unlockAudioBrowserPolicy = () => {
     }
 };
 
+const getLocation = () => {
+    return new Promise((resolve, reject) => {
+        if (!navigator.geolocation) {
+            locationStatus.value = "Geolocation tidak didukung"
+            reject()
+        }
+
+        locationStatus.value = "Mengambil lokasi..."
+
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                latitude.value = position.coords.latitude
+                longitude.value = position.coords.longitude
+                locationStatus.value = "Lokasi berhasil didapatkan"
+                resolve()
+            },
+            (error) => {
+                locationStatus.value = "Gagal mengambil lokasi"
+                reject(error)
+            },
+            {
+                enableHighAccuracy: true,
+                timeout: 10000
+            }
+        )
+    })
+}
+
 const toggleCamera = async () => {
     unlockAudioBrowserPolicy();
 
@@ -65,6 +93,8 @@ const toggleCamera = async () => {
 };
 
 const startCamera = async () => {
+    await getLocation();
+
     try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
         if (videoRef.value) {
@@ -84,7 +114,6 @@ const stopCamera = () => {
     isCameraActive.value = false;
 };
 
-// Fungsi helper memutar suara dengan sistem cooldown 10 detik per identitas
 const playSound = (type, uniqueKey) => {
     const now = Date.now();
     
@@ -135,6 +164,8 @@ const captureAndRecognize = async () => {
         const response = await axios.post('/attendance/store', {
             image: imageBase64,
             type: attendanceType.value,
+            latitude: latitude.value,
+            longitude: longitude.value,
         });
 
         const res = response.data;
@@ -147,7 +178,6 @@ const captureAndRecognize = async () => {
             type: attendanceType.value
         }
 
-        // Buat kunci unik berdasarkan tipe dan nama untuk cooldown
         const identityKey = `${isSuccess ? 'success' : 'error'}-${res.name || 'Gagal'}`;
 
         if (isSuccess) {
@@ -170,7 +200,6 @@ const captureAndRecognize = async () => {
             console.log('catch...');
         }
         
-        // Buat kunci unik untuk pesan error agar tidak spam error yang sama
         const errorKey = `error-${errMessage}`;
         playSound('error', errorKey);
         
