@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
 use App\Exports\SkillMultiSheetExport;
 use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\Facades\Redis;
 use Inertia\Inertia;
 
 class SkillController extends Controller
@@ -17,21 +18,29 @@ class SkillController extends Controller
      * Display a listing of the resource.
      */
     public function index(Request $request)
-    {
-        $query = $request->query();
+{
+    $userId = $request->query('user_id');
+    $auth = Auth::user();
+    $cacheKey = "skills_user_" . ($userId ?? $auth->id);
 
+    $skills = \Cache::remember($cacheKey, 1800, function() use ($userId, $auth) {
         $skillsQuery = Skill::orderBy('created_at', 'desc');
-        if (isset($query['user_id']) && in_array(Auth::user()->role, ['other', 'co'])) {
-            $skillsQuery->where('user_id', $query['user_id']);
+
+        if ($userId && in_array($auth->role, ['other', 'co'])) {
+            $skillsQuery->where('user_id', $userId);
         } else {
-            $skillsQuery->where('user_id', Auth::id());
+            $skillsQuery->where('user_id', $auth->id);
         }
-        $skills = $skillsQuery->get();
 
-        $users =  User::get();
+        return $skillsQuery->get();
+    });
 
-        return Inertia::render('User/Skill', compact('skills', 'users'));   
-    }
+    $users = \Cache::remember('all_users', 1800, function() {
+        return User::all();
+    });
+
+    return Inertia::render('User/Skill', compact('skills', 'users'));   
+}
 
     /**
      * Handle an incoming registration request.
@@ -46,6 +55,8 @@ class SkillController extends Controller
 
         $user = User::where('id', Auth::id())->first();
         $skill = $user->skills()->create($validated);
+        
+        \Cache::flush();
 
         Auth::user()->logs()->create([
             'target' => 'skill',
@@ -62,6 +73,8 @@ class SkillController extends Controller
     {
         $skill = Skill::findOrFail($id);
         $skill->delete();
+
+        \Cache::flush();
 
         Auth::user()->logs()->create([
             'target' => 'skill',
