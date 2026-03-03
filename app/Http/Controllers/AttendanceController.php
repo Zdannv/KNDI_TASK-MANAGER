@@ -6,6 +6,8 @@ use App\Models\Attendance;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Carbon\Carbon;
 use App\Exports\AttendanceMultiSheetExport;
@@ -14,24 +16,6 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class AttendanceController extends Controller
 {
-    public function toggleStatus(Request $request)
-{
-    // Pastikan hanya role other yang bisa melakukan ini
-    if (auth()->user()->role !== 'other') {
-        abort(403, 'Unauthorized action.');
-    }
-
-    $request->validate([
-        'is_enabled' => 'required|boolean',
-    ]);
-
-    // Simpan status di Cache secara permanen
-    Cache::forever('attendance_enabled', $request->is_enabled);
-
-    $status = $request->is_enabled ? 'diaktifkan' : 'dinonaktifkan';
-    
-    return back()->with('success', "Fitur absensi berhasil $status.");
-}
     public function index(Request $request)
     {
         $query = $request->query();
@@ -64,6 +48,8 @@ class AttendanceController extends Controller
         $request->validate([
             'image' => 'required|string',
             'type' => 'required|in:check_in,check_out',
+            'latitude' => 'nullable|numeric',
+            'longitude' => 'nullable|numeric',
         ]);
 
         $verification = $this->verifyFace($request->image);
@@ -91,6 +77,7 @@ class AttendanceController extends Controller
             ], 404);
         }
 
+        $address = $this->getAddress($request->latitude, $request->longitude);
         $today = Carbon::today();
         $attendance = Attendance::where('user_id', $user->id)
                                 ->whereDate('check_in_time', $today)
@@ -113,7 +100,10 @@ class AttendanceController extends Controller
             Attendance::create([
                 'user_id' => $user->id,
                 'check_in_time' => Carbon::now(),
-                'check_in_confidence' => $confidence
+                'check_in_confidence' => $confidence,
+                'address' => $address,
+                'latitude' => $request->latitude,
+                'longitude' => $request->longitude,
             ]);
 
             return response()->json([
@@ -143,6 +133,9 @@ class AttendanceController extends Controller
             $attendance->update([
                 'check_out_time' => Carbon::now(),
                 'check_out_confidence' => $confidence,
+                'address' => $address,
+                'latitude' => $request->latitude,
+                'longitude' => $request->longitude,
             ]);
 
             return response()->json([
@@ -222,5 +215,48 @@ class AttendanceController extends Controller
                 'confidence' => 0
             ];
         }
+    }
+
+    public function toggleStatus(Request $request)
+    {
+        if (auth()->user()->role !== 'other') {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $request->validate([
+            'is_enabled' => 'required|boolean',
+        ]);
+
+        Cache::forever('attendance_enabled', $request->is_enabled);
+
+        $status = $request->is_enabled ? 'diaktifkan' : 'dinonaktifkan';
+        
+        return back()->with('success', "Fitur absensi berhasil $status.");
+    }
+
+    private function getAddress($latitude, $longitude)
+    {
+        if (!$latitude || !$longitude) {
+            return null;
+        }
+
+        try {
+            $response = Http::withHeaders([
+                'User-Agent' => 'AttendanceApp/1.0'
+            ])->timeout(5)->get("https://nominatim.openstreetmap.org/reverse", [
+                'format' => 'jsonv2',
+                'lat' => $latitude,
+                'lon' => $longitude,  
+            ]);
+
+            if ($response->successful()) {
+                return $response->json()['display_name'] ?? 'Alamat tidak ditemukan';
+            }
+        } catch (\Exception $err) {
+            \Log::error("Geocoding error: " . $err->getMessage());
+            return null;
+        }
+        
+        return null;
     }
 }
