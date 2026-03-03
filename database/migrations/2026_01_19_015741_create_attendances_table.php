@@ -18,6 +18,9 @@ return new class extends Migration
             $table->decimal('check_in_confidence');
             $table->dateTime('check_out_time')->nullable();
             $table->decimal('check_out_confidence')->nullable();
+            $table->text('address')->nullable();
+            $table->decimal('longitude')->nullable();
+            $table->decimal('latitude')->nullable();
             $table->timestamps();
         });
     }
