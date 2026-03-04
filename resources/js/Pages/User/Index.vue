@@ -323,7 +323,7 @@ const formatRole = (role) => {
                     :class="[
                       user.face_embedding
                         ? 'text-slate-500'
-                        : 'text-slate-100 font-bold'
+                        : 'text-slate-800 font-bold dark:text-slate-300'
                     ]"
                   >
                     <span>

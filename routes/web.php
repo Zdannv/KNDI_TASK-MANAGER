@@ -44,7 +44,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/task', [TaskController::class, 'index'])->name('task.list');
     Route::post('/task', [TaskController::class, 'store'])->name('task.store')->middleware('role:other,pm,co');
-    Route::put('/task/{id}/edit', [TaskController::class, 'editData'])->name('task.editData')->middleware('role:other,pm,co');
+    Route::put('/task/{id}/edit', [TaskController::class, 'update'])->name('task.update')->middleware('role:other,pm,co');
     Route::put('/task/{id}/assign', [TaskController::class, 'assignTask'])->name('task.assignTask')->middleware('role:other,pm');
     Route::put('/task/{id}/pr', [TaskController::class, 'prTask'])->name('task.prTask');
     Route::post('/task/{id}/comment', [TaskController::class, 'commentTask'])->name('task.commentTask');
@@ -83,7 +83,7 @@ Route::post('/attendance/store', [AttendanceController::class, 'store'])->name('
 Route::post('/attendance/toggle', [AttendanceController::class, 'toggleStatus'])->name('attendance.toggle');
 
 Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::get('/profile', [ProfileController::class, 'Index'])->name('profile.Index');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::patch('/profile/skills', [ProfileController::class, 'updateSkills'])->name('profile.skills.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

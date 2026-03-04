@@ -6,6 +6,7 @@ use App\Models\Attendance;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
@@ -19,26 +20,33 @@ class AttendanceController extends Controller
     public function index(Request $request)
     {
         $query = $request->query();
-        
-        $attendanceQuery = Attendance::with('user')->orderBy('check_in_time', 'desc');
+        $page = $request->query('page', 1);
+        $cacheKey = "attendance_u" . ($query['user_id'] ?? 'all') . 
+                    "_from_" . ($query['from'] ?? 'start') . 
+                    "_to_" . ($query['to'] ?? 'end') . 
+                    "_p{$page}";
 
-        if (isset($query['user_id'])) {
-            $attendanceQuery->where('user_id', $query['user_id']);
-        }
+        $attendances = \Cache::remember($cacheKey, 1800, function() {
+            $attendanceQuery = Attendance::with('user')->orderBy('check_in_time', 'desc');
 
-        if (!empty($query['from']) && !empty($query['to'])) {
-            try {
-                $from = Carbon::createFromFormat('d-m-Y', $query['from'])->startOfDay();
-                $to = Carbon::createFromFormat('d-m-Y', $query['to'])->endOfDay();
-                
-                $attendanceQuery->whereBetween('check_in_time', [$from, $to]);
-            } catch (\Exception $e) {
-                // Jika format tanggal salah, filter diabaikan
+            if(isset($query['user_id'])) {
+                $attendanceQuery->where('user_id', $query['user_id']);
             }
-        }
 
-        $attendances = $attendanceQuery->paginate(10)->withQueryString();
-        $users = User::orderBy('name')->get();
+            if(!empty($query['from']) && !empty($query['to'])) {
+                try {
+                    $from = Carbon::createFromFormat('d-m-Y', $query['from'])->startOfDay();
+                    $to = Carbon::createFromFormat('d-m-Y', $query['to'])->endOfDay();
+                    $attendanceQuery->whereBetween('check_in_time', [$from, $to]);
+                } catch (\Exception $err) {}
+            }
+
+            return $attendanceQuery->paginate(10)->withQueryString();
+        });
+
+        $users = \Cache::remember('all_users_list', 1800, function() {
+            return User::orderBy('name')->get();
+        });
 
         return Inertia::render('Attendance/Index', compact('attendances', 'users'));
     }
@@ -105,6 +113,8 @@ class AttendanceController extends Controller
                 'latitude' => $request->latitude,
                 'longitude' => $request->longitude,
             ]);
+
+            \Cache::flush();
 
             return response()->json([
                 'status' => 'success',

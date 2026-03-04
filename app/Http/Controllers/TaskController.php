@@ -107,7 +107,7 @@ class TaskController extends Controller
     /**
      * Update the task's data.
      */
-    public function editData(Request $request, $id): RedirectResponse
+    public function update(Request $request, $id): RedirectResponse
     {
         $request->validate([
             'project_id' => 'required',

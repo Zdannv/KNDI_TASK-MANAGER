@@ -23,34 +23,49 @@ class LogtimeController extends Controller
     public function index(Request $request)
     {
         $query = $request->query();
-
-        $logtimesQuery = Logtime::with('task')->orderBy('date', 'desc');
-        if (isset($query['user_id']) && in_array(Auth::user()->role, ['other', 'co'])) {
-            $logtimesQuery->where('user_id', $query['user_id']);
-        } else {
-            $logtimesQuery->where('user_id', Auth::id());
-        }
-
-        if (isset($query['from']) && isset($query['to'])) {
-            $from = Carbon::parse($query['from']);
-            $to = Carbon::parse($query['to']);
-            $logtimesQuery->whereBetween('date', [$from, $to]);
-        }
+        $auth = Auth::user();
+        $page = $request->query('page', 1);
         
-        $logtimes = $logtimesQuery->paginate(10)->withQueryString(); 
+        $logtimeKey = "logtimes_u" . ($query['user_id'] ?? $auth->id) . 
+                    "_from_" . ($query['from'] ?? 'start') . 
+                    "_to_" . ($query['to'] ?? 'end') . 
+                    "_p{$page}";
 
-        $tasksQuery = Task::query()->with('project');
-        if (Auth::user()->role == 'pg') {
-            $tasksQuery->where(function ($query) {
-                $query->whereJsonContains('programmer', Auth::id())
-                    ->orWhereJsonContains('reviewer', Auth::id());
-            });
-        } elseif (Auth::user()->role == 'ds') {
-            $tasksQuery->whereJsonContains('designer', Auth::id());
-        }
-        $tasks = $tasksQuery->get();
+        $logtimes = \Cache::remember($logtimeKey, 1800, function() use ($query, $auth) {
+            $logtimesQuery = \App\Models\Logtime::with('task')->orderBy('date', 'desc');
+            
+            if (isset($query['user_id']) && in_array($auth->role, ['other', 'co'])) {
+                $logtimesQuery->where('user_id', $query['user_id']);
+            } else {
+                $logtimesQuery->where('user_id', $auth->id);
+            }
 
-        $users = User::get();
+            if (isset($query['from']) && isset($query['to'])) {
+                $from = \Carbon\Carbon::parse($query['from']);
+                $to = \Carbon\Carbon::parse($query['to']);
+                $logtimesQuery->whereBetween('date', [$from, $to]);
+            }
+            
+            return $logtimesQuery->paginate(10)->withQueryString();
+        });
+
+        $tasksKey = "tasks_user_{$auth->id}_role_{$auth->role}";
+        $tasks = \Cache::remember($tasksKey, 1800, function() use ($auth) {
+            $tasksQuery = \App\Models\Task::query()->with('project');
+            if ($auth->role == 'pg') {
+                $tasksQuery->where(function ($q) use ($auth) {
+                    $q->whereJsonContains('programmer', $auth->id)
+                    ->orWhereJsonContains('reviewer', $auth->id);
+                });
+            } elseif ($auth->role == 'ds') {
+                $tasksQuery->whereJsonContains('designer', $auth->id);
+            }
+            return $tasksQuery->get();
+        });
+
+        $users = \Cache::remember('all_users', 1800, function() {
+            return \App\Models\User::all();
+        });
 
         return Inertia::render('User/Logtime', compact('logtimes', 'tasks', 'users'));   
     }
@@ -78,6 +93,8 @@ class LogtimeController extends Controller
             'description' => $request->description,
         ]);
 
+        \Cache::flush();
+
         Auth::user()->logs()->create([
             'target' => 'logtime',
             'description' => "[CREATE] logtime {$logtime->task->ticket_link} for {$logtime->time_used} hours on {$logtime->date}",
@@ -93,6 +110,8 @@ class LogtimeController extends Controller
     {
         $logtime = Logtime::with('user')->where('id', $id)->first();
         $logtime->delete();
+        
+        \Cache::flush();
 
         Auth::user()->logs()->create([
             'target' => 'logtime',

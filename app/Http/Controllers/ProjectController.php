@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redis;
 use Inertia\Inertia;
 
 class ProjectController extends Controller
@@ -18,13 +19,26 @@ class ProjectController extends Controller
     public function index(Request $request)
     {
         $projectOwnerId = $request->query('project_owner_id');
-        $projectsQuery = Project::where('isDeleted', false)->with('projectOwner');
-        if ($projectOwnerId) {
-            $projectsQuery->where('project_owner_id', $projectOwnerId);
-        }
-        $projects = $projectsQuery->paginate(10)->withQueryString();
-        $projectOwners = ProjectOwner::where('isDeleted', false)->get();
-        $users = User::get();
+        $page = $request->query('page', 1);
+        $cacheKey = "projects_list_owner_{$projectOwnerId}_page_{$page}";
+
+        $projects = \Cache::remember($cacheKey, 1800, function() use ($projectOwnerId) {
+            $projectQuery = Project::where('isDeleted', false)->with('projectOwner');
+
+            if ($projectOwnerId) {
+                $projectQuery->where('project_owner_id', $projectOwnerId);
+            }
+
+            return $projectQuery->paginate(10)->withQueryString();
+        });
+
+        $projectOwners = \Cache::remember('all_project_owners', 1800, function() {
+            return ProjectOwner::where('isDeleted', false)->get();
+        });
+
+        $users = \Cache::remember('all_users', 1800, function() {
+            return User::get();
+        });
 
         return Inertia::render('Project/Index', compact('projects', 'projectOwners', 'users'));   
     }
@@ -48,6 +62,8 @@ class ProjectController extends Controller
             'creator' => Auth::id(),
             'updater' => Auth::id()
         ]);
+
+        \Cache::flush();
 
         Auth::user()->logs()->create([
             'target' => 'project',
@@ -77,6 +93,8 @@ class ProjectController extends Controller
             'updater' => Auth::id()
         ]);
 
+        \Cache::flush();
+
         Auth::user()->logs()->create([
             'target' => 'project',
             'description' => "[UPDATE] project {$project->name}",
@@ -95,6 +113,8 @@ class ProjectController extends Controller
             'isDeleted' => true,
             'updater' => Auth::id()
         ]);
+        
+        \Cache::flush();
 
         if ($updated) {
             $project = Project::findOrFail($id);
