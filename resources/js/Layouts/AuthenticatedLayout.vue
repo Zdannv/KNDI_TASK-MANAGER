@@ -79,6 +79,46 @@ const showPasswordModal = ref(false);
 const openPasswordModal = () => { showPasswordModal.value = true; };
 const closePasswordModal = () => { showPasswordModal.value = false; };
 
+// --- Logic Pilih Skill ---
+const showSkillModal = ref(false);
+const selectedSkills = ref([]);
+const skillForm = useForm({ displayed_skills: [] });
+
+// Dapatkan skill yang saat ini akan ditampilkan (Maksimal 5)
+const displayedSkills = computed(() => {
+    if (!user.value.skills || user.value.skills.length === 0) return [];
+    
+    // Jika Anda telah menambahkan kolom `is_displayed` di database:
+    const selected = user.value.skills.filter(s => s.is_displayed);
+    
+    // Jika belum ada yang diset (atau blm ada kolom), ambil 5 teratas
+    if (selected.length === 0) {
+        return user.value.skills.slice(0, 5);
+    }
+    return selected.slice(0, 5);
+});
+
+const openSkillModal = () => {
+    // Isi selectedSkills dengan ID dari skill yang is_displayed = true (atau 5 skill pertama sebagai default awal)
+    const currentSelected = user.value.skills.filter(s => s.is_displayed).map(s => s.id);
+    if (currentSelected.length === 0) {
+        selectedSkills.value = user.value.skills.slice(0, 5).map(s => s.id);
+    } else {
+        selectedSkills.value = currentSelected;
+    }
+    showSkillModal.value = true;
+};
+
+const saveSkills = () => {
+    skillForm.displayed_skills = selectedSkills.value;
+    // Sesuaikan nama route dengan backend Anda untuk menyimpan status skill ini
+    skillForm.patch(route('profile.skills.update'), {
+        preserveScroll: true,
+        preserveState: true,
+        onSuccess: () => { showSkillModal.value = false; }
+    });
+};
+
 // --- Logic Sidebar Kiri (Navigation) ---
 const getInitialSidebarState = () => {
     if (typeof window !== 'undefined') {
@@ -271,16 +311,19 @@ const getInitials = (name) => {
 
                 <div class="flex-1">
                     <div class="bg-gray-50 dark:bg-slate-800/50 rounded-none p-5 mb-6 border border-gray-100 dark:border-white/5">
-                        <div class="flex justify-between items-center mb-3">
+                        <div class="flex justify-between items-center mb-3 group">
                             <h3 class="font-bold text-xs uppercase tracking-widest text-slate-400">Skills</h3>
+                            <button @click="openSkillModal" class="p-1 text-slate-400 hover:text-primary-500 transition" title="Pilih Skill untuk Ditampilkan">
+                                <Pen class="w-3.5 h-3.5" />
+                            </button>
                         </div>
                         <div class="flex flex-wrap gap-2">
-                             <template v-if="user.skills && user.skills.length">
-                                <span v-for="(skillItem, index) in user.skills.slice(0, 5)" :key="index" class="px-2.5 py-1 rounded-none text-[10px] font-bold bg-white dark:bg-primary-500/20 text-primary-600 dark:text-primary-300 border border-primary-100 dark:border-primary-500/30">
+                             <template v-if="displayedSkills && displayedSkills.length">
+                                <span v-for="(skillItem, index) in displayedSkills" :key="index" class="px-2.5 py-1 rounded-none text-[10px] font-bold bg-white dark:bg-primary-500/20 text-primary-600 dark:text-primary-300 border border-primary-100 dark:border-primary-500/30">
                                     {{ skillItem.skill }}
                                 </span>
                             </template>
-                            <span v-else class="text-xs text-slate-400 italic">No skills defined.</span>
+                            <span v-else class="text-xs text-slate-400 italic">No skills selected.</span>
                         </div>
                     </div>
 
@@ -352,6 +395,49 @@ const getInitials = (name) => {
                 <div class="flex justify-end gap-3 mt-10 pt-6 border-t border-gray-100 dark:border-white/10">
                     <SecondaryButton @click="showAvatarModal = false" class="rounded-lg px-6">Cancel</SecondaryButton>
                     <PrimaryButton @click="saveAvatar" :disabled="avatarForm.processing" class="rounded-lg px-8">Update Avatar</PrimaryButton>
+                </div>
+            </div>
+        </Modal>
+
+        <Modal :show="showSkillModal" @close="showSkillModal = false" max-width="md">
+            <div class="p-6 bg-white dark:bg-slate-900 rounded-lg">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-lg font-bold text-gray-900 dark:text-slate-100">Display Skills (Max 5)</h2>
+                    <button @click="showSkillModal = false" class="text-gray-400 hover:text-gray-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+                
+                <div class="space-y-1 max-h-60 overflow-y-auto pr-2 no-scrollbar mb-4">
+                    <div v-if="user.skills.length === 0" class="text-sm text-slate-500 italic py-4">
+                        You haven't added any skills yet.
+                    </div>
+                    <label 
+                        v-for="skill in user.skills" 
+                        :key="skill.id" 
+                        class="flex items-center space-x-3 cursor-pointer p-3 border border-transparent hover:bg-gray-50 dark:hover:bg-slate-800 rounded-lg transition-colors"
+                        :class="{'opacity-50 cursor-not-allowed': selectedSkills.length >= 5 && !selectedSkills.includes(skill.id)}"
+                    >
+                        <input 
+                            type="checkbox" 
+                            :value="skill.id" 
+                            v-model="selectedSkills"
+                            :disabled="selectedSkills.length >= 5 && !selectedSkills.includes(skill.id)"
+                            class="rounded border-gray-300 text-primary-600 shadow-sm focus:ring-primary-500 dark:bg-slate-700 dark:border-slate-600"
+                        >
+                        <span class="text-sm font-medium text-slate-700 dark:text-slate-300">{{ skill.skill }}</span>
+                    </label>
+                </div>
+                
+                <div class="text-xs text-slate-500 mb-6">
+                    Selected: {{ selectedSkills.length }} / 5
+                </div>
+
+                <div class="flex justify-end gap-3 pt-4 border-t border-gray-100 dark:border-white/10">
+                    <SecondaryButton @click="showSkillModal = false">Cancel</SecondaryButton>
+                    <PrimaryButton @click="saveSkills" :disabled="skillForm.processing">Save Changes</PrimaryButton>
                 </div>
             </div>
         </Modal>
