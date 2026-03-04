@@ -16,9 +16,9 @@ class ProfileController extends Controller
     /**
      * Display the user's profile form.
      */
-    public function edit(Request $request): Response
+    public function index(Request $request): Response
     {
-        return Inertia::render('Profile/Edit', [
+        return Inertia::render('Profile/Index', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => session('status'),
         ]);
@@ -37,9 +37,33 @@ class ProfileController extends Controller
 
         $request->user()->save();
 
-        // GANTI DARI: return Redirect::route('profile.edit');
-        // MENJADI:
+        \Cache::forget('all_users_list');
+        \Cache::forget('all_members');
+
         return Redirect::back(); 
+    }
+
+    /**
+     * Update the user's displayed skills.
+     */
+    public function updateSkills(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'displayed_skills' => ['array', 'max:5'],
+            'displayed_skills.*' => ['exists:skills,id']
+        ]);
+
+        $user = $request->user();
+
+        // Reset semua skill milik user menjadi tidak ditampilkan (false)
+        $user->skills()->update(['is_displayed' => false]);
+
+        // Set skill yang dipilih dari modal menjadi ditampilkan (true)
+        if (!empty($request->displayed_skills)) {
+            $user->skills()->whereIn('id', $request->displayed_skills)->update(['is_displayed' => true]);
+        }
+
+        return Redirect::back();
     }
 
     /**
@@ -52,10 +76,13 @@ class ProfileController extends Controller
         ]);
 
         $user = $request->user();
+        $userId = $user->id;
 
         Auth::logout();
 
         $user->delete();
+
+        \Cache::flush();
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
