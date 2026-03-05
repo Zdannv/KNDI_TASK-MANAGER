@@ -10,9 +10,11 @@ use App\Models\ProjectOwner;
 use App\Models\Task;
 use App\Models\User;
 use App\Models\Project;
+use App\Models\Reply;
 use App\Models\PullRequest;
 use App\Models\TaskReviewer;
 use App\Services\TaskNotificationService;
+use App\Services\TaskService;
 
 class TaskService
 {
@@ -70,9 +72,9 @@ class TaskService
     {
         $project = Project::findOrFail($data['project_id']);
 
-        $task = $project->task()->create([
+        $task = $project->tasks()->create([
             'issue' => $data['issue'],
-            'ticket_link' => $data['ticker_link'],
+            'ticket_link' => $data['ticket_link'],
             'related_links' => !empty($data['related_links']) ? $data['related_links'] : null,
             'description' => $data['description'] ?? null,
             'start_date' => Carbon::parse($data['start_date']),
@@ -124,10 +126,11 @@ class TaskService
     {
         $task->update([
             'end_date' => null,
-            'isActive' => true,
+            'isActive' => !$task->isActive,
+            'updater'  => Auth::id(),
         ]);
 
-        $this-createLog("[ACTIVE] task for {$task->issue}");
+        $this->createLog("[ACTIVE] task for {$task->issue}");
     }
 
     public function assignTask(Task $task, array $data): void
@@ -152,7 +155,7 @@ class TaskService
         $newAssignments = [
             'Programmer' => $data['programmer'] ?? [],
             'Designer' => $data['designer'] ?? [],
-            'Communicator' => $data['communicator'],
+            'Communicator' => $data['communicator'] ?? [],
         ];
 
         $this->notificationService->sendAssignmentNotification($task, $oldAssignments, $newAssignments);
@@ -187,7 +190,7 @@ class TaskService
         $this->createLog("[ASSIGN] task for {$task->issue}");
 
         if (!empty($toAdd)) {
-            $this->notificationService->sendReviewerAssigned($task, array_values($toAdd));
+            $this->notificationService->sendReviwerAssigned($task, array_values($toAdd));
         }
 
         if (!empty($toRemove)) {
@@ -209,7 +212,7 @@ class TaskService
         return $pullRequest;
     }
 
-    public function addReply(PullRequest $parentComment, array $data): ?PullRequest
+    public function addReply(PullRequest $parentComment, array $data): ?Reply
     {
         $isDuplicate = $parentComment->replies()
             ->where('from', Auth::id())
@@ -260,7 +263,7 @@ class TaskService
 
     private function createLog(string $description): void
     {
-        Auth::User()->logs()->create([
+        Auth::user()->logs()->create([
             'target'        => 'task',
             'description'   => $description,
         ]);
