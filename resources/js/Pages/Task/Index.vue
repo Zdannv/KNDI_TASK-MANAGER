@@ -194,7 +194,7 @@ const handleSearch = () => {
                     <th class="px-4 py-3 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider whitespace-nowrap">Assign</th>
                     <th class="px-4 py-3 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider whitespace-nowrap">Issue</th>
                     <th class="px-4 py-3 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider whitespace-nowrap">Project</th>
-                    <th class="px-4 py-3 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider whitespace-nowrap">Ticket</th>
+                    <th class="px-4 py-3 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider whitespace-nowrap">Ticket Link</th>
                     <th class="px-4 py-3 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider whitespace-nowrap">Start date</th>
                     <th class="px-4 py-3 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider whitespace-nowrap">Due date</th>
                     <th v-if="['other', 'pm', 'co'].includes(role)" class="px-4 py-3 text-center font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider whitespace-nowrap">
@@ -222,7 +222,7 @@ const handleSearch = () => {
                     <td class="px-4 py-3 align-middle">
                       <div class="flex flex-col gap-1.5 items-start">
                         <a :href="route('task.show', task.id)" 
-                          class="flex items-center gap-1 text-sm font-bold text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300 hover:underline decoration-primary-300 underline-offset-2 transition"
+                          class="flex items-center gap-1 text-sm font-extrabold text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300 hover:underline decoration-primary-300 underline-offset-2 transition"
                         >
                           {{ task.issue }}
                           <externalLink class="w-4 h-4 text-primary-600" />

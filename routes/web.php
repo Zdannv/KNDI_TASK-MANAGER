@@ -43,18 +43,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/project/{id}', [ProjectController::class, 'destroy'])->name('project.destroy')->middleware('role:other,pm,co');
 
     Route::get('/task', [TaskController::class, 'index'])->name('task.list');
+    Route::get('/task/{task}', [TaskController::class, 'show'])->name('task.show');
     Route::post('/task', [TaskController::class, 'store'])->name('task.store')->middleware('role:other,pm,co');
-    Route::put('/task/{id}/edit', [TaskController::class, 'update'])->name('task.update')->middleware('role:other,pm,co');
-    Route::put('/task/{id}/assign', [TaskController::class, 'assignTask'])->name('task.assignTask')->middleware('role:other,pm');
-    Route::put('/task/{id}/pr', [TaskController::class, 'prTask'])->name('task.prTask');
-    Route::post('/task/{id}/comment', [TaskController::class, 'commentTask'])->name('task.commentTask');
-    Route::post('/task/{id}/reply', [TaskController::class, 'replyTask'])->name('task.replyTask');
-    Route::put('/task/{id}/review/{reviewerId}/complete', [TaskController::class, 'markReviewComplete'])->name('task.review.complete')->middleware('auth');
-    Route::put('/task/{id}/close', [TaskController::class, 'close'])->name('task.close');
-    Route::get('/task/{id}', [TaskController::class, 'show'])->name('task.show');
-    Route::post('/task/{id}', [TaskController::class, 'changeIsActive'])->name('task.changeIsActive')->middleware('role:other,pm,co');
-    Route::delete('/task/{id}', [TaskController::class, 'destroy'])->name('task.destroy')->middleware('role:other,pm,co');
-
+    Route::post('/task/{task}', [TaskController::class, 'changeIsActive'])->name('task.changeIsActive')->middleware('role:other,pm,co');
+    Route::post('/task/{pullRequest}/reply', [TaskController::class, 'replyTask'])->name('task.replyTask');
+    Route::post('/task/{task}/comment', [TaskController::class, 'commentTask'])->name('task.commentTask');
+    Route::put('/task/{task}/edit', [TaskController::class, 'update'])->name('task.update')->middleware('role:other,pm,co');
+    Route::put('/task/{task}/assign', [TaskController::class, 'assignTask'])->name('task.assignTask')->middleware('role:other,pm');
+    Route::put('/task/{task}/pr', [TaskController::class, 'prTask'])->name('task.prTask');
+    Route::put('/task/{task}/close', [TaskController::class, 'close'])->name('task.close');
+    Route::put('/task/{task}/review/{reviewerId}/complete', [TaskController::class, 'markReviewComplete'])->name('task.review.complete')->middleware('auth');
+    Route::delete('/task/{task}', [TaskController::class, 'destroy'])->name('task.destroy')->middleware('role:other,pm,co');
+    
     Route::get('/logtime', [LogtimeController::class, 'index'])->name('logtime.list');
     Route::get('/logtime/export', [LogtimeController::class, 'export'])->name('logtime.export')->middleware('role:other,co');
     Route::post('/logtime', [LogtimeController::class, 'store'])->name('logtime.store');
@@ -66,20 +66,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/import', [ImportController::class, 'store'])->name('import.store')->middleware('role:other,co');
     Route::get('/import/template', [ImportController::class, 'template'])->name('import.template')->middleware('role:other,co');
 
-    // Menambahkan check.attendance ke menu utama absensi
     Route::get('/attendance', [AttendanceController::class, 'index'])->name('attendance')->middleware(['role:other', 'check.attendance']);
     Route::get('/attendance/export', [AttendanceController::class, 'export'])->name('attendance.export')->middleware(['role:other', 'check.attendance']);
 });
 
-// Menambahkan check.attendance ke halaman face recognition
 Route::get('/recognize', function () {
     return Inertia::render('recognize/Index');
 })->name('attendance.recognize')->middleware('check.attendance');
 
-// Menambahkan check.attendance ke proses simpan absensi
 Route::post('/attendance/store', [AttendanceController::class, 'store'])->name('attendance.store')->middleware('check.attendance');
 
-// Tombol toggle ini dibiarkan tanpa check.attendance karena Manager butuh rute ini untuk menyalakannya kembali
 Route::post('/attendance/toggle', [AttendanceController::class, 'toggleStatus'])->name('attendance.toggle');
 
 Route::middleware('auth')->group(function () {
