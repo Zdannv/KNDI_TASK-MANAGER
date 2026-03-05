@@ -12,6 +12,7 @@ use App\Mail\TaskCommentNotification;
 use App\Mail\TaskReviewCompletedNotification;
 use App\Mail\TaskUnassignmentNotification;
 use App\Models\PullRequest;
+use App\Models\Reply;
 use App\Models\Task;
 use App\Models\TaskReviewer;
 use App\Models\User;
@@ -67,10 +68,10 @@ class TaskNotificationService
             ...($task->designer ?? []),
             ...($task->communicator ?? []),
             ...($task->reviewer ?? []),
-        ])->filter()->unique()->reject(fn($id) => new TaskCommentNotification($task, $commenter, $pullRequest));
+        ])->filter()->unique()->reject(fn($id) => $id === $commenter->id);
     }
 
-    public function sendReplyNotification(Task $task, User $replier, PullRequest $reply, int $targetUserId): void
+    public function sendReplyNotification(Task $task, User $replier, Reply $reply, int $targetUserId): void
     {
         if ($targetUserId === $replier->id) {
             return;
@@ -95,17 +96,17 @@ class TaskNotificationService
 
         $this->sendBulkEmail(
             userIds: $recepientIds,
-            mailable: fn(User $user) => TaskReviewNotification($task, $taskReviewer),
+            mailable: fn(User $user) => new TaskReviewNotification($task, $taskReviewer),
         );
     }
 
-    private function sendBulkEmail(array $userIds, object $mailable): void
+    private function sendBulkEmail(array $userIds, callable $mailable): void
     {
         if (empty($userIds)) {
             return;
         }
 
-        User::whereIn('Id', $userIds)
+        User::whereIn('id', $userIds)
             ->whereNotNull('email')
             ->get()
             ->each(fn(User $user) => $this->sendMail($user, $mailable($user)));
