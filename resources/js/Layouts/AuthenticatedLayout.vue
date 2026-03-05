@@ -301,9 +301,28 @@ const getInitials = (name) => {
                             </button>
                         </div>
                         <div v-else class="flex items-center justify-center gap-2 animate-fade-in">
-                            <TextInput v-model="nameForm.name" class="py-1 px-2 text-center text-sm font-bold w-40 bg-gray-50 dark:bg-slate-800 border-gray-200 rounded-none" @keyup.enter="saveName" />
-                            <button @click="saveName" class="p-1.5 bg-primary-600 text-white rounded-none hover:bg-primary-700">✓</button>
-                            <button @click="cancelEditingName" class="p-1.5 bg-gray-200 text-gray-600 rounded-none hover:bg-gray-300">✕</button>
+                            <TextInput 
+                                v-model="nameForm.name" 
+                                class="py-1 px-2 text-center text-sm font-bold w-40 bg-gray-50 dark:bg-slate-800 border-gray-200 rounded-none" 
+                                :disabled="nameForm.processing"
+                                @keyup.enter="saveName" 
+                            />
+                            <button 
+                                @click="saveName" 
+                                :disabled="nameForm.processing"
+                                class="p-1.5 bg-primary-600 text-white rounded-none hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center min-w-[28px]"
+                            >
+                                <svg v-if="nameForm.processing" class="animate-spin h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                <span v-else>✓</span>
+                            </button>
+                            <button 
+                                @click="cancelEditingName" 
+                                :disabled="nameForm.processing"
+                                class="p-1.5 bg-gray-200 text-gray-600 rounded-none hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >✕</button>
                         </div>
                         <p class="text-slate-500 dark:text-slate-400 text-xs mt-1">{{ user.email }}</p>
                     </div>
@@ -393,8 +412,18 @@ const getInitials = (name) => {
                 </div>
 
                 <div class="flex justify-end gap-3 mt-10 pt-6 border-t border-gray-100 dark:border-white/10">
-                    <SecondaryButton @click="showAvatarModal = false" class="rounded-lg px-6">Cancel</SecondaryButton>
-                    <PrimaryButton @click="saveAvatar" :disabled="avatarForm.processing" class="rounded-lg px-8">Update Avatar</PrimaryButton>
+                    <SecondaryButton @click="showAvatarModal = false" class="rounded-lg px-6" :disabled="avatarForm.processing">Cancel</SecondaryButton>
+                    <PrimaryButton 
+                        @click="saveAvatar" 
+                        :disabled="avatarForm.processing" 
+                        class="rounded-lg px-8 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        <svg v-if="avatarForm.processing" class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <span>{{ avatarForm.processing ? 'Updating...' : 'Update Avatar' }}</span>
+                    </PrimaryButton>
                 </div>
             </div>
         </Modal>
@@ -436,8 +465,18 @@ const getInitials = (name) => {
                 </div>
 
                 <div class="flex justify-end gap-3 pt-4 border-t border-gray-100 dark:border-white/10">
-                    <SecondaryButton @click="showSkillModal = false">Cancel</SecondaryButton>
-                    <PrimaryButton @click="saveSkills" :disabled="skillForm.processing">Save Changes</PrimaryButton>
+                    <SecondaryButton @click="showSkillModal = false" :disabled="skillForm.processing">Cancel</SecondaryButton>
+                    <PrimaryButton 
+                        @click="saveSkills" 
+                        :disabled="skillForm.processing"
+                        class="flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        <svg v-if="skillForm.processing" class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <span>{{ skillForm.processing ? 'Saving...' : 'Save Changes' }}</span>
+                    </PrimaryButton>
                 </div>
             </div>
         </Modal>
