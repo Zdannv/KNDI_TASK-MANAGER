@@ -100,7 +100,7 @@ const updateParams = () => {
     params.from = moment(dates.value[0]).format('DD-MM-YYYY');
     params.to = moment(dates.value[1]).format('DD-MM-YYYY');
   }
-  router.get(route('attendance.list', params), {}, { preserveState: true, replace: true });
+  router.get(route('attendance', params), {}, { preserveState: true, replace: true });
 };
 
 watch(id, updateParams);
@@ -125,7 +125,7 @@ const exportAttendance = (summary) => {
 const resetFilter = () => {
     id.value = null;
     dates.value = [];
-    router.get(route('attendance.list'));
+    router.get(route('attendance'));
 }
 </script>
 
