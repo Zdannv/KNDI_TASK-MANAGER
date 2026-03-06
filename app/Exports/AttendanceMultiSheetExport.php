@@ -36,8 +36,6 @@ class AttendanceMultiSheetExport implements WithMultipleSheets
             // Jika tidak ada filter user, export semua user (tiap user 1 sheet)
             $users = User::orderBy('name')->get();
             foreach ($users as $user) {
-                // Opsional: Hanya export user yang punya data absensi
-                // if ($user->attendances()->exists()) {
                     $sheets[] = new AttendanceExport($user, $this->query);
                 // }
             }
