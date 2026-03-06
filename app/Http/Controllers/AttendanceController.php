@@ -26,7 +26,7 @@ class AttendanceController extends Controller
                     "_to_" . ($query['to'] ?? 'end') . 
                     "_p{$page}";
 
-        $attendances = \Cache::remember($cacheKey, 1800, function() {
+        $attendances = \Cache::remember($cacheKey, 1800, function() use ($query) {
             $attendanceQuery = Attendance::with('user')->orderBy('check_in_time', 'desc');
 
             if(isset($query['user_id'])) {
