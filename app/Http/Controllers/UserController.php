@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Task;
-use App\Jobs\ProcessFaceRecognition;
+use App\Services\FaceRecognizeService;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
@@ -16,6 +16,13 @@ use Inertia\Inertia;
 
 class UserController extends Controller
 {
+    protected $faceService;
+
+    public function __construct(FaceRecognizeService $faceService)
+    {
+        $this->faceService = $faceService;
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -57,7 +64,7 @@ class UserController extends Controller
 
         if ($request->hasFile('face_photo')) {
             $path = $request->file('face_photo')->store('temp_faces');
-            ProcessFaceRecognition::dispatch($user, $path);
+            $this->faceService->registerUserFace($user, $path);
         }
 
         \Cache::flush();
@@ -104,7 +111,7 @@ class UserController extends Controller
 
         if ($request->hasFile('face_photo')) {
             $path = $request->file('face_photo')->store('temp_faces');
-            ProcessFaceRecognition::dispatch($user, $path);
+            $this->faceService->registerUserFace($user, $path);
         }
 
         \Cache::flush();
