@@ -275,6 +275,7 @@ const resetFilter = () => {
                     <tr>
                         <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Date / Time</th>
                         <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Employee</th>
+                        <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Type</th>
                         <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Check-in</th>
                         <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider text-right">Check-out</th>
                     </tr>
@@ -283,7 +284,7 @@ const resetFilter = () => {
                     
                         <template v-for="(group, date) in groupedAttendances" :key="date">
                             <tr class="bg-primary-50/50 dark:bg-primary-500/10 backdrop-blur-sm border-t border-white/20 dark:border-white/10">
-                                <td class="py-3 px-5" colspan="3">
+                                <td class="py-3 px-5" colspan="4">
                                     <span class="inline-flex items-center px-3 py-1 rounded-full bg-primary-100/50 dark:bg-primary-500/20 text-primary-700 dark:text-primary-300 text-xs font-bold border border-primary-200/50 dark:border-primary-500/30">
                                         {{ date }}
                                     </span>
@@ -314,6 +315,15 @@ const resetFilter = () => {
                                 </td>
                                 
                                 <td class="p-5">
+                                    <span 
+                                        class="inline-flex items-center px-2 py-1 rounded text-xs font-bold uppercase shadow-sm border backdrop-blur-sm"
+                                        :class="item.work_type === 'wfa' ? 'bg-indigo-50/80 text-indigo-700 border-indigo-200 dark:bg-indigo-500/20 dark:text-indigo-400 dark:border-indigo-500/30' : 'bg-blue-50/80 text-blue-700 border-blue-200 dark:bg-blue-500/20 dark:text-blue-400 dark:border-blue-500/30'"
+                                    >
+                                        {{ item.work_type || 'WFO' }}
+                                    </span>
+                                </td>
+
+                                <td class="p-5">
                                     <span class="inline-flex items-center px-2.5 py-1 rounded-md bg-emerald-50/80 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 text-xs font-bold border border-emerald-100/80 dark:border-emerald-500/20 backdrop-blur-sm">
                                         {{ formatTime(item.check_in_time) }}
                                     </span>
@@ -331,7 +341,7 @@ const resetFilter = () => {
                         </template>
 
                         <tr v-if="Object.keys(groupedAttendances).length === 0">
-                            <td colspan="4" class="p-12 text-center text-gray-400 dark:text-gray-500 italic">No attendance records found for this period.</td>
+                            <td colspan="5" class="p-12 text-center text-gray-400 dark:text-gray-500 italic">No attendance records found for this period.</td>
                         </tr>
                     </tbody>
                 </table>
