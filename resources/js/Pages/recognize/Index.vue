@@ -7,13 +7,15 @@ const videoRef = ref(null);
 const canvasRef = ref(null);
 const isCameraActive = ref(false);
 const attendanceType = ref('check_in');
+// State baru untuk WFO/WFA
+const workType = ref('wfo'); 
 const recognitionResult = ref(null);
 const isProcessing = ref(false);
 const currentTime = ref('');
 const currentDate = ref('');
-const latitude = ref(null)
-const longitude = ref(null)
-const locationStatus = ref("Belum mengambil lokasi")
+const latitude = ref(null);
+const longitude = ref(null);
+const locationStatus = ref("Belum mengambil lokasi");
 let timeInterval;
 let scanInterval;
 
@@ -166,6 +168,7 @@ const captureAndRecognize = async () => {
             type: attendanceType.value,
             latitude: latitude.value,
             longitude: longitude.value,
+            work_type: workType.value, // <-- Tambahkan parameter work_type ke backend
         });
 
         const res = response.data;
@@ -189,15 +192,16 @@ const captureAndRecognize = async () => {
     } catch (err) {
         let errMessage = 'Unknown Error';
         
-        if (err.response && err.response.status === 401) {
+        // Menangani error dari backend (seperti error jarak WFO terlalu jauh)
+        if (err.response && err.response.data && err.response.data.message) {
             errMessage = err.response.data.message;
-            recognitionResult.value = {
-                status: 'error',
-                name: 'Unknown',
-                message: errMessage,
-                type: attendanceType.value
-            }
-            console.log('catch...');
+        }
+
+        recognitionResult.value = {
+            status: 'error',
+            name: 'Peringatan',
+            message: errMessage,
+            type: attendanceType.value
         }
         
         const errorKey = `error-${errMessage}`;
@@ -260,9 +264,28 @@ onBeforeUnmount(() => {
                     <div class="flex flex-col gap-4 h-full">
                         
                         <div class="bg-white p-2 rounded-2xl shadow-sm border border-gray-200 flex">
+                            <button @click="workType = 'wfo'; unlockAudioBrowserPolicy();"
+                                class="flex-1 py-2 rounded-xl text-sm font-bold transition-all duration-200 flex items-center justify-center gap-2"
+                                :class="workType === 'wfo' ? 'bg-blue-600 text-white shadow-md transform scale-[1.02]' : 'text-gray-500 hover:bg-gray-50'">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1v1H9V7zm5 0h1v1h-1V7zm-5 4h1v1H9v-1zm5 0h1v1h-1v-1zm-3 4H2v2h14v-2z" />
+                                </svg>
+                                WFO (Kantor)
+                            </button>
+                            <button @click="workType = 'wfa'; unlockAudioBrowserPolicy();"
+                                class="flex-1 py-2 rounded-xl text-sm font-bold transition-all duration-200 flex items-center justify-center gap-2"
+                                :class="workType === 'wfa' ? 'bg-indigo-600 text-white shadow-md transform scale-[1.02]' : 'text-gray-500 hover:bg-gray-50'">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                WFA (Luar)
+                            </button>
+                        </div>
+
+                        <div class="bg-white p-2 rounded-2xl shadow-sm border border-gray-200 flex">
                             <button @click="attendanceType = 'check_in'; unlockAudioBrowserPolicy();"
                                 class="flex-1 py-3 rounded-xl text-sm font-bold transition-all duration-200 flex items-center justify-center gap-2"
-                                :class="attendanceType === 'check_in' ? 'bg-indigo-600 text-white shadow-md transform scale-[1.02]' : 'text-gray-500 hover:bg-gray-50'">
+                                :class="attendanceType === 'check_in' ? 'bg-emerald-600 text-white shadow-md transform scale-[1.02]' : 'text-gray-500 hover:bg-gray-50'">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414z" clip-rule="evenodd" /></svg>
                                 CHECK IN
                             </button>
@@ -344,7 +367,7 @@ onBeforeUnmount(() => {
                                     </div>
                                     
                                     <p class="text-sm text-gray-400 mt-6 uppercase tracking-widest font-semibold">
-                                        Status Terakhir • {{ recognitionResult.type === 'check_in' ? 'Masuk' : 'Pulang' }}
+                                        Status Terakhir • {{ recognitionResult.type === 'check_in' ? 'Masuk' : 'Pulang' }} ({{ workType.toUpperCase() }})
                                     </p>
                                 </div>
                             </div>
