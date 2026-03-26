@@ -53,16 +53,14 @@ class AttendanceController extends Controller
 
     public function store(Request $request)
     {
-        // Menambahkan validasi work_type untuk membedakan WFO dan WFA
         $request->validate([
             'image' => 'required|string',
             'type' => 'required|in:check_in,check_out',
             'latitude' => 'nullable|numeric',
             'longitude' => 'nullable|numeric',
-            'work_type' => 'required|in:wfo,wfa', // Pastikan frontend mengirim parameter ini
+            'work_type' => 'required|in:wfo,wfa', 
         ]);
 
-        // Cek apakah lokasi (latitude & longitude) dikirim oleh user
         if (!$request->latitude || !$request->longitude) {
             return response()->json([
                 'status' => 'error',
@@ -70,17 +68,16 @@ class AttendanceController extends Controller
             ], 400);
         }
 
-        // --- PENGECEKAN JARAK BERSYARAT (HANYA UNTUK WFO) ---
         if ($request->work_type === 'wfo') {
             // Koordinat Kantor: 7°15'53.9"S 112°44'50.1"E (dalam desimal)
             $officeLat = -7.2649722;
             $officeLon = 112.7472500;
-            $maxDistance = 20; // Jangkauan maksimal dalam meter
+            $maxDistance = 100; // Jangkauan maksimal dalam meter
 
             // Hitung jarak user saat ini dengan lokasi kantor
             $distance = $this->calculateDistance($request->latitude, $request->longitude, $officeLat, $officeLon);
 
-            // Jika jarak lebih dari 20 meter, tolak absensi
+            // Jika jarak lebih dari 100 meter, tolak absensi
             if ($distance > $maxDistance) {
                 return response()->json([
                     'status' => 'error',
@@ -142,7 +139,7 @@ class AttendanceController extends Controller
                 'address' => $address,
                 'latitude' => $request->latitude,
                 'longitude' => $request->longitude,
-                'work_type' => $request->work_type, // Menyimpan status WFO/WFA ke database
+                'work_type' => $request->work_type,
             ]);
 
             \Cache::flush();
@@ -177,7 +174,6 @@ class AttendanceController extends Controller
                 'address' => $address,
                 'latitude' => $request->latitude,
                 'longitude' => $request->longitude,
-                // work_type biasanya tidak diubah saat checkout, mengikuti check-in awal
             ]);
 
             return response()->json([
@@ -302,10 +298,6 @@ class AttendanceController extends Controller
         return null;
     }
 
-    /**
-     * Hitung jarak antara dua koordinat menggunakan formula Haversine.
-     * Mengembalikan nilai jarak dalam satuan meter.
-     */
     private function calculateDistance($lat1, $lon1, $lat2, $lon2)
     {
         $earthRadius = 6371000; // Radius bumi dalam satuan meter
