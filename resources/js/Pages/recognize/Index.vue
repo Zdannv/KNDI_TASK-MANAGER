@@ -7,7 +7,7 @@ const videoRef = ref(null);
 const canvasRef = ref(null);
 const isCameraActive = ref(false);
 const attendanceType = ref('check_in');
-// State baru untuk WFO/WFA
+// State untuk WFO/WFA, di-bind dengan elemen <select>
 const workType = ref('wfo'); 
 const recognitionResult = ref(null);
 const isProcessing = ref(false);
@@ -168,7 +168,7 @@ const captureAndRecognize = async () => {
             type: attendanceType.value,
             latitude: latitude.value,
             longitude: longitude.value,
-            work_type: workType.value, // <-- Tambahkan parameter work_type ke backend
+            work_type: workType.value, 
         });
 
         const res = response.data;
@@ -192,7 +192,7 @@ const captureAndRecognize = async () => {
     } catch (err) {
         let errMessage = 'Unknown Error';
         
-        // Menangani error dari backend (seperti error jarak WFO terlalu jauh)
+        // Menangani error dari backend 
         if (err.response && err.response.data && err.response.data.message) {
             errMessage = err.response.data.message;
         }
@@ -263,23 +263,24 @@ onBeforeUnmount(() => {
                     
                     <div class="flex flex-col gap-4 h-full">
                         
-                        <div class="bg-white p-2 rounded-2xl shadow-sm border border-gray-200 flex">
-                            <button @click="workType = 'wfo'; unlockAudioBrowserPolicy();"
-                                class="flex-1 py-2 rounded-xl text-sm font-bold transition-all duration-200 flex items-center justify-center gap-2"
-                                :class="workType === 'wfo' ? 'bg-blue-600 text-white shadow-md transform scale-[1.02]' : 'text-gray-500 hover:bg-gray-50'">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1v1H9V7zm5 0h1v1h-1V7zm-5 4h1v1H9v-1zm5 0h1v1h-1v-1zm-3 4H2v2h14v-2z" />
-                                </svg>
-                                WFO (Kantor)
-                            </button>
-                            <button @click="workType = 'wfa'; unlockAudioBrowserPolicy();"
-                                class="flex-1 py-2 rounded-xl text-sm font-bold transition-all duration-200 flex items-center justify-center gap-2"
-                                :class="workType === 'wfa' ? 'bg-indigo-600 text-white shadow-md transform scale-[1.02]' : 'text-gray-500 hover:bg-gray-50'">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                                WFA (Luar)
-                            </button>
+                        <div class="bg-white p-3 rounded-2xl shadow-sm border border-gray-200 flex flex-col gap-1">
+                            <label for="work-type" class="text-xs font-bold text-gray-500 ml-1">TIPE ABSENSI</label>
+                            <div class="relative w-full">
+                                <select 
+                                    id="work-type" 
+                                    v-model="workType" 
+                                    @change="unlockAudioBrowserPolicy"
+                                    class="w-full appearance-none bg-gray-50 border border-gray-200 text-gray-700 font-semibold text-sm rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200"
+                                >
+                                    <option value="wfo">Kerja di Kantor (WFO)</option>
+                                    <option value="wfa">Kerja dari Luar (WFA)</option>
+                                </select>
+                                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
+                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                    </svg>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="bg-white p-2 rounded-2xl shadow-sm border border-gray-200 flex">
