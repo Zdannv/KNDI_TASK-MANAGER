@@ -58,7 +58,35 @@ class AttendanceController extends Controller
             'type' => 'required|in:check_in,check_out',
             'latitude' => 'nullable|numeric',
             'longitude' => 'nullable|numeric',
+            'work_type' => 'required|in:wfo,wfa', 
         ]);
+
+        if (!$request->latitude || !$request->longitude) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Lokasi tidak ditemukan. Harap izinkan akses lokasi (GPS) pada browser/perangkat Anda.'
+            ], 400);
+        }
+
+        if ($request->work_type === 'wfo') {
+            // Koordinat Kantor: 7°15'53.9"S 112°44'50.1"E (dalam desimal)
+            $officeLat = -7.2649722;
+            $officeLon = 112.7472500;
+            $maxDistance = 100; // Jangkauan maksimal dalam meter
+
+            // Hitung jarak user saat ini dengan lokasi kantor
+            $distance = $this->calculateDistance($request->latitude, $request->longitude, $officeLat, $officeLon);
+
+            // Jika jarak lebih dari 100 meter, tolak absensi
+            if ($distance > $maxDistance) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Anda berstatus WFO tapi berada di luar jangkauan kantor (Jarak: ' . round($distance) . ' meter). Absensi WFO hanya bisa dilakukan dalam radius ' . $maxDistance . ' meter.'
+                ], 403);
+            }
+        }
+        // Jika statusnya 'wfa', pengecekan jarak di atas akan dilewati dan langsung lanjut verifikasi wajah
+        // ----------------------------------------------------
 
         $verification = $this->verifyFace($request->image);
 
@@ -97,7 +125,6 @@ class AttendanceController extends Controller
             if ($attendance) {
                 $now = Carbon::parse($attendance->check_in_time)->format('H:i:s');
 
-                $checkIn = Carbon::parse($attendance->check_in_time)->format('H:i');
                 return response()->json([
                     'status' => 'error',
                     'name' => $user->name,
@@ -112,6 +139,7 @@ class AttendanceController extends Controller
                 'address' => $address,
                 'latitude' => $request->latitude,
                 'longitude' => $request->longitude,
+                'work_type' => $request->work_type,
             ]);
 
             \Cache::flush();
@@ -119,7 +147,7 @@ class AttendanceController extends Controller
             return response()->json([
                 'status' => 'success',
                 'name' => $user->name,
-                'message' => "Berhasil Check-In"
+                'message' => "Berhasil Check-In (" . strtoupper($request->work_type) . ")"
             ]);
         } else {
             if (!$attendance) {
@@ -131,7 +159,7 @@ class AttendanceController extends Controller
             }
 
             if ($attendance->check_out_time) {
-                $now = Carbon::parse($attendance->check_in_time)->format('H:i:s');
+                $now = Carbon::parse($attendance->check_out_time)->format('H:i:s');
 
                 return response()->json([
                     'status' => 'error',
@@ -268,5 +296,27 @@ class AttendanceController extends Controller
         }
         
         return null;
+    }
+
+    private function calculateDistance($lat1, $lon1, $lat2, $lon2)
+    {
+        $earthRadius = 6371000; // Radius bumi dalam satuan meter
+
+        // Konversi koordinat dari derajat ke radian
+        $latFrom = deg2rad($lat1);
+        $lonFrom = deg2rad($lon1);
+        $latTo = deg2rad($lat2);
+        $lonTo = deg2rad($lon2);
+
+        $latDelta = $latTo - $latFrom;
+        $lonDelta = $lonTo - $lonFrom;
+
+        $a = sin($latDelta / 2) * sin($latDelta / 2) +
+             cos($latFrom) * cos($latTo) *
+             sin($lonDelta / 2) * sin($lonDelta / 2);
+
+        $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+
+        return $earthRadius * $c;
     }
 }

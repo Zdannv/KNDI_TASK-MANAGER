@@ -7,13 +7,15 @@ const videoRef = ref(null);
 const canvasRef = ref(null);
 const isCameraActive = ref(false);
 const attendanceType = ref('check_in');
+// State untuk WFO/WFA, di-bind dengan elemen <select>
+const workType = ref('wfo'); 
 const recognitionResult = ref(null);
 const isProcessing = ref(false);
 const currentTime = ref('');
 const currentDate = ref('');
-const latitude = ref(null)
-const longitude = ref(null)
-const locationStatus = ref("Belum mengambil lokasi")
+const latitude = ref(null);
+const longitude = ref(null);
+const locationStatus = ref("Belum mengambil lokasi");
 let timeInterval;
 let scanInterval;
 
@@ -166,6 +168,7 @@ const captureAndRecognize = async () => {
             type: attendanceType.value,
             latitude: latitude.value,
             longitude: longitude.value,
+            work_type: workType.value, 
         });
 
         const res = response.data;
@@ -189,15 +192,16 @@ const captureAndRecognize = async () => {
     } catch (err) {
         let errMessage = 'Unknown Error';
         
-        if (err.response && err.response.status === 401) {
+        // Menangani error dari backend 
+        if (err.response && err.response.data && err.response.data.message) {
             errMessage = err.response.data.message;
-            recognitionResult.value = {
-                status: 'error',
-                name: 'Unknown',
-                message: errMessage,
-                type: attendanceType.value
-            }
-            console.log('catch...');
+        }
+
+        recognitionResult.value = {
+            status: 'error',
+            name: 'Peringatan',
+            message: errMessage,
+            type: attendanceType.value
         }
         
         const errorKey = `error-${errMessage}`;
@@ -259,10 +263,30 @@ onBeforeUnmount(() => {
                     
                     <div class="flex flex-col gap-4 h-full">
                         
+                        <div class="bg-white p-3 rounded-2xl shadow-sm border border-gray-200 flex flex-col gap-1">
+                            <label for="work-type" class="text-xs font-bold text-gray-500 ml-1">TIPE ABSENSI</label>
+                            <div class="relative w-full">
+                                <select 
+                                    id="work-type" 
+                                    v-model="workType" 
+                                    @change="unlockAudioBrowserPolicy"
+                                    class="w-full appearance-none bg-gray-50 border border-gray-200 text-gray-700 font-semibold text-sm rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200"
+                                >
+                                    <option value="wfo">Kerja di Kantor (WFO)</option>
+                                    <option value="wfa">Kerja dari Luar (WFA)</option>
+                                </select>
+                                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
+                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="bg-white p-2 rounded-2xl shadow-sm border border-gray-200 flex">
                             <button @click="attendanceType = 'check_in'; unlockAudioBrowserPolicy();"
                                 class="flex-1 py-3 rounded-xl text-sm font-bold transition-all duration-200 flex items-center justify-center gap-2"
-                                :class="attendanceType === 'check_in' ? 'bg-indigo-600 text-white shadow-md transform scale-[1.02]' : 'text-gray-500 hover:bg-gray-50'">
+                                :class="attendanceType === 'check_in' ? 'bg-emerald-600 text-white shadow-md transform scale-[1.02]' : 'text-gray-500 hover:bg-gray-50'">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414z" clip-rule="evenodd" /></svg>
                                 CHECK IN
                             </button>
@@ -344,7 +368,7 @@ onBeforeUnmount(() => {
                                     </div>
                                     
                                     <p class="text-sm text-gray-400 mt-6 uppercase tracking-widest font-semibold">
-                                        Status Terakhir • {{ recognitionResult.type === 'check_in' ? 'Masuk' : 'Pulang' }}
+                                        Status Terakhir • {{ recognitionResult.type === 'check_in' ? 'Masuk' : 'Pulang' }} ({{ workType.toUpperCase() }})
                                     </p>
                                 </div>
                             </div>
