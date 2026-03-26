@@ -18,6 +18,7 @@ import TaskPrForm from '@/Components/Form/TaskPr.vue';
 import TaskCommentForm from '@/Components/Form/TaskComment.vue';
 import TaskReplyForm from '@/Components/Form/TaskReply.vue';
 import DeleteConfirmationModal from '@/Components/DeleteConfirmationModal.vue';
+import CloseTaskConfirmationModal from '@/Components/CloseTaskConfirmationModal.vue';
 import { Head, router, usePage } from '@inertiajs/vue3';
 import { ref, computed, onMounted } from 'vue';
 import moment from 'moment';
@@ -34,6 +35,7 @@ const selectedComment = ref(null);
 const isLoaded = ref(false);
 const confirmDeleteModal = ref(false)
 const taskToDelete = ref(null)
+const confirmCloseModal = ref(false)
 
 onMounted(() => {
   setTimeout(() => {
@@ -101,9 +103,17 @@ const markReviewDone = (taskId, reviewerId) => {
 };
 
 const handleClose = () => {
-  if (confirm('Are you sure you want to close this task?')) {
-    router.put(route('task.close', props.task.id));
-  }
+  confirmCloseModal.value = true;
+};
+
+const closeCloseModal = () => {
+  confirmCloseModal.value = false;
+};
+
+const handleConfirmClose = () => {
+  router.put(route('task.close', props.task.id), {
+    onSuccess: () => closeCloseModal(),
+  });
 };
 
 const handleCloseForm = () => {
@@ -560,6 +570,14 @@ const visibleButtons = computed(() => {
       :message="`Are you sure want to delete task ${taskToDelete?.issue}`"
       @close="closeDeleteModal"
       @confirm="handleConfirmDelete"
+    />
+
+    <CloseTaskConfirmationModal
+      :show="confirmCloseModal"
+      title="Close Task"
+      :message="`Are you sure you want to close task '${task.issue}'?`"
+      @close="closeCloseModal"
+      @confirm="handleConfirmClose"
     />
   </div>
 </template>
