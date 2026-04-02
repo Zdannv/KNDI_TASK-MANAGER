@@ -266,7 +266,7 @@ const formatRole = (role) => {
 
           <div class="flex justify-end gap-3 mt-8 pt-4 border-t border-gray-100 dark:border-white/10">
             <SecondaryButton @click="handleCloseForm" :disabled="form.processing">Cancel</SecondaryButton>
-            <PrimaryButton :disabled="form.processing || isPasswordMismatch" class="shadow-lg shadow-primary-500/30">
+            <PrimaryButton :disabled="form.processing" class="shadow-lg shadow-primary-500/30">
                {{ form.processing ? 'Saving...' : (isEditMode ? 'Update User' : 'Create User') }}
             </PrimaryButton>
           </div>
