@@ -68,26 +68,6 @@ class AttendanceController extends Controller
             ], 400);
         }
 
-        if ($request->work_type === 'wfo') {
-            // Koordinat Kantor: 7°15'53.9"S 112°44'50.1"E (dalam desimal)
-            $officeLat = -7.2649722;
-            $officeLon = 112.7472500;
-            $maxDistance = 100; // Jangkauan maksimal dalam meter
-
-            // Hitung jarak user saat ini dengan lokasi kantor
-            $distance = $this->calculateDistance($request->latitude, $request->longitude, $officeLat, $officeLon);
-
-            // Jika jarak lebih dari 100 meter, tolak absensi
-            if ($distance > $maxDistance) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Anda berstatus WFO tapi berada di luar jangkauan kantor (Jarak: ' . round($distance) . ' meter). Absensi WFO hanya bisa dilakukan dalam radius ' . $maxDistance . ' meter.'
-                ], 403);
-            }
-        }
-        // Jika statusnya 'wfa', pengecekan jarak di atas akan dilewati dan langsung lanjut verifikasi wajah
-        // ----------------------------------------------------
-
         $verification = $this->verifyFace($request->image);
 
         if (!$verification || !isset($verification['success'])) {
@@ -111,6 +91,30 @@ class AttendanceController extends Controller
                 'status' => 'error',
                 'message' => 'User dengan id ' . $verification['user_id'] . ' tidak ditemukan di database',
             ], 404);
+        }
+
+        if ($request->work_type === 'wfa') {
+            if (!$user->is_wfa_allowed) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Anda tidak memiliki akses absen WFA. Harap hubungi Manager Anda.'
+                ], 403);
+            }
+        } else {
+            // Koordinat Kantor: 7°15'53.9"S 112°44'50.1"E (dalam desimal)
+            $officeLat = -7.2649722;
+            $officeLon = 112.7472500;
+            $maxDistance = 100; // Jangkauan maksimal dalam meter
+
+            // Hitung jarak user saat ini dengan lokasi kantor
+            $distance = $this->calculateDistance($request->latitude, $request->longitude, $officeLat, $officeLon);
+
+            if ($distance > $maxDistance) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Anda berstatus WFO tapi berada di luar jangkauan kantor (Jarak: ' . round($distance) . ' meter). Absensi WFO hanya bisa dilakukan dalam radius ' . $maxDistance . ' meter.'
+                ], 403);
+            }
         }
 
         $address = $this->getAddress($request->latitude, $request->longitude);
@@ -147,6 +151,7 @@ class AttendanceController extends Controller
             return response()->json([
                 'status' => 'success',
                 'name' => $user->name,
+                'work_type' => $request->work_type,
                 'message' => "Berhasil Check-In (" . strtoupper($request->work_type) . ")"
             ]);
         } else {

@@ -25,6 +25,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/user', [UserController::class, 'index'])->name('user.list')->middleware('role:other,pm');
     Route::post('/user', [UserController::class, 'store'])->name('user.store')->middleware('role:other,pm');
     Route::put('/user/{id}', [UserController::class, 'update'])->name('user.update')->middleware('role:other,pm');
+    Route::patch('/user/{id}/wfa', [UserController::class, 'toggleWfa'])->name('user.toggleWfa')->middleware('role:other,pm');
     Route::delete('/user/{id}', [UserController::class, 'destroy'])->name('user.destroy')->middleware('role:other,pm');
 
     Route::get('/skill', [SkillController::class, 'index'])->name('skill.list');

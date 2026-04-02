@@ -24,6 +24,7 @@ class User extends Authenticatable
         'name',
         'email',
         'role',
+        'is_wfa_allowed',
         'password',
         'avatar',
         'face_embedding',

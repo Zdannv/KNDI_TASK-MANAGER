@@ -38,6 +38,7 @@ const form = useForm({
   name: '',
   email: '',
   role: 'pg',
+  is_wfa_allowed: false,
   password: '',
   password_confirmation: '',
   face_photo: '',
@@ -78,6 +79,7 @@ const handleEdit = (id) => {
     form.name = user.name;
     form.email = user.email;
     form.role = user.role;
+    form.is_wfa_allowed = Boolean(user.is_wfa_allowed);
     form.password = ''; 
     form.password_confirmation = '';
     
@@ -101,6 +103,14 @@ const handleConfirmDelete = () => {
   router.delete(route('user.destroy', userToDelete.value.id), {
     onSuccess: () => closeDeleteModal(),
   })
+};
+
+const toggleWfa = (user) => {
+  router.patch(route('user.toggleWfa', user.id), {
+    is_wfa_allowed: !user.is_wfa_allowed
+  }, {
+    preserveScroll: true
+  });
 };
 
 const handleSubmit = () => {
@@ -291,6 +301,7 @@ const formatRole = (role) => {
                   <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Email</th>
                   <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Role</th>
                   <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Photo</th>
+                  <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider text-center">WFA</th>
                   <th class="p-5 text-center font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Action</th>
                 </tr>
               </thead>
@@ -329,6 +340,15 @@ const formatRole = (role) => {
                     <span>
                       {{ user.face_embedding ? 'Available' : 'Not Available' }}
                     </span>
+                  </td>
+                  <td class="p-5 align-middle text-center">
+                    <label class="flex items-center justify-center cursor-pointer tooltip-trigger" title="Toggle Akses WFA">
+                      <div class="relative">
+                          <input type="checkbox" class="sr-only" :checked="user.is_wfa_allowed" @change="toggleWfa(user)">
+                          <div class="block w-10 h-5 rounded-full transition-colors duration-300 shadow-inner" :class="user.is_wfa_allowed ? 'bg-indigo-500' : 'bg-gray-300 dark:bg-slate-600'"></div>
+                          <div class="dot absolute left-1 top-1 bg-white w-3 h-3 rounded-full transition-transform duration-300 shadow-sm" :class="{'transform translate-x-5': user.is_wfa_allowed}"></div>
+                      </div>
+                    </label>
                   </td>
                   <td class="p-5 align-middle">
                     <div class="flex gap-3 justify-center items-center text-sm">

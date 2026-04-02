@@ -1,6 +1,6 @@
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue';
-import { Head, Link } from '@inertiajs/vue3';
+import { ref, onMounted, onBeforeUnmount, computed } from 'vue';
+import { Head, Link, usePage } from '@inertiajs/vue3';
 import axios from 'axios';
 
 const videoRef = ref(null);
@@ -8,7 +8,7 @@ const canvasRef = ref(null);
 const isCameraActive = ref(false);
 const attendanceType = ref('check_in');
 // State untuk WFO/WFA, di-bind dengan elemen <select>
-const workType = ref('wfo'); 
+const workType = ref('wfo');
 const recognitionResult = ref(null);
 const isProcessing = ref(false);
 const currentTime = ref('');
@@ -168,7 +168,7 @@ const captureAndRecognize = async () => {
             type: attendanceType.value,
             latitude: latitude.value,
             longitude: longitude.value,
-            work_type: workType.value, 
+            work_type: workType.value,
         });
 
         const res = response.data;
@@ -178,6 +178,7 @@ const captureAndRecognize = async () => {
             status: isSuccess ? 'success' : 'error',
             name: res.name || "Gagal",
             message: res.message,
+            workType: res.work_type || 'WFO',
             type: attendanceType.value
         }
 
@@ -201,6 +202,7 @@ const captureAndRecognize = async () => {
             status: 'error',
             name: 'Peringatan',
             message: errMessage,
+            workType: 'WFO',
             type: attendanceType.value
         }
         
@@ -262,7 +264,7 @@ onBeforeUnmount(() => {
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:h-[600px]">
                     
                     <div class="flex flex-col gap-4 h-full">
-                        
+
                         <div class="bg-white p-3 rounded-2xl shadow-sm border border-gray-200 flex flex-col gap-1">
                             <label for="work-type" class="text-xs font-bold text-gray-500 ml-1">TIPE ABSENSI</label>
                             <div class="relative w-full">
@@ -368,7 +370,7 @@ onBeforeUnmount(() => {
                                     </div>
                                     
                                     <p class="text-sm text-gray-400 mt-6 uppercase tracking-widest font-semibold">
-                                        Status Terakhir • {{ recognitionResult.type === 'check_in' ? 'Masuk' : 'Pulang' }} ({{ workType.toUpperCase() }})
+                                        Status Terakhir • {{ recognitionResult.type === 'check_in' ? 'Masuk' : 'Pulang' }} ({{ recognitionResult.workType.toUpperCase() }})
                                     </p>
                                 </div>
                             </div>
