@@ -50,6 +50,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
             'role' => ['required', 'in:other,pm,pg,co,ds'],
+            'is_wfa_allowed' => 'boolean',
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'face_photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
@@ -58,6 +59,7 @@ class UserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'role' => $request->role,
+            'is_wfa_allowed' => $request->boolean('is_wfa_allowed', false),
             'password' => Hash::make($request->password),
             'face_embedding' => null
         ]);
@@ -86,6 +88,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|lowercase|email|max:255|unique:users,email,' . $id,
             'role' => ['required', 'in:other,pm,pg,co,ds'],
+            'is_wfa_allowed' => 'boolean',
             'face_photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
         ];
 
@@ -101,6 +104,7 @@ class UserController extends Controller
             'name' => $validated['name'],
             'email' => $validated['email'],
             'role' => $validated['role'],
+            'is_wfa_allowed' => $request->boolean('is_wfa_allowed', false),
         ];
 
         if ($request->filled('password')) {
@@ -123,6 +127,28 @@ class UserController extends Controller
 
         return redirect(route('user.list', absolute: false))
             ->with('success', "User '{$user->name}' berhasil diperbarui! Foto sedang diproses di background.");
+    }
+
+    /**
+     * Update user WFA access only.
+     */
+    public function toggleWfa(Request $request, $id): RedirectResponse
+    {
+        $validated = $request->validate([
+            'is_wfa_allowed' => 'required|boolean',
+        ]);
+
+        $user = User::findOrFail($id);
+        $user->update(['is_wfa_allowed' => $validated['is_wfa_allowed']]);
+
+        \Cache::flush();
+
+        Auth::user()->logs()->create([
+            'target' => 'user',
+            'description' => "[UPDATE] WFA Access for user {$user->name} to " . ($validated['is_wfa_allowed'] ? 'Allowed' : 'Not Allowed'),
+        ]);
+
+        return back()->with('success', "Status WFA untuk '{$user->name}' berhasil diperbarui!");
     }
 
     /**
