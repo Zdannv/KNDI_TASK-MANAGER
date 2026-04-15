@@ -70,6 +70,22 @@ class AttendanceController extends Controller
 
         $verification = $this->verifyFace($request->image);
 
+        // --- PENGATURAN COOLDOWN UNTUK SEMUA STATUS ---
+        // Gunakan user_id jika dikenali, jika error/wajah tidak dikenali gunakan IP Address device
+        $identifier = $verification['user_id'] ?? $request->ip();
+        $cooldownKey = 'attendance_cooldown_' . $identifier;
+
+        if (Cache::has($cooldownKey)) {
+            return response()->json([
+                'status' => 'cooldown',
+                'message' => 'Harap tunggu sebentar sebelum melakukan absensi lagi.',
+            ], 429);
+        }
+
+        // Langsung set cooldown 2 detik di sini agar mencakup SEMUA status di bawahnya (Sukses, Error, Sudah Absen, dll)
+        Cache::put($cooldownKey, true, 2);
+        // ----------------------------------------------
+
         if (!$verification || !isset($verification['success'])) {
             return response()->json([
                 'status' => 'error',
@@ -93,21 +109,6 @@ class AttendanceController extends Controller
             ], 404);
         }
 
-        // --- TAMBAHAN COOLDOWN 2 DETIK ---
-        $cooldownKey = 'attendance_cooldown_' . $user->id;
-        
-        if (Cache::has($cooldownKey)) {
-            // Mengembalikan status cooldown agar frontend dapat mengabaikannya dan tidak nge-spam sound effect
-            return response()->json([
-                'status' => 'cooldown',
-                'message' => 'Harap tunggu sebentar sebelum melakukan absensi lagi.',
-            ], 429);
-        }
-        
-        // Set cooldown selama 2 detik untuk user ini
-        Cache::put($cooldownKey, true, 2);
-        // ---------------------------------
-
         if ($request->work_type === 'wfa') {
             if (!$user->is_wfa_allowed) {
                 return response()->json([
@@ -116,6 +117,14 @@ class AttendanceController extends Controller
                 ], 403);
             }
         } else {
+            // Pengecekan jika user punya akses WFA tapi malah milih WFO
+            if ($user->is_wfa_allowed) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Anda telah diberikan akses WFA. Harap ubah tipe absensi Anda menjadi WFA.'
+                ], 403);
+            }
+
             // Koordinat Kantor: 7°15'53.9"S 112°44'50.1"E (dalam desimal)
             $officeLat = -7.2649722;
             $officeLon = 112.7472500;
