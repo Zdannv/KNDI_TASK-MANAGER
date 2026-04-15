@@ -215,8 +215,8 @@ const captureAndRecognize = async () => {
 };
 
 onMounted(() => {
-    successAudio = new Audio('/backsounds/4maps.mp3');
-    errorAudio = new Audio('/backsounds/prabowo-sorry-ye.mp3');
+    successAudio = new Audio('/backsounds/success.mp3');
+    errorAudio = new Audio('/backsounds/error.mp3');
 
     updateTime();
     timeInterval = setInterval(updateTime, 1000);
