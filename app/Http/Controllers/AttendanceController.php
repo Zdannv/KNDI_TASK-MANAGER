@@ -93,6 +93,21 @@ class AttendanceController extends Controller
             ], 404);
         }
 
+        // --- TAMBAHAN COOLDOWN 2 DETIK ---
+        $cooldownKey = 'attendance_cooldown_' . $user->id;
+        
+        if (Cache::has($cooldownKey)) {
+            // Mengembalikan status cooldown agar frontend dapat mengabaikannya dan tidak nge-spam sound effect
+            return response()->json([
+                'status' => 'cooldown',
+                'message' => 'Harap tunggu sebentar sebelum melakukan absensi lagi.',
+            ], 429);
+        }
+        
+        // Set cooldown selama 2 detik untuk user ini
+        Cache::put($cooldownKey, true, 2);
+        // ---------------------------------
+
         if ($request->work_type === 'wfa') {
             if (!$user->is_wfa_allowed) {
                 return response()->json([
