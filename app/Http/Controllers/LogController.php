@@ -12,7 +12,7 @@ class LogController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $page = $request->query('page', 1);
         $cacheKey = "user_logs_page_{$page}";
