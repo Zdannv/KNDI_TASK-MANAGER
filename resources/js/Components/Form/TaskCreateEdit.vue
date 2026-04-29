@@ -29,9 +29,9 @@ const formatDate = (date) => {
 };
 
 const displayedProjectOwnerName = computed(() => {
-    const selectedProject = props.projects?.find(p => p.id === form.project_id);
+    const selectedProject = props.projects?.find(p => p.id == form.project_id);
     
-    return selectedProject?.projectOwner?.name || '-';
+    return selectedProject?.project_owner?.name || selectedProject?.projectOwner?.name || '-';
 });
 
 const initialLinks = props.isEditMode && Array.isArray(props.task?.related_links)
