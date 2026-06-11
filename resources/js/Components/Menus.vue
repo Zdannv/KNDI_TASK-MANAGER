@@ -121,7 +121,7 @@ const onLeave = () => {
                 :class="[
                     index === activeIndex
                         ? 'text-[#0d1b3e] dark:text-white/80 font-bold' 
-                        : 'text-slate-400 hover:text-white dark:text-slate-500 dark:hover:text-white/80',
+                        : 'text-blue-100 hover:text-white dark:text-slate-500 dark:hover:text-white/80',
 
                     index !== activeIndex 
                         ? [
@@ -136,7 +136,7 @@ const onLeave = () => {
                 ]"
             >
                 <div 
-                    class="flex items-center justify-center shrink-0 transition-all duration-300 text-gray-400"
+                    class="flex items-center justify-center shrink-0 transition-all duration-300 text-blue-200 dark:text-slate-400 group-hover:text-white"
                     :class="[
                         index === activeIndex 
                         ? 'scale-110 text-primary-600 dark:text-white/80' 
@@ -160,11 +160,11 @@ const onLeave = () => {
         <Teleport to="body">
             <div
                 v-if="hoveredMenu && !sidebarOpen"
-                class="fixed bg-[#0d1b3e]/90 dark:bg-slate-900/95 backdrop-blur-md text-white text-sm font-bold px-3 py-1.5 rounded-lg pointer-events-none whitespace-nowrap shadow-xl z-[9999] border border-white/20 dark:border-white/10 transition-opacity duration-200"
+                class="fixed bg-[#2876BC]/90 dark:bg-slate-900/95 backdrop-blur-md text-white text-sm font-bold px-3 py-1.5 rounded-lg pointer-events-none whitespace-nowrap shadow-xl z-[9999] border border-white/20 dark:border-white/10 transition-opacity duration-200"
                 :style="{ top: tooltipPos.top + 'px', left: tooltipPos.left + 'px', transform: 'translateY(-50%)' }"
             >
                 {{ hoveredMenu }}
-                <div class="absolute top-1/2 -left-1 -translate-y-1/2 border-4 border-transparent border-r-[#0d1b3e]/90 dark:border-r-slate-900/95"></div>
+                <div class="absolute top-1/2 -left-1 -translate-y-1/2 border-4 border-transparent border-r-[#2876BC]/90 dark:border-r-slate-900/95"></div>
             </div>
         </Teleport>
 
