@@ -50,7 +50,7 @@ onMounted(() => {
       <div class="relative lg:col-span-2 p-8 lg:p-16 flex flex-col justify-between items-start text-left min-h-[500px] overflow-hidden bg-white/40 dark:bg-slate-900/40 backdrop-blur-xl">
         <div class="relative z-10 w-full flex flex-col h-full justify-between">
           <div class="">
-              <img src="/icon_kndi-1.svg" alt="Icon" class="w-24 h-24 object-contain object-left">
+              <img src="/icon_kndi-1.svg" alt="Icon" class="w-20 h-20 object-contain object-left">
           </div>
 
           <div>

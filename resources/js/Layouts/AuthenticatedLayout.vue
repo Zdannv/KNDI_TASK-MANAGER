@@ -202,7 +202,7 @@ const getInitials = (name) => {
                 :class="openMenus ? 'justify-between pl-8 pr-6' : 'justify-center px-0'" 
             >
                 <div v-if="openMenus" class="flex items-center gap-3 overflow-hidden whitespace-nowrap animate-fade-in">
-                    <img src="/icon_kndi-1.svg" alt="Logo" class="w-14 h-14 shrink-0" />
+                    <img src="/icon_kndi-1.svg" alt="Logo" class="w-12 h-12 shrink-0" />
                     <span class="text-white font-bold text-2xl tracking-wide">KNDI</span>
                 </div>
                 
