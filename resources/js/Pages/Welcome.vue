@@ -39,15 +39,15 @@ onMounted(() => {
   
   <div class="min-h-screen w-full flex flex-col items-center justify-center p-4 lg:p-8 relative overflow-hidden">
     
-    <img src="/background/welcome-light.jpg" class="absolute inset-0 w-full h-full object-cover opacity-30 pointer-events-none dark:hidden" />
+    <img src="/background/BGlight-TM.jpg.jpeg" class="absolute inset-0 w-full h-full object-cover pointer-events-none dark:hidden" />
     <img src="/background/BG-TM.jpg" class="absolute inset-0 w-full h-full object-cover pointer-events-none hidden dark:block">
 
     <div 
-      class="relative z-10 w-full max-w-6xl bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 overflow-hidden grid grid-cols-1 lg:grid-cols-3 transition-all duration-700 mb-8 shadow-white-md"
+      class="relative z-10 w-full max-w-6xl bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 overflow-hidden grid grid-cols-1 lg:grid-cols-3 transition-all duration-700 mb-8 shadow-xl dark:shadow-white-md"
       :class="{ 'translate-y-0 opacity-100': isLoaded, 'translate-y-8 opacity-0': !isLoaded }"
     >
       
-      <div class="relative lg:col-span-2 p-8 lg:p-16 flex flex-col justify-between items-start text-left min-h-[500px] overflow-hidden">
+      <div class="relative lg:col-span-2 p-8 lg:p-16 flex flex-col justify-between items-start text-left min-h-[500px] overflow-hidden bg-[#edf5fd]/90 dark:bg-slate-900/50">
         <div class="relative z-10 w-full flex flex-col h-full justify-between">
           <div class="">
               <img src="/icon_kndi.svg" alt="Icon" class="w-32 h-32 object-contain object-left">
