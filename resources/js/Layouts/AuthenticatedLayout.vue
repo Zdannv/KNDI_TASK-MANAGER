@@ -194,7 +194,7 @@ const getInitials = (name) => {
             :class="[
                 openMenus ? 'w-72' : 'w-24',
                 showProfilePanel ? '-translate-x-[200%]' : 'translate-x-0',
-                'bg-[#2876BC] dark:bg-slate-900/90 backdrop-blur-xl'
+                'bg-[#0d1b3e] dark:bg-slate-900/90 backdrop-blur-xl'
             ]"
         >
             <div 
@@ -202,7 +202,7 @@ const getInitials = (name) => {
                 :class="openMenus ? 'justify-between pl-8 pr-6' : 'justify-center px-0'" 
             >
                 <div v-if="openMenus" class="flex items-center gap-3 overflow-hidden whitespace-nowrap animate-fade-in">
-                    <img src="/icon_kndi-1.svg" alt="Logo" class="w-10 h-10 shrink-0" />
+                    <img src="/icon_kndi-1.svg" alt="Logo" class="w-14 h-14 shrink-0" />
                     <span class="text-white font-bold text-2xl tracking-wide">KNDI</span>
                 </div>
                 
