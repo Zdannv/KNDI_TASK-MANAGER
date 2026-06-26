@@ -139,7 +139,7 @@ const formatRole = (role) => {
     'pg': 'Programmer',
     'co': 'Communicator',
     'ds': 'Designer',
-    'other': 'Other'
+    'admin': 'Admin'
   };
   return roles[role] || role;
 };
@@ -217,7 +217,7 @@ const formatRole = (role) => {
                   <option value="pg">Programmer</option>
                   <option value="ds">Designer</option>
                   <option value="co">Communicator</option>
-                  <option value="other">Other</option>
+                  <option value="admin">Admin</option>
                 </select>
             </div>
           </div>
@@ -324,7 +324,7 @@ const formatRole = (role) => {
                         'bg-primary-100/50 text-primary-700 border-primary-200/50 dark:bg-primary-900/30 dark:text-primary-400 dark:border-primary-800/30': user.role === 'pg',
                         'bg-pink-100/50 text-pink-700 border-pink-200/50 dark:bg-pink-900/30 dark:text-pink-400 dark:border-pink-800/30': user.role === 'ds',
                         'bg-orange-100/50 text-orange-700 border-orange-200/50 dark:bg-orange-900/30 dark:text-orange-400 dark:border-orange-800/30': user.role === 'co',
-                        'bg-gray-100/50 text-gray-700 border-gray-200/50 dark:bg-slate-800/30 dark:text-slate-300 dark:border-slate-700/30': user.role === 'other',
+                        'bg-gray-100/50 text-gray-700 border-gray-200/50 dark:bg-slate-800/30 dark:text-slate-300 dark:border-slate-700/30': user.role === 'admin',
                      }" class="px-3 py-1 rounded-full text-xs font-bold border backdrop-blur-sm shadow-sm">
                         {{ formatRole(user.role) }}
                      </span>

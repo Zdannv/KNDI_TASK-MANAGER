@@ -56,7 +56,7 @@ class DatabaseSeeder extends Seeder
         $nora = User::factory()->create([
             'name' => 'Nora',
             'email' => 'nora@kyodo-i.com',
-            'role' => 'other',
+            'role' => 'admin',
             'avatar' => '/avatars/1.png',
             'password' => Hash::make('user@kndi')
         ]);
@@ -72,7 +72,7 @@ class DatabaseSeeder extends Seeder
         $hr = User::factory()->create([
             'name' => 'HR',
             'email' => 'hr@kyodo-i.com',
-            'role' => 'other',
+            'role' => 'admin',
             'avatar' => '/avatars/1.png',
             'password' => Hash::make('user@kndi')
         ]);

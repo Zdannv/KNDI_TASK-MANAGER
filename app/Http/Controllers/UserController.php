@@ -49,7 +49,7 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
-            'role' => ['required', 'in:other,pm,pg,co,ds'],
+            'role' => ['required', 'in:admin,pm,pg,co,ds'],
             'is_wfa_allowed' => 'boolean',
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'face_photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
@@ -87,7 +87,7 @@ class UserController extends Controller
         $rules = [
             'name' => 'required|string|max:255',
             'email' => 'required|string|lowercase|email|max:255|unique:users,email,' . $id,
-            'role' => ['required', 'in:other,pm,pg,co,ds'],
+            'role' => ['required', 'in:admin,pm,pg,co,ds'],
             'is_wfa_allowed' => 'boolean',
             'face_photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
         ];

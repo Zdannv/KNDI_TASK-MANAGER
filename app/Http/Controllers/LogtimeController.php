@@ -34,7 +34,7 @@ class LogtimeController extends Controller
         $logtimes = \Cache::remember($logtimeKey, 1800, function() use ($query, $auth) {
             $logtimesQuery = \App\Models\Logtime::with('task')->orderBy('date', 'desc');
             
-            if (isset($query['user_id']) && in_array($auth->role, ['other', 'co'])) {
+            if (isset($query['user_id']) && in_array($auth->role, ['admin', 'co'])) {
                 $logtimesQuery->where('user_id', $query['user_id']);
             } else {
                 $logtimesQuery->where('user_id', $auth->id);

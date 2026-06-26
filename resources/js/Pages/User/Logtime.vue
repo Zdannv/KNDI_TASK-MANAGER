@@ -45,7 +45,7 @@ const queryParams = computed(() => {
   return Object.fromEntries(url.searchParams);
 });
 
-const options = ref(['other', 'co'].includes(role.value) ? true : false);
+const options = ref(['admin', 'co'].includes(role.value) ? true : false);
 const id = ref(Number(queryParams.value.user_id) || null);
 
 const dates = ref(
@@ -179,7 +179,7 @@ const closeDetailLogtime = () => {
           
           <div class="flex flex-wrap gap-3 justify-end w-full md:w-auto">
             <button
-              v-if="['other', 'co'].includes(role)"
+              v-if="['admin', 'co'].includes(role)"
               @click="handleOpenOptions"
               class="flex items-center gap-2 px-4 py-2 bg-white/50 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-700/50 text-gray-700 dark:text-gray-200 rounded-lg shadow-sm border border-white/40 dark:border-white/10 backdrop-blur-sm transition-all"
             >
@@ -198,7 +198,7 @@ const closeDetailLogtime = () => {
         </div>
     </div>
 
-    <div v-if="['other', 'co'].includes(role)" class="fixed sm:hidden right-6 bottom-6 z-50">
+    <div v-if="['admin', 'co'].includes(role)" class="fixed sm:hidden right-6 bottom-6 z-50">
       <div
         class="shrink-0 inline-flex items-center justify-center p-3 rounded-full text-white bg-primary-600 shadow-xl z-40 transition-all duration-500 hover:scale-110 active:scale-95"
         @click="showButtons = !showButtons"
@@ -320,7 +320,7 @@ const closeDetailLogtime = () => {
                     <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Ticket</th>
                     <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Description</th>
                     <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Time used</th>
-                    <th v-if="['other', 'co'].includes(role)" class="p-5 text-center font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Action</th>
+                    <th v-if="['admin', 'co'].includes(role)" class="p-5 text-center font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Action</th>
                 </tr>
                 </thead>
                 <tbody class="divide-y divide-white/20 dark:divide-white/5">
@@ -331,7 +331,7 @@ const closeDetailLogtime = () => {
                       <td class="py-2 px-5">
                           <span class="inline-flex items-center px-2.5 py-1 rounded-md bg-white/50 dark:bg-slate-900/60 font-bold text-gray-800 dark:text-gray-200 border border-white/40 dark:border-white/10 shadow-sm">{{ group.totalTime }} h</span>
                       </td>
-                      <td v-if="['other', 'co'].includes(role)" class="py-2 px-5"></td>
+                      <td v-if="['admin', 'co'].includes(role)" class="py-2 px-5"></td>
                     </tr>
                     <tr v-for="value in group.items" :key="value.id" class="border-t border-white/20 dark:border-white/5 hover:bg-white/30 dark:hover:bg-white/5 transition duration-200">
                     <td class="p-5 align-middle text-sm text-gray-500 dark:text-slate-400">{{ formatDate(value.date) }}</td>
@@ -351,7 +351,7 @@ const closeDetailLogtime = () => {
                       </div>
                     </td>
                     <td class="p-5 align-middle text-sm text-gray-700 dark:text-slate-200 font-medium">{{ parseFloat(value.time_used) }} h</td>
-                    <td v-if="['other', 'co'].includes(role)" class="p-5 align-middle">
+                    <td v-if="['admin', 'co'].includes(role)" class="p-5 align-middle">
                       <div class="flex justify-center gap-4">
                         <button
                           @click="openDetailLogtime(value)"

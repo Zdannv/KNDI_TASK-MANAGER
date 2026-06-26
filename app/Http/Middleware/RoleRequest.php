@@ -26,7 +26,7 @@ class RoleRequest
 
         if (in_array($user->role, ['pg', 'co', 'ds'])) {
             return to_route('task.list');
-        } elseif (in_array($user->role, ['other', 'pm'])) {
+        } elseif (in_array($user->role, ['admin', 'pm'])) {
             return to_route('dashboard');
         };
     }

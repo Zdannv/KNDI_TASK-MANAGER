@@ -88,7 +88,7 @@ const cancel = () => {
                     <option value="pg">Programmer</option>
                     <option value="co">Communicator</option>
                     <option value="ds">Designer</option>
-                    <option value="other">Other</option>
+                    <option value="admin">Admin</option>
                 </select>
                 <InputError class="mt-2" :message="form.errors.role" />
             </div>

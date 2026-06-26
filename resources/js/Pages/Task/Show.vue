@@ -204,31 +204,31 @@ const logtimeSegments = computed(() => {
 
 const visibleButtons = computed(() => {
   const buttons = [];
-  if (['other', 'pm'].includes(role.value)) {
+  if (['admin', 'pm'].includes(role.value)) {
     buttons.push({ action: 'assign', icon: User, handler: handleAssign, text: 'Assign' });
   }
   if (
     (['pm', 'pg', 'ds'].includes(role.value) && [props.task?.programmer, props.task?.designer].some(arr => arr?.includes(id.value))) ||
-    ['other'].includes(role.value)
+    ['admin'].includes(role.value)
   ) {
     buttons.push({ action: 'review', icon: UserPlus, handler: handlePr, text: 'Review' });
   }
   if (
     props.task?.pl === id.value ||
-    ['other'].includes(role.value) ||
+    ['admin'].includes(role.value) ||
     [props.task?.communicator, props.task?.programmer, props.task?.designer, props.task?.reviewer].some(arr => arr?.includes(id.value))
   ) {
     buttons.push({ action: 'comment', icon: Chat, handler: handleComment, text: 'Comment' });
   }
-  if (['other', 'pm', 'co'].includes(role.value)) {
+  if (['admin', 'pm', 'co'].includes(role.value)) {
     buttons.push({ action: 'edit', icon: Pen, handler: handleEdit, text: 'Edit' });
   }
-  if (['other', 'pm', 'co'].includes(role.value)) {
+  if (['admin', 'pm', 'co'].includes(role.value)) {
     buttons.push({ action: 'delete', icon: Trash, handler: () => openDeleteModal(props.task), text: 'Delete' });
   }
   if (
     (['pm', 'pg', 'ds'].includes(role.value) && [props.task?.programmer, props.task?.designer].some(arr => arr?.includes(id.value))) ||
-    ['other'].includes(role.value)
+    ['admin'].includes(role.value)
   ) {
     buttons.push({ action: 'close', icon: Close, handler: handleClose, text: 'Close Task' });
   }
@@ -283,7 +283,7 @@ const visibleButtons = computed(() => {
         </div>
     </div>
 
-    <div v-if="['other', 'co'].includes(role)" class="fixed sm:hidden right-6 bottom-6 z-50">
+    <div v-if="['admin', 'co'].includes(role)" class="fixed sm:hidden right-6 bottom-6 z-50">
       <div
         class="shrink-0 inline-flex items-center justify-center p-3 rounded-full text-white bg-primary-600 shadow-xl z-40 transition-all duration-500 hover:scale-110 active:scale-95"
         @click="showButtons = !showButtons"

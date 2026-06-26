@@ -27,7 +27,7 @@ class DashboardController extends Controller
 
         $members = \Cache::remember('all_members', 1800, function() {
             return User::get()
-                ->where('role', '!=', 'other')
+                ->where('role', '!=', 'admin')
                 ->map(function ($user) {
                     $user->total_tasks = Task::where('isActive', true)
                         ->where(fn($q) => $q
