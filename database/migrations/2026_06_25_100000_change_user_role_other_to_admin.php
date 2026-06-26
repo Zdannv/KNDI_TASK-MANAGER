@@ -12,10 +12,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // First, update any users with the old role to the new one
+        // 1. Temporarily expand enum to allow both 'other' and 'admin'
+        DB::statement("ALTER TABLE users MODIFY COLUMN role ENUM('other', 'admin', 'pm', 'pg', 'co', 'ds') DEFAULT 'pg'");
+
+        // 2. Update the role records
         DB::table('users')->where('role', 'other')->update(['role' => 'admin']);
 
-        // Modify the enum column structure
+        // 3. Shrink enum list to only allow 'admin'
         DB::statement("ALTER TABLE users MODIFY COLUMN role ENUM('admin', 'pm', 'pg', 'co', 'ds') DEFAULT 'pg'");
     }
 
@@ -24,10 +27,13 @@ return new class extends Migration
      */
     public function down(): void
     {
-        // Modify back to support 'other'
-        DB::statement("ALTER TABLE users MODIFY COLUMN role ENUM('other', 'pm', 'pg', 'co', 'ds') DEFAULT 'pg'");
+        // 1. Expand enum to allow both 'other' and 'admin'
+        DB::statement("ALTER TABLE users MODIFY COLUMN role ENUM('other', 'admin', 'pm', 'pg', 'co', 'ds') DEFAULT 'pg'");
 
-        // Reverse back
+        // 2. Rollback the roles
         DB::table('users')->where('role', 'admin')->update(['role' => 'other']);
+
+        // 3. Shrink back to the old enum definition
+        DB::statement("ALTER TABLE users MODIFY COLUMN role ENUM('other', 'pm', 'pg', 'co', 'ds') DEFAULT 'pg'");
     }
 };

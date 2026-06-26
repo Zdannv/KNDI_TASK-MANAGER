@@ -29,5 +29,7 @@ class RoleRequest
         } elseif (in_array($user->role, ['admin', 'pm'])) {
             return to_route('dashboard');
         };
+
+        abort(403, 'Unauthorized action.');
     }
 }
