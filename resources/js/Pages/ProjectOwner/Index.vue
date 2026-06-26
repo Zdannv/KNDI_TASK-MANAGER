@@ -98,7 +98,7 @@ const getNameUser = (id) => {
             <p class="text-sm text-gray-500 dark:text-slate-400 mt-1">Manage project owner list.</p>
           </div>
           
-          <div v-if="['other', 'pm', 'co'].includes(role)" class="flex justify-end">
+          <div v-if="['admin', 'pm', 'co'].includes(role)" class="flex justify-end">
             <button
               @click="handleOpenForm"
               class="flex items-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg shadow-md hover:shadow-primary-500/30 transition-all duration-300 transform hover:scale-105"
@@ -111,7 +111,7 @@ const getNameUser = (id) => {
     </div>
 
     <button
-      v-if="['other', 'pm', 'co'].includes(role)"
+      v-if="['admin', 'pm', 'co'].includes(role)"
       @click="handleOpenForm"
       class="fixed sm:hidden right-6 bottom-6 border border-white/20 rounded-full p-4 text-white bg-primary-600 shadow-xl z-40 transition-all duration-500 ease-out hover:scale-110 active:scale-95"
       :class="{ 'translate-y-0 opacity-100 scale-100': isLoaded, 'translate-y-12 opacity-0 scale-75': !isLoaded }"
@@ -153,7 +153,7 @@ const getNameUser = (id) => {
                   <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Name</th>
                   <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Creator</th>
                   <th class="p-5 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Updater</th>
-                  <th v-if="['other', 'pm', 'co'].includes(role)" class="p-5 text-center font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Action</th>
+                  <th v-if="['admin', 'pm', 'co'].includes(role)" class="p-5 text-center font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider">Action</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-white/20 dark:divide-white/5">
@@ -185,7 +185,7 @@ const getNameUser = (id) => {
                         <span class="text-sm text-gray-500 dark:text-gray-400">{{ getNameUser(owner.updater) }}</span>
                      </div>
                   </td>
-                  <td v-if="['other', 'pm', 'co'].includes(role)" class="p-5 align-middle">
+                  <td v-if="['admin', 'pm', 'co'].includes(role)" class="p-5 align-middle">
                     <div class="flex gap-3 justify-center items-center">
                       <button
                         @click.prevent="handleEdit(owner.id)"

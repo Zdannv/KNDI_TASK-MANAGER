@@ -23,7 +23,7 @@ class UsersImport implements ToModel, WithHeadingRow, WithValidation, WithChunkR
         return [
             'name' => 'required|string|max:255',
             'email' => 'required|string|unique:'.User::class,
-            'role' => ['required', 'in:other,pm,pg,co,ds'],
+            'role' => ['required', 'in:admin,pm,pg,co,ds'],
             'password' => ['required', Rules\Password::defaults()],
         ];
     }
@@ -45,7 +45,8 @@ class UsersImport implements ToModel, WithHeadingRow, WithValidation, WithChunkR
         $value = strtolower(trim($value));
         
         $map = [
-            'other' => 'other',
+            'other' => 'admin',
+            'admin' => 'admin',
             'pm' => 'pm',
             'pg' => 'pg',
             'co' => 'co',

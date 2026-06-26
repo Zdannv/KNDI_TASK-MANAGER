@@ -40,7 +40,7 @@ const queryParams = computed(() => {
   return Object.fromEntries(url.searchParams);
 });
 
-const options = ref(['other', 'co'].includes(role.value) ? true : false);
+const options = ref(['admin', 'co'].includes(role.value) ? true : false);
 const id = ref(Number(queryParams.value.user_id) || null);
 
 const handleOpenOptions = () => {
@@ -121,7 +121,7 @@ watch(id, (newValue) => {
           
           <div class="flex gap-4 justify-end">
             <button
-              v-if="['other', 'co'].includes(role)"
+              v-if="['admin', 'co'].includes(role)"
               @click="handleOpenOptions"
               class="flex items-center gap-2 px-4 py-2 bg-white/50 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-700/50 text-gray-700 dark:text-gray-200 rounded-lg shadow-sm border border-white/40 dark:border-white/10 backdrop-blur-sm transition-all"
             >
@@ -139,7 +139,7 @@ watch(id, (newValue) => {
         </div>
     </div>
 
-    <div v-if="['other', 'co'].includes(role)" class="fixed sm:hidden right-6 bottom-6 z-50">
+    <div v-if="['admin', 'co'].includes(role)" class="fixed sm:hidden right-6 bottom-6 z-50">
       <div
         class="shrink-0 inline-flex items-center justify-center p-3 rounded-full text-white bg-primary-600 shadow-xl z-40 transition-all duration-500 hover:scale-110 active:scale-95"
         @click="showButtons = !showButtons"

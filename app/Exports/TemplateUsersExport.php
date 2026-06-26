@@ -11,7 +11,7 @@ use PhpOffice\PhpSpreadsheet\Cell\DataValidation;
 
 class TemplateUsersExport implements FromCollection, WithHeadings, WithTitle, WithEvents
 {
-    protected $roles = ['other', 'pm', 'pg', 'co', 'ds'];
+    protected $roles = ['admin', 'pm', 'pg', 'co', 'ds'];
 
     public function collection()
     {

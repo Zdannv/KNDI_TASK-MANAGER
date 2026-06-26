@@ -26,7 +26,7 @@ class SkillController extends Controller
     $skills = \Cache::remember($cacheKey, 1800, function() use ($userId, $auth) {
         $skillsQuery = Skill::orderBy('created_at', 'desc');
 
-        if ($userId && in_array($auth->role, ['other', 'co'])) {
+        if ($userId && in_array($auth->role, ['admin', 'co'])) {
             $skillsQuery->where('user_id', $userId);
         } else {
             $skillsQuery->where('user_id', $auth->id);

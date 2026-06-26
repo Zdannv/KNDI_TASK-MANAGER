@@ -286,7 +286,7 @@ class AttendanceController extends Controller
 
     public function toggleStatus(Request $request)
     {
-        if (auth()->user()->role !== 'other') {
+        if (auth()->user()->role !== 'admin') {
             abort(403, 'Unauthorized action.');
         }
 

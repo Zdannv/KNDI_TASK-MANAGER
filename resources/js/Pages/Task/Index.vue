@@ -130,7 +130,7 @@ const handleSearch = () => {
             </div>
 
             <button
-              v-if="['other', 'pm', 'co'].includes(role)" 
+              v-if="['admin', 'pm', 'co'].includes(role)" 
               @click="handleOpenCreateEditForm"
               class="flex items-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg shadow-md hover:shadow-primary-500/30 transition-all duration-300 transform hover:scale-105 whitespace-nowrap"
             >
@@ -142,7 +142,7 @@ const handleSearch = () => {
     </div>
 
     <button
-      v-if="['other', 'pm', 'co'].includes(role)" 
+      v-if="['admin', 'pm', 'co'].includes(role)" 
       @click="handleOpenCreateEditForm"
       class="fixed sm:hidden right-6 bottom-6 border border-white/20 rounded-full p-4 text-white bg-primary-600 shadow-xl z-40 transition-all duration-500 ease-out hover:scale-110 active:scale-95"
       :class="{ 'translate-y-0 opacity-100 scale-100': isLoaded, 'translate-y-12 opacity-0 scale-75': !isLoaded }"
@@ -197,7 +197,7 @@ const handleSearch = () => {
                     <th class="px-4 py-3 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider whitespace-nowrap">Ticket Link</th>
                     <th class="px-4 py-3 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider whitespace-nowrap">Start date</th>
                     <th class="px-4 py-3 font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider whitespace-nowrap">Due date</th>
-                    <th v-if="['other', 'pm', 'co'].includes(role)" class="px-4 py-3 text-center font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider whitespace-nowrap">
+                    <th v-if="['admin', 'pm', 'co'].includes(role)" class="px-4 py-3 text-center font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider whitespace-nowrap">
                       Is Active
                     </th>
                     <th class="px-4 py-3 text-center font-semibold text-gray-600 dark:text-slate-400 text-sm uppercase tracking-wider whitespace-nowrap">Actions</th>
@@ -257,7 +257,7 @@ const handleSearch = () => {
                       </span>
                     </td>
                     
-                    <td v-if="['other', 'pm', 'co'].includes(role)" class="px-4 py-3 align-middle">
+                    <td v-if="['admin', 'pm', 'co'].includes(role)" class="px-4 py-3 align-middle">
                       <div class="flex justify-center">
                         <SwitchInput v-slot:default v-model="task.isActive" @update:modelValue="handleUpdateIsActive(task.id)" />
                       </div>
@@ -266,7 +266,7 @@ const handleSearch = () => {
                     <td class="px-4 py-3 align-middle whitespace-nowrap">
                       <div class="flex items-center justify-center gap-3">
                         <button 
-                          v-if="['other', 'pm'].includes(role)"
+                          v-if="['admin', 'pm'].includes(role)"
                           @click="handleAssignTask(task)"
                           class="p-1.5 rounded-lg text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-500/10 transition tooltip-trigger"
                           title="Assign User"
@@ -275,7 +275,7 @@ const handleSearch = () => {
                         </button>
 
                         <button 
-                          v-if="['other', 'pm', 'co'].includes(role)"
+                          v-if="['admin', 'pm', 'co'].includes(role)"
                           @click="handleEditTask(task)"
                           class="p-1.5 rounded-lg text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-500/10 transition tooltip-trigger"
                           title="Edit Task"

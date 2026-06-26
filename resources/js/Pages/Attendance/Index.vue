@@ -57,7 +57,7 @@ const queryParams = computed(() => {
 });
 
 // Filter States
-const options = ref(['other', 'co'].includes(role.value) ? true : false);
+const options = ref(['admin', 'co'].includes(role.value) ? true : false);
 const id = ref(Number(queryParams.value.user_id) || null);
 const dates = ref(
   queryParams.value.from && queryParams.value.to
@@ -134,14 +134,14 @@ const resetFilter = () => {
   
   <div class="w-full py-8">
     
-    <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-0 mb-6" v-if="role === 'other'">
+    <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-0 mb-6" v-if="role === 'admin'">
         <div 
             class="p-5 bg-white/40 dark:bg-slate-900/40 backdrop-blur-xl border border-white/40 dark:border-white/20 shadow-lg rounded-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 transition-all duration-1000 ease-out"
             :class="{ 'translate-y-0 opacity-100': isLoaded, 'translate-y-8 opacity-0': !isLoaded }"
         >
             <div>
                 <h3 class="font-bold text-gray-800 dark:text-slate-100 drop-shadow-sm">Status Fitur Absensi</h3>
-                <p class="text-sm text-gray-500 dark:text-slate-400 mt-1">Jika dinonaktifkan, role selain Other tidak akan bisa melihat atau mengakses halaman dan fitur absensi ini.</p>
+                <p class="text-sm text-gray-500 dark:text-slate-400 mt-1">Jika dinonaktifkan, role selain Admin tidak akan bisa melihat atau mengakses halaman dan fitur absensi ini.</p>
             </div>
             
             <label class="flex items-center cursor-pointer shrink-0">
@@ -157,7 +157,7 @@ const resetFilter = () => {
         </div>
     </div>
 
-    <div v-if="$page.props.attendance_enabled || role === 'other'">
+    <div v-if="$page.props.attendance_enabled || role === 'admin'">
         <div class="mx-auto max-w-[100rem] sm:px-6 lg:px-0">
             <div
             class="flex flex-col md:flex-row justify-between px-6 py-4 items-start md:items-center gap-4 text-gray-800 dark:text-gray-200 
@@ -174,7 +174,7 @@ const resetFilter = () => {
             
             <div class="flex flex-wrap gap-3 justify-end w-full md:w-auto">
                 <button
-                v-if="['other', 'co'].includes(role)"
+                v-if="['admin', 'co'].includes(role)"
                 @click="handleOpenOptions"
                 class="flex items-center gap-2 px-4 py-2 bg-white/50 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-700/50 text-gray-700 dark:text-gray-200 rounded-lg shadow-sm border border-white/40 dark:border-white/10 backdrop-blur-sm transition-all"
                 >
